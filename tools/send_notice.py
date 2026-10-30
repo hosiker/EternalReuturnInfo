@@ -24,7 +24,7 @@ from firebase_admin import auth, credentials
 from purge_passwords import abort_if_key_in_repo
 from rotate_passwords import has_password_login
 
-SMTP_HOST, SMTP_PORT = "smtp.gmail.com", 465
+SMTP_HOST = "smtp.gmail.com"
 SENDER_NAME = "ER info"
 CONFIRM_PHRASE = "안내 메일 발송"
 DEFAULT_NOTICE = Path(__file__).resolve().parent / "notice_template.txt"
@@ -46,6 +46,23 @@ def build_message(sender: str, to: str, subject: str, body: str) -> EmailMessage
     message["Subject"] = subject
     message.set_content(body)
     return message
+
+
+def open_smtp(user: str, password: str, port: int):
+    """465 는 SSL, 587 은 STARTTLS 로 연결하고 로그인한 서버를 돌려준다."""
+    context = ssl.create_default_context()
+    if port == 465:
+        server = smtplib.SMTP_SSL(SMTP_HOST, port, context=context, timeout=30)
+    else:
+        server = smtplib.SMTP(SMTP_HOST, port, timeout=30)
+    try:
+        if port != 465:
+            server.starttls(context=context)
+        server.login(user, password.replace(" ", ""))
+    except Exception:
+        server.close()
+        raise
+    return server
 
 
 def pick_recipients(users, *, include_all: bool, only: set[str] | None) -> list[str]:
@@ -93,6 +110,7 @@ def main() -> None:
     parser.add_argument("--only", nargs="+", metavar="EMAIL", help="이 주소들에만 보낸다")
     parser.add_argument("--limit", type=int, help="최대 발송 수 (나눠서 보낼 때)")
     parser.add_argument("--interval", type=float, default=3.0, help="메일 사이 대기 초 (기본 3)")
+    parser.add_argument("--port", type=int, choices=(465, 587), default=465, help="SMTP 포트: 465(SSL) 또는 587(STARTTLS)")
     args = parser.parse_args()
 
     subject, body = load_notice(args.notice, args.smtp_user)
@@ -123,9 +141,7 @@ def main() -> None:
     password = os.environ.get("ER_SMTP_PASSWORD") or getpass.getpass("앱 비밀번호(입력이 보이지 않아요): ")
 
     def connect():
-        server = smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, context=ssl.create_default_context(), timeout=30)
-        server.login(args.smtp_user, password.replace(" ", ""))
-        return server
+        return open_smtp(args.smtp_user, password, args.port)
 
     def record(email):
         if log_path:
@@ -139,6 +155,13 @@ def main() -> None:
         )
     except smtplib.SMTPAuthenticationError:
         sys.exit("로그인 실패: 앱 비밀번호(16자리)와 2단계 인증 설정을 확인하세요.")
+    except OSError as error:  # 연결 끊김, 시간 초과 등
+        sys.exit(
+            f"연결 실패: {error}\n"
+            "  1) --port 587 을 붙여 다시 시도해 보세요.\n"
+            "  2) 발신 계정(Gmail)의 '보안 알림' 메일에 차단된 로그인 시도가 있는지 확인하세요.\n"
+            "  3) 백신/방화벽의 메일 검사 기능을 잠시 끄고 다시 시도해 보세요."
+        )
     print(f"\n완료. 성공 {len(sent)}개 / 실패 {len(failed)}개")
     for email, reason in failed:
         print(f"  실패: {email} ({reason})")
