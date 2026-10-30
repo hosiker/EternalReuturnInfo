@@ -69,3 +69,45 @@ python tools/rotate_passwords.py --key ~/secrets/er-admin.json --apply
 - `API_KEY_ANDROID_APP_BLOCKED` 같은 오류가 나오면 API 키에 Android 앱 제한이 걸려 있는 거예요. 콘솔 → 프로젝트 설정 → 내 앱의 **SHA-1 인증서 지문**을 콜론(:) 없이 `--android-cert` 로 넘기세요.
 - `TOO_MANY_ATTEMPTS_TRY_LATER` 는 발송 한도예요. 잠시 뒤 재시도하세요.
 - 끝나면 서비스 계정 키를 다시 삭제하세요.
+
+## send_notice.py
+
+가입자에게 보안 사고 안내 메일을 **한 명씩 개별 발송**해요. (서로의 주소가 보이지 않아요.) 안내문은 `tools/notice_template.txt`이고, 첫 줄 `제목: ...`이 제목, 나머지가 본문이에요. `{contact}`는 발신 주소로 바뀌어요. **발송 전에 안내문 내용을 꼭 읽고 사실과 다른 부분을 고치세요.**
+
+수신자는 이메일/비밀번호 계정이에요(`rotate_passwords.py` 대상과 같아요). Google 로그인 계정까지 보내려면 `--all`을 붙이세요.
+
+### 발신 계정 준비 (ER info 전용 Gmail)
+
+1. 새 Gmail 계정을 만들어요. (예: `erinfo.help@gmail.com`) 표시 이름은 `ER info`로 해요.
+2. Google 계정 → 보안 → **2단계 인증**을 켜요. (앱 비밀번호의 전제 조건이에요.)
+3. Google 계정 → 보안 → 2단계 인증 → **앱 비밀번호**에서 하나 만들어요. 16자리가 나와요.
+4. 앱 비밀번호는 명령줄에 쓰지 말고, 실행할 때 입력창에 붙여 넣거나 환경변수 `ER_SMTP_PASSWORD`로 넘겨요.
+
+### 순서
+
+1. **dry-run:** 대상 수와 메일 미리보기를 봐요. 아무것도 보내지 않아요.
+
+```powershell
+.\.venv\Scripts\python tools\send_notice.py --smtp-user erinfo.help@gmail.com --key "C:\...\secrets\<키>.json"
+```
+
+2. **테스트 1통:** 본인 개인 메일로 먼저 한 통만 보내서 스팸함에 가는지, 글이 깨지지 않는지 확인해요.
+
+```powershell
+.\.venv\Scripts\python tools\send_notice.py --smtp-user erinfo.help@gmail.com --test-to 내개인메일@gmail.com --apply
+```
+
+3. **본 발송:** `안내 메일 발송`을 입력해야 시작돼요. 메일 사이에 3초씩 쉬어요.
+
+```powershell
+.\.venv\Scripts\python tools\send_notice.py --smtp-user erinfo.help@gmail.com --key "C:\...\secrets\<키>.json" --apply
+```
+
+4. 안내 메일이 나가면 **바로 이어서** `rotate_passwords.py --apply`를 실행해요. 안내문이 "곧 재설정 메일이 간다"고 약속하고 있어요.
+
+### 참고
+
+- 발송한 주소는 키 파일 옆의 `notice_sent.log`에 기록돼요. 다시 실행해도 중복 발송하지 않아요. 이메일이 들어 있으니 저장소에 올리지 마세요.
+- 새 Gmail 계정은 한꺼번에 많이 보내면 스팸이나 의심 활동으로 막힐 수 있어요. 불안하면 `--limit 20`으로 나눠서 보내세요.
+- 실패한 주소는 마지막에 재시도 명령이 출력돼요.
+- Gmail 로그인 실패가 나오면 앱 비밀번호와 2단계 인증을 확인하세요.
