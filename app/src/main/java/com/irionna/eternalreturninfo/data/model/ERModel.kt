@@ -17,7 +17,6 @@ data class ERModel (
     val uid: String? = null,
     val email: String? = null,
     var name: String? = null,
-    val password: String? = null,
     var msg: String? = null,
     val profilePicture: String? = null,
     var readOrNot: Boolean? = null,

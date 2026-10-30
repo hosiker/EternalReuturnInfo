@@ -204,20 +204,6 @@ class MyProfileFragment : Fragment() {
     fun PwChange(pw: String, pwCheck: String) {
         val user: FirebaseUser? = auth?.currentUser
         user?.updatePassword(pw)
-        auth?.uid?.let {
-            db.collection(SignUpActivity.collection).document(it).update(
-                mapOf(
-                    "pw" to pw
-                )
-            )
-        }
-        auth?.uid?.let {
-            database.child("user").child(it).updateChildren(
-                mapOf(
-                    "password" to pw
-                )
-            )
-        }
     }
 
     // 팝업메뉴 onClick 리스너

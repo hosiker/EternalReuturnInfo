@@ -134,7 +134,6 @@ class SignUpActivity : AppCompatActivity() {
                                 setDocument(
                                     SignUpData(
                                         email = email,
-                                        pw = password,
                                         nickName = nickname,
                                         character = character,
                                         profile = baseImage
@@ -145,7 +144,6 @@ class SignUpActivity : AppCompatActivity() {
                                         ERModel(
                                             profilePicture = baseImage,
                                             email = email,
-                                            password = password,
                                             name = nickname,
                                             uid = auth.uid!!
                                         )
