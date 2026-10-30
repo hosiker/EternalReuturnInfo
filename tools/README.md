@@ -112,4 +112,11 @@ python tools/rotate_passwords.py --key ~/secrets/er-admin.json --apply
 - 실패한 주소는 마지막에 재시도 명령이 출력돼요.
 - Gmail 로그인 실패가 나오면 앱 비밀번호와 2단계 인증을 확인하세요.
 - `Connection unexpectedly closed` 처럼 연결이 끊기면 `--port 587` 을 붙여 다시 시도하세요. 계정의 '보안 알림' 메일(차단된 로그인 시도)과 백신의 메일 검사 기능도 확인하세요.
+- 포트 465, 587 모두 끊기면 `smtp_check.py` 로 어느 단계에서 막히는지 확인하세요. 메일은 보내지 않고, 비밀번호도 출력하지 않아요. 연결만 보려면 `--skip-login` 을 붙이세요.
+
+```powershell
+.\.venv\Scripts\python tools\smtp_check.py --smtp-user erinfomanager@gmail.com
+```
+
+- 터미널 출력을 복사하면 줄이 바뀌는 자리의 공백이 빠질 수 있어요. 안내문이 이상해 보여도 실제 파일 문제가 아닐 수 있으니, 테스트 메일로 확인하세요.
 - `Read-Host "..."` 의 따옴표 안은 안내 문구예요. **여기에 앱 비밀번호를 쓰면 화면과 명령 기록에 남아요.** 비밀번호는 뜨는 입력칸에만 입력하세요.
