@@ -1,9 +1,9 @@
 import { initializeTestEnvironment, assertFails, assertSucceeds } from '@firebase/rules-unit-testing';
-import { ref, get, set, update, remove, push } from 'firebase/database';
+import { ref, get, set, update, remove, push, query, orderByChild, equalTo } from 'firebase/database';
 import fs from 'fs';
 import assert from 'assert';
 
-const A = 'A'.repeat(28), B = 'B'.repeat(28), C = 'C'.repeat(28);
+const A = 'A'.repeat(28), B = 'B'.repeat(28), C = 'C'.repeat(28), D = 'D'.repeat(28);
 const env = await initializeTestEnvironment({
   projectId: 'demo-er',
   database: { host: '127.0.0.1', port: 9000, rules: fs.readFileSync('database.rules.json', 'utf8') },
@@ -76,6 +76,32 @@ await t('seasonID 는 읽기만 된다', async () => {
 await t('정의되지 않은 경로는 못 읽고 못 쓴다', async () => {
   await assertFails(get(ref(db(A), 'other')));
   await assertFails(set(ref(db(A), 'other'), 1));
+});
+
+
+// 회원탈퇴(묘비 노드)
+await env.withSecurityRulesDisabled(async (ctx) => {
+  const d = ctx.database();
+  await set(ref(d, 'user/' + B), { uid: B, name: '탈퇴한 사용자', withdrawn: true });
+  await set(ref(d, 'chats/' + B + A + '/messages/m1'), { message: 'hi' });
+});
+await t('본인 user 노드를 탈퇴 표시 노드로 바꾼다', () => assertSucceeds(set(ref(db(C), 'user/' + C), { uid: C, name: '탈퇴한 사용자', withdrawn: true })));
+await t('남이 탈퇴 표시 노드를 되돌리지 못한다', () => assertFails(set(ref(db(A), 'user/' + B), { uid: B, name: 'x' })));
+await t('탈퇴한 상대의 방에는 메시지를 못 쓴다 (상대 사본)', () => assertFails(push(ref(db(A), 'chats/' + A + B + '/messages'), { message: 'x' })));
+await t('탈퇴한 상대의 방에는 메시지를 못 쓴다 (내 사본)', () => assertFails(push(ref(db(A), 'chats/' + B + A + '/messages'), { message: 'x' })));
+await t('탈퇴한 상대가 있어도 기존 대화는 읽는다', () => assertSucceeds(get(ref(db(A), 'chats/' + A + B))));
+await t('탈퇴한 상대가 있어도 내 사본 방은 지운다', () => assertSucceeds(remove(ref(db(A), 'chats/' + B + A))));
+await t('탈퇴하지 않은 상대의 방에는 여전히 쓴다', () => assertSucceeds(push(ref(db(A), 'chats/' + A + D + '/messages'), { message: 'x' })));
+await t('내 글에 달린 남의 댓글이 있어도 내 글은 지운다', async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    const d = ctx.database();
+    await set(ref(d, 'post/p9'), { id: 'p9', author: A, title: 't', content: 'c', views: 0, date: 1 });
+    await set(ref(d, 'post/p9/comments/cx'), { id: 'cx', author: C, content: 'hi', date: 1 });
+  });
+  await assertSucceeds(remove(ref(db(A), 'post/p9')));
+});
+await t('작성자 색인으로 내 글을 조회한다', async () => {
+  await assertSucceeds(get(query(ref(db(A), 'post'), orderByChild('author'), equalTo(A))));
 });
 
 console.log(`\n${pass} passed, ${fail} failed`);

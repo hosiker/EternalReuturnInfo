@@ -16,7 +16,7 @@
     // 글 생성/수정/삭제는 작성자(author = 작성자 uid)만 가능하다.
     "post": {
       ".read": "auth != null",
-      ".indexOn": ["title", "content", "date"],
+      ".indexOn": ["title", "content", "date", "author"],
       "$postId": {
         // 노드 전체에 대한 쓰기는 "새 글 작성"(author = 내 uid)과 "내 글 삭제"만 허용한다.
         // (노드 단위 쓰기 권한은 아래 댓글에까지 번지므로, 수정은 필드 단위로 따로 허용한다.)
@@ -55,10 +55,11 @@
     },
 
     // 채팅방: 방 이름이 두 사용자 uid 를 이어 붙인 값이므로, 이름의 앞이나 뒤가 내 uid 인 방만 읽고 쓸 수 있다.
+    // 상대가 탈퇴한 경우(user/상대uid/withdrawn = true)에는 새 메시지를 쓸 수 없고, 내 사본 방을 지우는 것만 된다.
     "chats": {
       "$room": {
         ".read": "auth != null && ($room.beginsWith(auth.uid) || $room.endsWith(auth.uid))",
-        ".write": "auth != null && ($room.beginsWith(auth.uid) || $room.endsWith(auth.uid))"
+        ".write": "auth != null && ($room.beginsWith(auth.uid) || $room.endsWith(auth.uid)) && (!newData.exists() || root.child('user').child($room.replace(auth.uid, '')).child('withdrawn').val() !== true)"
       }
     },
 

@@ -182,7 +182,7 @@ class BoardPostActivity : AppCompatActivity() {
                                                 this@BoardPostActivity,
                                                 object : DialogListener {
                                                     override fun onOKButtonClicked() {
-                                                        val reportMap = ReportModel(FBRef.auth.uid!!)
+                                                        val reportMap = ReportModel(FBRef.auth.uid!!, System.currentTimeMillis())
                                                         FBRef.postRef.child(id).child("report").push().setValue(reportMap)
                                                         intent.putExtra("updateBoard", board?.copy(category = "report"))
                                                         setResult(RESULT_OK, intent)
@@ -219,7 +219,7 @@ class BoardPostActivity : AppCompatActivity() {
                         if (sortedComment != null) {
 
                             val filter = sortedComment.filterNot{
-                                it.report.containsValue(ReportModel(FBRef.auth.uid!!))
+                                it.report.values.any { r -> r.uid == FBRef.auth.uid }
                             }
 
 
@@ -293,7 +293,7 @@ class BoardPostActivity : AppCompatActivity() {
 
                             // 2. 서버에 댓글 신고 등록
                             val commentKey = FBRef.postRef.child(id).child("comments").child(commentItem.id).child("report").push().key.toString()
-                            val reportMap = ReportModel(FBRef.auth.uid!!)
+                            val reportMap = ReportModel(FBRef.auth.uid!!, System.currentTimeMillis())
 
                             FBRef.postRef.child(id).child("comments").child(commentItem.id).child("report").child(commentKey).setValue(reportMap)
                         }

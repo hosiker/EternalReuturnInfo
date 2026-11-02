@@ -113,7 +113,7 @@ class BoardFragment : Fragment() {
                 for (data in snapshot.children) {
                     val board = data.getValue<BoardModel>()
 
-                    if (board != null && !board!!.report.containsValue(ReportModel(FBRef.auth.uid!!)))  {
+                    if (board != null && board!!.report.values.none { r -> r.uid == FBRef.auth.uid })  {
                         unsortedBoardList.add(board)
                     }
                 }
