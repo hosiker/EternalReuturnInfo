@@ -76,10 +76,16 @@ class BoardUpdateActivity : AppCompatActivity() {
             val title = boardAddEtTitle.text.toString()
             val content = boardAddEtContent.text.toString()
 
-            val updateBoard = board?.let { it1 -> BoardModel(it1.id, category, title, content, board.author, board.date, board.comments, board.views) }
-
+            // 보안 규칙상 글 수정은 제목, 내용, 분류만 필드 단위로 바꿀 수 있다.
+            // (노드 전체를 덮어쓰면 댓글까지 다시 쓰게 되어 규칙에서 막힌다.)
             if (board != null) {
-                FBRef.postRef.child(board.id).setValue(updateBoard)
+                FBRef.postRef.child(board.id).updateChildren(
+                    mapOf(
+                        "category" to category,
+                        "title" to title,
+                        "content" to content
+                    )
+                )
             }
 
             finish()
