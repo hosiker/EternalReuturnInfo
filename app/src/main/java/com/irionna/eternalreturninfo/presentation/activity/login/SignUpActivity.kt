@@ -185,11 +185,11 @@ class SignUpActivity : AppCompatActivity() {
                     }
                     BoardSingletone.Login()
                     toast("", "계정 생성 완료", MotionToastStyle.SUCCESS)
+                    // 이 노드는 로그인한 모든 사용자가 읽을 수 있으므로 이메일 같은 개인정보는 저장하지 않는다.
                     database.child("user").child(uid)
                         .setValue(
                             ERModel(
                                 profilePicture = baseImage,
-                                email = email,
                                 name = nickname,
                                 uid = uid
                             )
