@@ -1,5 +1,6 @@
 package com.irionna.eternalreturninfo.presentation.adapter.board
 
+import com.irionna.eternalreturninfo.util.ProfileImage
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
@@ -77,12 +78,12 @@ class BoardRecyclerViewAdapter() : ListAdapter<BoardModel, BoardRecyclerViewAdap
 //                        val author = snapshot.getValue<ERModel>()
                         val author = snapshot.getValue(ERModel::class.java)
 
-                        boardPostIvProfile.load(author?.profilePicture)
+                        ProfileImage.load(boardPostIvProfile, author?.profilePicture)
                         boardPostTvUser.text = author?.name
 
                     }else{
 
-                        boardPostIvProfile.load(R.drawable.ic_baseimage)
+                        ProfileImage.load(boardPostIvProfile, ProfileImage.DEFAULT_KEY)
                         boardPostTvUser.text = "탈퇴한 회원"
 
                     }

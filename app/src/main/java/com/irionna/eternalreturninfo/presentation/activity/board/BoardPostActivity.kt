@@ -1,5 +1,6 @@
 package com.irionna.eternalreturninfo.presentation.activity.board
 
+import com.irionna.eternalreturninfo.util.ProfileImage
 import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
@@ -138,11 +139,7 @@ class BoardPostActivity : AppCompatActivity() {
                                     val user = snapshot.getValue(ERModel::class.java)
                                     boardPostTvUser.text = user?.name
 
-                                    if (user?.profilePicture?.isEmpty() == true) {
-                                        boardPostIbProfile.setImageResource(R.drawable.ic_xiuk)
-                                    } else {
-                                        boardPostIbProfile.load(user?.profilePicture)
-                                    }
+                                    ProfileImage.load(boardPostIbProfile, user?.profilePicture)
 
                                     // 게시글 작성자일 경우, 수정 삭제 활성화
                                     if (user?.uid == BoardSingletone.LoginUser().uid) {
@@ -239,11 +236,7 @@ class BoardPostActivity : AppCompatActivity() {
 
         })
 
-        if (BoardSingletone.LoginUser().profilePicture == null) {
-            boardPostIbProfile.setImageResource(R.drawable.ic_xiuk)
-        } else {
-            boardPostIbCommentProfile.load(BoardSingletone.LoginUser().profilePicture)
-        }
+        ProfileImage.load(boardPostIbCommentProfile, BoardSingletone.LoginUser().profilePicture)
     }
 
     private fun initView() = with(binding) {

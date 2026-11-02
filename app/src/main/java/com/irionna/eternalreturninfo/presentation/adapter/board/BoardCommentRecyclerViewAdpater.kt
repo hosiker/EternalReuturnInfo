@@ -1,5 +1,6 @@
 package com.irionna.eternalreturninfo.presentation.adapter.board
 
+import com.irionna.eternalreturninfo.util.ProfileImage
 import android.content.Context
 import android.util.Log
 import android.view.Gravity
@@ -133,11 +134,7 @@ class BoardCommentRecyclerViewAdpater(
 
                         boardCommentTvUser.text = author?.name
 
-                        if (author?.profilePicture?.isEmpty() == true) {
-                            boardCommentIbProfile.setImageResource(R.drawable.ic_xiuk)
-                        } else {
-                            boardCommentIbProfile.load(author?.profilePicture)
-                        }
+                        ProfileImage.load(boardCommentIbProfile, author?.profilePicture)
 
                         // 로그인한 사용자면 ibMenu 보여주기
                         if (author?.uid == FBRef.auth.uid) {
