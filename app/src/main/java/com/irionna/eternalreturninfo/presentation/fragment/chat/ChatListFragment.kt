@@ -1,5 +1,6 @@
 package com.irionna.eternalreturninfo.presentation.fragment.chat
 
+import com.irionna.eternalreturninfo.util.ProfileImage
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -68,7 +69,7 @@ class ChatListFragment : Fragment() {
         }
 
         profilePictureUrl.observe(viewLifecycleOwner) {
-            binding.chatListMyProfilePicture.load(it)
+            ProfileImage.load(binding.chatListMyProfilePicture, it)
         }
 
         profileName.observe(viewLifecycleOwner) {

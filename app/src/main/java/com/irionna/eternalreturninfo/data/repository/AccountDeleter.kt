@@ -5,7 +5,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import com.irionna.eternalreturninfo.util.NicknameKey
 import kotlinx.coroutines.tasks.await
 
@@ -16,13 +15,12 @@ import kotlinx.coroutines.tasks.await
  *  - 내 게시글, 내가 쓴 댓글: 삭제. 단, 다른 사람의 신고가 접수된 것은 보관한다. (3개월, 방침 참고)
  *  - 내 채팅방 사본: 삭제. 상대방 쪽 사본은 그대로 둔다.
  *  - user 노드: 이름만 "탈퇴한 사용자"인 표시용 노드(withdrawn=true)로 바꾼다. (채팅 목록에서 대화가 사라지지 않게)
- *  - 가입자 문서와 닉네임 선점 문서, 프로필 이미지: 삭제.
+ *  - 가입자 문서와 닉네임 선점 문서: 삭제. (프로필 이미지는 앱에 내장된 실험체 이미지라서 따로 저장하지 않는다)
  */
 class AccountDeleter(
     private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
     private val rtdb: FirebaseDatabase = FirebaseDatabase.getInstance(),
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance(),
-    private val storage: FirebaseStorage = FirebaseStorage.getInstance(),
     private val nowMillis: () -> Long = { System.currentTimeMillis() },
 ) {
     class NeedsRecentLoginException : Exception("최근 로그인이 필요합니다")
@@ -42,7 +40,6 @@ class AccountDeleter(
     suspend fun delete(withdrawnName: String) {
         val user = auth.currentUser ?: return
         val uid = user.uid
-        val email = user.email
 
         // Firebase 는 계정 삭제 전에 최근 로그인을 요구한다. 데이터부터 지우고 계정 삭제가 막히는 상황을 피한다.
         val lastSignIn = user.metadata?.lastSignInTimestamp ?: 0L
@@ -61,7 +58,6 @@ class AccountDeleter(
         }
 
         step("가입자·닉네임 문서 삭제") { deleteFirestore(uid) }
-        deleteProfileImages(email)
 
         step("계정 삭제") { user.delete().await() }
     }
@@ -110,19 +106,6 @@ class AccountDeleter(
         }
         batch.delete(userDoc)
         batch.commit().await()
-    }
-
-    /** 저장소가 막혀 있거나 파일이 없어도 탈퇴는 계속한다. */
-    private suspend fun deleteProfileImages(email: String?) {
-        if (email.isNullOrEmpty()) return
-        val candidates = listOf("$email.jpg", "${email}_profile", "image/$email.jpg")
-        for (path in candidates) {
-            try {
-                storage.reference.child(path).delete().await()
-            } catch (e: Exception) {
-                Log.d(TAG, "프로필 이미지 삭제 건너뜀: $path (${e.javaClass.simpleName})")
-            }
-        }
     }
 
     companion object {

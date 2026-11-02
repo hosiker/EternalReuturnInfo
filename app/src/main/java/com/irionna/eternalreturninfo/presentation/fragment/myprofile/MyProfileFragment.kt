@@ -18,7 +18,6 @@ import android.widget.Spinner
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
 import com.irionna.eternalreturninfo.R
 import com.irionna.eternalreturninfo.databinding.MyprofileCharacterDialogBinding
 import com.irionna.eternalreturninfo.databinding.MyprofileFragmentBinding
@@ -26,6 +25,7 @@ import com.irionna.eternalreturninfo.retrofit.BoardSingletone
 import com.irionna.eternalreturninfo.presentation.activity.login.LoginActivity
 import com.irionna.eternalreturninfo.presentation.activity.login.SignUpActivity
 import com.irionna.eternalreturninfo.util.NicknameKey
+import com.irionna.eternalreturninfo.util.ProfileImage
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.CoroutineScope
@@ -42,7 +42,6 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 import com.skydoves.powermenu.CircularEffect
 import com.skydoves.powermenu.MenuAnimation
 import com.skydoves.powermenu.OnMenuItemClickListener
@@ -57,8 +56,6 @@ class MyProfileFragment : Fragment() {
     private var auth: FirebaseAuth? = null
     var db = Firebase.firestore
     private lateinit var characterbinding: MyprofileCharacterDialogBinding
-    private val PICK_IMAGE = 1111
-    val storage = Firebase.storage
     var email: String? = null
     private lateinit var database: DatabaseReference
 
@@ -136,10 +133,7 @@ class MyProfileFragment : Fragment() {
     }
 
     private fun setOnClickListener() {
-        val profileBtn = binding.myprofileProfileImg
-        profileBtn.setOnClickListener {
-            selectProfile()
-        }
+        // 프로필 이미지는 선호 실험체 이미지로 자동 정해지므로 사진을 고르는 동작은 없다.
     }
 
     // 마이페이지 생성
@@ -149,10 +143,18 @@ class MyProfileFragment : Fragment() {
         docRef.get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    var uri = Uri.parse(document["profile"].toString())
+                    // 프로필 이미지는 실험체 이미지. 옛 형식(사진 주소)이면 선택한 실험체 기준으로 한 번 보정해 저장한다.
+                    var profileKey = document.getString("profile")
+                    if (ProfileImage.drawableNameOf(profileKey) == null) {
+                        profileKey = ProfileImage.keyForCharacter(
+                            document.getString("character"),
+                            resources.getStringArray(R.array.characterName)
+                        )
+                        saveProfileKey(uid, profileKey)
+                    }
                     binding.myprofileEmailTv.text = document["email"].toString()
                     binding.myprofileNicknameTv.text = document["nickName"].toString()
-                    Glide.with(this).load(uri).into(binding.myprofileProfileImg);
+                    ProfileImage.load(binding.myprofileProfileImg, profileKey)
                     email = document["email"].toString()
                 }
             }
@@ -164,47 +166,13 @@ class MyProfileFragment : Fragment() {
         Patch(uid)
     }
 
-    fun selectProfile() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT).apply { type = "image/*" }
-        startActivityForResult(intent, PICK_IMAGE)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE) {
-            val uri: Uri? = data?.data
-            if (uri != null) {
-                upload(uri, email!!)
-            }
-        }
-    }
-
-    fun upload(
-        uri: Uri,
-        email: String,
-    ) {
-        val storageRef = storage.reference
-        val fileName = email + ".jpg"
-        val riversRef = storageRef.child("/$fileName")
-
-        riversRef.putFile(uri)
-            .addOnProgressListener { taskSnapshot ->
-                riversRef.downloadUrl.addOnSuccessListener { uri ->
-                    FirebaseFirestore.getInstance()
-                        .collection("EternalReturnInfo")
-                        .document(auth!!.uid!!)
-                        .update("profile", uri.toString())
-                    database.child("user").child(auth!!.uid!!).updateChildren(
-                        mapOf(
-                            "profilePicture" to uri.toString()
-                        )
-                    )
-                    var uid = auth?.uid
-                    uid?.let { Patch(it) }
-                }
-            }
-            .addOnFailureListener { Log.i("업로드 실패", "") }
-            .addOnSuccessListener { Log.i("업로드 성공", "") }
+    /** 가입자 문서(profile)와 실시간 DB(profilePicture)에 같은 프로필 이미지 값을 저장한다. */
+    private fun saveProfileKey(uid: String, profileKey: String) {
+        FirebaseFirestore.getInstance()
+            .collection("EternalReturnInfo")
+            .document(uid)
+            .update("profile", profileKey)
+        database.child("user").child(uid).updateChildren(mapOf("profilePicture" to profileKey))
     }
 
     /** 회원탈퇴: 실제 삭제는 AccountDeleter 가 한다. 화면이 닫혀도 끝까지 진행되도록 별도 스코프에서 실행한다. */
@@ -290,6 +258,10 @@ class MyProfileFragment : Fragment() {
                             mapOf(
                                 "character" to selectCharacter
                             )
+                        )
+                        saveProfileKey(
+                            auth!!.uid!!,
+                            ProfileImage.keyForCharacter(selectCharacter, characterlist)
                         )
                         alertDialog.dismiss()
                         Handler(Looper.getMainLooper()).postDelayed({

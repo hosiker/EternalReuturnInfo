@@ -1,7 +1,5 @@
 package com.irionna.eternalreturninfo.presentation.activity.login
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
@@ -19,6 +17,7 @@ import com.irionna.eternalreturninfo.retrofit.BoardSingletone
 import com.irionna.eternalreturninfo.retrofit.RetrofitInstance
 import com.irionna.eternalreturninfo.util.Constants
 import com.irionna.eternalreturninfo.util.NicknameKey
+import com.irionna.eternalreturninfo.util.ProfileImage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -29,7 +28,6 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -41,12 +39,7 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: SignupInformationActivityBinding
     private lateinit var auth: FirebaseAuth
     private val db = Firebase.firestore
-    private lateinit var selectedImageURI: Uri
-    private val PICK_IMAGE = 1111
     private lateinit var database: DatabaseReference
-    val storage = Firebase.storage
-    var imageCheck = false
-    var baseImage = "https://firebasestorage.googleapis.com/v0/b/eternalreturninfo-4dc4b.appspot.com/o/ic_baseImage.jpg?alt=media&token=50e58bfe-873f-4772-bddc-a3401dc3d8a3&_gl=1*lgw3h7*_ga*MjY4NTI2NjgxLjE2OTY5MzI3ODU.*_ga_CW55HF8NVT*MTY5OTIzNDQwMS42Ny4xLjE2OTkyMzQ2NjcuOS4wLjA."
     var nickNameCheck = false
     private var signupNickname: String = ""
     private var signupEmail: String = ""
@@ -62,10 +55,6 @@ class SignUpActivity : AppCompatActivity() {
         auth = Firebase.auth
         database = Firebase.database.reference
         setContentView(binding.root)
-
-        binding.signupProfileImg.setOnClickListener {
-            selectProfile()
-        }
 
         binding.signupBtnIDCheck.setOnClickListener {
             val email = binding.signupIDEt.text.toString().trim()
@@ -86,6 +75,8 @@ class SignUpActivity : AppCompatActivity() {
             ArrayAdapter<String>(this, R.layout.signup_spinner, R.id.spinner_tv, characterlist)
         var selectCharacter = characterlist[0]
         binding.signupCharacterSp.adapter = adapter
+        // 프로필 이미지는 선택한 실험체 이미지로 자동 정해진다.
+        ProfileImage.load(binding.signupProfileImg, ProfileImage.keyForCharacter(selectCharacter, characterlist))
 
         binding.signupCharacterSp.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
@@ -96,6 +87,10 @@ class SignUpActivity : AppCompatActivity() {
                     id: Long
                 ) {
                     selectCharacter = characterlist[position]
+                    ProfileImage.load(
+                        binding.signupProfileImg,
+                        ProfileImage.keyForCharacter(selectCharacter, characterlist)
+                    )
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -188,11 +183,14 @@ class SignUpActivity : AppCompatActivity() {
                 }
 
                 val uid = auth.uid!!
+                val profileKey = ProfileImage.keyForCharacter(
+                    character, resources.getStringArray(R.array.characterName)
+                )
                 val data = SignUpData(
                     email = email,
                     nickName = nickname,
                     character = character,
-                    profile = baseImage
+                    profile = profileKey
                 )
                 saveAccountData(uid, data, nicknameKey) { saved ->
                     if (!saved) {
@@ -208,14 +206,11 @@ class SignUpActivity : AppCompatActivity() {
                     database.child("user").child(uid)
                         .setValue(
                             ERModel(
-                                profilePicture = baseImage,
+                                profilePicture = profileKey,
                                 name = nickname,
                                 uid = uid
                             )
                         )
-                    if (imageCheck) {
-                        upload(selectedImageURI, email)
-                    }
                     // 가입 후에는 메인이 아니라 로그인 화면으로 돌아간다.
                     finish()
                 }
@@ -236,50 +231,6 @@ class SignUpActivity : AppCompatActivity() {
         batch.set(db.collection(NICKNAME_COLLECTION).document(nicknameKey), mapOf("uid" to uid))
         batch.set(db.collection(collection).document(uid), data)
         batch.commit().addOnCompleteListener { onResult(it.isSuccessful) }
-    }
-
-    fun selectProfile() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT).apply { type = "image/*" }
-        startActivityForResult(intent, PICK_IMAGE)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE) {
-            val uri: Uri? = data?.data
-            if (uri != null) {
-                selectedImageURI = uri
-                binding.signupProfileImg.setImageURI(uri)
-                imageCheck = true
-            }
-        }
-    }
-
-    fun upload(
-        uri: Uri,
-        email: String,
-    ) {
-        val storageRef = storage.reference
-        val fileName = email + "_profile"
-        val riversRef = storageRef.child("/$fileName")
-
-        riversRef.putFile(uri)
-            .addOnProgressListener { taskSnapshot ->
-                riversRef.downloadUrl.addOnSuccessListener { uri ->
-                    auth.uid?.let {
-                        db.collection(collection)
-                            .document(it)
-                            .update("profile", uri.toString())
-                    }
-                    database.child("user").child(auth.uid!!).updateChildren(
-                        mapOf(
-                            "profilePicture" to uri.toString()
-                        )
-                    )
-                }
-            }
-            .addOnFailureListener { Log.i("업로드 실패", "") }
-            .addOnSuccessListener { Log.i("업로드 성공", "") }
     }
 
     /**

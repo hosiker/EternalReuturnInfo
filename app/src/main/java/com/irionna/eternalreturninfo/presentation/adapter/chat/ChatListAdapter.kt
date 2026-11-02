@@ -1,5 +1,6 @@
 package com.irionna.eternalreturninfo.presentation.adapter.chat
 
+import com.irionna.eternalreturninfo.util.ProfileImage
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -50,7 +51,7 @@ class ChatListAdapter(
         fun bind(item: ERModel) = with(binding) {
 
             chatListName.text = item.name
-            chatListProfilePicture.load(item.profilePicture.toString())
+            ProfileImage.load(chatListProfilePicture, item.profilePicture)
             chatListMsg.text = item.msg
             chatListDate.text = item.time
 
