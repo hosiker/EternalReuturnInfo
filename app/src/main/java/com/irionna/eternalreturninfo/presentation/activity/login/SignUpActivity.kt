@@ -102,6 +102,12 @@ class SignUpActivity : AppCompatActivity() {
                 }
             }
 
+        // 만 14세 이상 확인에 체크해야 가입 버튼이 눌린다.
+        binding.signupSignupBtn.isEnabled = binding.signupAgeCheck.isChecked
+        binding.signupAgeCheck.setOnCheckedChangeListener { _, checked ->
+            binding.signupSignupBtn.isEnabled = checked
+        }
+
         binding.signupSignupBtn.setOnClickListener {
             createAccount(
                 binding.signupIDEt.text.toString().trim(),
@@ -153,11 +159,16 @@ class SignUpActivity : AppCompatActivity() {
             return
         }
 
+        if (!binding.signupAgeCheck.isChecked) {
+            toast("CHECK", "만 14세 이상 확인에 체크해주세요.", MotionToastStyle.WARNING)
+            return
+        }
+
         binding.signupSignupBtn.isEnabled = false
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (!task.isSuccessful) {
-                    binding.signupSignupBtn.isEnabled = true
+                    binding.signupSignupBtn.isEnabled = binding.signupAgeCheck.isChecked
                     val message = when (task.exception) {
                         is FirebaseAuthUserCollisionException -> "이미 사용 중인 이메일입니다."
                         is FirebaseAuthWeakPasswordException -> "비밀번호는 6자 이상이어야 합니다."
@@ -179,7 +190,7 @@ class SignUpActivity : AppCompatActivity() {
                     if (!saved) {
                         // 닉네임을 먼저 선점당했거나 저장에 실패한 경우: 만든 계정을 되돌린다.
                         auth.currentUser?.delete()
-                        binding.signupSignupBtn.isEnabled = true
+                        binding.signupSignupBtn.isEnabled = binding.signupAgeCheck.isChecked
                         toast("", "닉네임이 이미 사용 중이거나 저장에 실패했습니다. 다시 시도해주세요.", MotionToastStyle.ERROR)
                         return@saveAccountData
                     }

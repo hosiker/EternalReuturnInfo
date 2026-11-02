@@ -29,6 +29,7 @@
     <string name="chat_enter_msg">메시지를 입력하세요.</string>
     <string name="chat_withdrawn_user">탈퇴한 사용자입니다.</string>
     <string name="withdrawn_user_name">탈퇴한 사용자</string>
+    <string name="signup_age_check">만 14세 이상입니다. (필수)</string>
     <string name="chat_send">전 송</string>
     <string name="chatlist_user_name">장재용</string>
     <string name="chat_list_chat_tv">채팅</string>
