@@ -26,6 +26,10 @@ import com.irionna.eternalreturninfo.retrofit.BoardSingletone
 import com.irionna.eternalreturninfo.presentation.activity.login.LoginActivity
 import com.irionna.eternalreturninfo.presentation.activity.login.SignUpActivity
 import com.irionna.eternalreturninfo.util.NicknameKey
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineScope
+import com.irionna.eternalreturninfo.data.repository.AccountDeleter
 import com.irionna.eternalreturninfo.presentation.activity.main.MainActivity
 import com.irionna.eternalreturninfo.presentation.adapter.myprofile.MyProfileViewPagerAdapter
 import com.google.android.material.appbar.AppBarLayout
@@ -203,42 +207,20 @@ class MyProfileFragment : Fragment() {
             .addOnSuccessListener { Log.i("업로드 성공", "") }
     }
 
-    /**
-     * 회원탈퇴: 닉네임 선점 문서와 가입자 문서를 함께 지우고, 실시간 DB 노드와 계정을 지운다.
-     * 인증이 살아 있어야 규칙을 통과하므로 계정(Auth)은 맨 마지막에 지운다.
-     */
+    /** 회원탈퇴: 실제 삭제는 AccountDeleter 가 한다. 화면이 닫혀도 끝까지 진행되도록 별도 스코프에서 실행한다. */
     private fun deleteAccountData() {
-        val uid = auth?.uid ?: return
-        val host = activity
-        val firestore = FirebaseFirestore.getInstance()
-        val userDoc = firestore.collection("EternalReturnInfo").document(uid)
-        userDoc.get().addOnCompleteListener { read ->
-            if (!read.isSuccessful) {
-                host?.let { Toast.makeText(it, "탈퇴 처리에 실패했습니다. 잠시 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show() }
-                return@addOnCompleteListener
-            }
-            val batch = firestore.batch()
-            NicknameKey.normalize(read.result?.getString("nickName"))?.let { key ->
-                batch.delete(firestore.collection(SignUpActivity.NICKNAME_COLLECTION).document(key))
-            }
-            batch.delete(userDoc)
-            batch.commit().addOnCompleteListener { committed ->
-                if (!committed.isSuccessful) {
-                    host?.let { Toast.makeText(it, "탈퇴 처리에 실패했습니다. 잠시 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show() }
-                    return@addOnCompleteListener
-                }
-                database.child("user").child(uid).removeValue()
-                Firebase.auth.currentUser?.delete()?.addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Log.d("계정삭제", "User account deleted.")
-                    } else {
-                        Log.w("계정삭제", "계정 삭제 실패", task.exception)
-                    }
-                }
-                host?.let {
-                    it.startActivity(Intent(it, LoginActivity::class.java))
-                    it.finish()
-                }
+        val host = activity ?: return
+        val appContext = host.applicationContext
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                AccountDeleter().delete(appContext.getString(R.string.withdrawn_user_name))
+                host.startActivity(Intent(host, LoginActivity::class.java))
+                host.finish()
+            } catch (e: AccountDeleter.NeedsRecentLoginException) {
+                Toast.makeText(appContext, "보안을 위해 다시 로그인한 뒤 탈퇴해 주세요.", Toast.LENGTH_LONG).show()
+            } catch (e: Exception) {
+                Log.w("계정삭제", "탈퇴 처리 실패", e)
+                Toast.makeText(appContext, "탈퇴 처리에 실패했습니다. 잠시 후 다시 시도해주세요.", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -336,16 +318,6 @@ class MyProfileFragment : Fragment() {
                     var noBtn = deleteDialogView.findViewById<Button>(R.id.delete_no_btn)
 
                     yesBtn.setOnClickListener {
-                        email = auth!!.currentUser?.email
-                        // storage 인스턴스 생성
-                        val storage = Firebase.storage
-                        // storage 참조
-                        val storageRef = storage.getReference("image")
-                        // storage에서 삭제 할 파일명
-                        val fileName = email.toString()
-                        Log.d("스토리지", fileName)
-                        val mountainsRef = storageRef.child("${fileName}.jpg")
-                        mountainsRef.delete()
                         deleteDialog.dismiss()
                         deleteAccountData()
                     }

@@ -31,7 +31,9 @@ data class CommentModel(
 @Parcelize
 @Keep
 data class ReportModel(
-    val uid: String = ""
+    val uid: String = "",
+    // 신고한 시각(ms). 탈퇴한 작성자의 신고된 글을 보관하는 기간(3개월)을 셀 때 쓴다. 옛 신고는 0.
+    val date: Long = 0
 ) : Parcelable
 
 @Parcelize

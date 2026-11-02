@@ -40,7 +40,7 @@ class BoardListViewModel() : ViewModel(){
                     // 게시판 처음 들어왔을 때, 내가 신고한 게시판을 제외한, 게시판만 띄우기
                     Log.d("choco", "${board.toString()}")
 
-                    if (board != null && !board!!.report.containsValue(ReportModel(FBRef.auth.uid!!))) {
+                    if (board != null && board!!.report.values.none { r -> r.uid == FBRef.auth.uid }) {
                         unsortedBoardList.add(board)
                     }
                 }

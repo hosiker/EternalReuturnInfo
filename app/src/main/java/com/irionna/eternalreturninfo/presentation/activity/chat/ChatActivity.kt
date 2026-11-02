@@ -2,11 +2,13 @@ package com.irionna.eternalreturninfo.presentation.activity.chat
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.irionna.eternalreturninfo.R
 import com.irionna.eternalreturninfo.databinding.ChatActivityBinding
 import com.irionna.eternalreturninfo.data.model.ERModel
 import com.irionna.eternalreturninfo.presentation.adapter.chat.ChatAdapter
@@ -81,6 +83,15 @@ class ChatActivity : AppCompatActivity() {
         // 툴바에 채팅상대 이름 출력하기
         chatToolbarTitle.text = data?.name
 
+        // 상대가 탈퇴한 경우: 대화 기록은 볼 수 있지만 더 보낼 수 없다.
+        if (data?.withdrawn == true) {
+            chatMsgEt.isEnabled = false
+            chatSendBtn.isEnabled = false
+            chatMsgEt.setText("")
+            chatMsgEt.setHint(R.string.chat_withdrawn_user)
+            chatMsgEt.setHintTextColor(Color.GRAY)
+        }
+
         // 뒤로가기 클릭 시 채팅방에서 빠져나옴
         chatBackBtn.setOnClickListener{
             viewModel.disconnectFirebase()
@@ -103,6 +114,7 @@ class ChatActivity : AppCompatActivity() {
         }
 
         binding.chatSendBtn.setOnClickListener {
+            if (data?.withdrawn == true) return@setOnClickListener
             saveChat(data?.uid.toString(), auth.uid.toString(), binding.chatMsgEt.text.toString())
         }
 

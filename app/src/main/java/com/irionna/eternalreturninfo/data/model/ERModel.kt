@@ -22,6 +22,8 @@ data class ERModel (
     var readOrNot: Boolean? = null,
     var time: String? = null,
     var winrate :String? = null,
-    var avgrank :String? = null
+    var avgrank :String? = null,
+    // 회원탈퇴한 사용자의 표시용 노드(묘비)일 때 true
+    val withdrawn: Boolean? = null
 
 ) : Parcelable
