@@ -1,0 +1,71 @@
+{
+  "rules": {
+    // Firebase 콘솔 > Realtime Database > 규칙 탭에 게시하는 기록용 사본이다.
+    // 규칙 JSON 은 주석을 허용하지 않는 도구가 있으므로, 콘솔에 붙여 넣을 때 이 주석 줄은 지워도 된다.
+
+    // 사용자 프로필: 로그인한 사용자는 누구나 읽을 수 있고(듀오 찾기, 채팅 목록, 게시글 작성자 표시),
+    // 쓰기는 본인 노드만 가능하다.
+    "user": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+
+    // 게시글: 읽기는 로그인한 사용자 누구나.
+    // 글 생성/수정/삭제는 작성자(author = 작성자 uid)만 가능하다.
+    "post": {
+      ".read": "auth != null",
+      ".indexOn": ["title", "content", "date"],
+      "$postId": {
+        // 노드 전체에 대한 쓰기는 "새 글 작성"(author = 내 uid)과 "내 글 삭제"만 허용한다.
+        // (노드 단위 쓰기 권한은 아래 댓글에까지 번지므로, 수정은 필드 단위로 따로 허용한다.)
+        ".write": "auth != null && ((!data.exists() && newData.child('author').val() === auth.uid) || (data.exists() && !newData.exists() && data.child('author').val() === auth.uid))",
+
+        // 글 수정: 작성자만 제목, 내용, 분류를 바꿀 수 있다. author, date, comments 는 바꿀 수 없다.
+        "title":    { ".write": "auth != null && data.parent().child('author').val() === auth.uid" },
+        "content":  { ".write": "auth != null && data.parent().child('author').val() === auth.uid" },
+        "category": { ".write": "auth != null && data.parent().child('author').val() === auth.uid" },
+
+        // 조회수는 누구나 올릴 수 있다.
+        "views": {
+          ".write": "auth != null",
+          ".validate": "newData.isNumber()"
+        },
+
+        // 댓글: 작성자만 쓰고 고치고 지운다.
+        "comments": {
+          "$commentId": {
+            ".write": "auth != null && ((!data.exists() && newData.child('author').val() === auth.uid) || (data.exists() && data.child('author').val() === auth.uid))",
+            "report": {
+              "$reportId": {
+                ".write": "auth != null && !data.exists() && newData.child('uid').val() === auth.uid"
+              }
+            }
+          }
+        },
+
+        // 게시글 신고: 누구나 한 건씩 추가할 수 있고, 신고자는 본인 uid 여야 한다.
+        "report": {
+          "$reportId": {
+            ".write": "auth != null && !data.exists() && newData.child('uid').val() === auth.uid"
+          }
+        }
+      }
+    },
+
+    // 채팅방: 방 이름이 두 사용자 uid 를 이어 붙인 값이므로, 이름의 앞이나 뒤가 내 uid 인 방만 읽고 쓸 수 있다.
+    "chats": {
+      "$room": {
+        ".read": "auth != null && ($room.beginsWith(auth.uid) || $room.endsWith(auth.uid))",
+        ".write": "auth != null && ($room.beginsWith(auth.uid) || $room.endsWith(auth.uid))"
+      }
+    },
+
+    // 시즌 정보: 읽기만 가능, 값은 콘솔에서만 바꾼다.
+    "seasonID": {
+      ".read": "auth != null",
+      ".write": false
+    }
+  }
+}
