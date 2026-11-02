@@ -1,0 +1,27 @@
+rules_version = '2';
+
+// Firebase 콘솔 > Firestore Database > 규칙 탭에 이 내용을 게시한다.
+// (이 파일은 기록용 사본이다. 콘솔에 게시해야 적용된다.)
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 가입자 정보: 본인 문서만 읽고 쓸 수 있다.
+    match /EternalReturnInfo/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // 닉네임 선점 기록: 문서 ID 가 닉네임(NicknameKey 로 정규화한 값), 내용은 소유자 uid 하나.
+    //  - 가입 화면의 중복확인은 로그인 전이라 문서 한 건 조회(get)만 누구나 허용한다.
+    //  - 목록 조회(list)는 막아서 전체 닉네임을 훑을 수 없게 한다.
+    //  - 이미 있는 문서는 create 할 수 없으므로 같은 닉네임의 동시 가입이 막힌다.
+    match /nicknames/{nick} {
+      allow get: if true;
+      allow list: if false;
+      allow create: if request.auth != null
+                    && request.resource.data.keys().hasOnly(['uid'])
+                    && request.resource.data.uid == request.auth.uid;
+      allow update: if false;
+      allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
+    }
+  }
+}
