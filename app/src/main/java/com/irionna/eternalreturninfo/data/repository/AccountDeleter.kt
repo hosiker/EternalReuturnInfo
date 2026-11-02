@@ -27,6 +27,18 @@ class AccountDeleter(
 ) {
     class NeedsRecentLoginException : Exception("최근 로그인이 필요합니다")
 
+    /** 어느 단계(또는 어느 경로)에서 실패했는지 알 수 있게 단계 이름을 붙여서 다시 던진다. */
+    class StepFailedException(val step: String, cause: Throwable) : Exception("탈퇴 처리 실패: $step", cause)
+
+    private suspend fun <T> step(name: String, block: suspend () -> T): T {
+        try {
+            return block()
+        } catch (e: Exception) {
+            Log.w(TAG, "실패한 단계: $name", e)
+            throw StepFailedException(name, e)
+        }
+    }
+
     suspend fun delete(withdrawnName: String) {
         val user = auth.currentUser ?: return
         val uid = user.uid
@@ -38,18 +50,20 @@ class AccountDeleter(
 
         val root = rtdb.reference
 
-        deletePosts(uid)
-        deleteComments(uid)
-        deleteChatCopies(uid)
+        step("내 게시글 삭제") { deletePosts(uid) }
+        step("내 댓글 삭제") { deleteComments(uid) }
+        step("채팅방 사본 삭제") { deleteChatCopies(uid) }
 
-        root.child("user").child(uid).setValue(
-            mapOf("uid" to uid, "name" to withdrawnName, "withdrawn" to true)
-        ).await()
+        step("탈퇴 표시 노드 쓰기") {
+            root.child("user").child(uid).setValue(
+                mapOf("uid" to uid, "name" to withdrawnName, "withdrawn" to true)
+            ).await()
+        }
 
-        deleteFirestore(uid)
+        step("가입자·닉네임 문서 삭제") { deleteFirestore(uid) }
         deleteProfileImages(email)
 
-        user.delete().await()
+        step("계정 삭제") { user.delete().await() }
     }
 
     /** 다른 사람의 신고가 있는 글/댓글은 보관한다. 본인이 자기 글을 신고한 것은 세지 않는다. */
@@ -60,7 +74,7 @@ class AccountDeleter(
         val posts = rtdb.reference.child("post").orderByChild("author").equalTo(uid).get().await()
         for (post in posts.children) {
             if (hasReportByOthers(post, uid)) continue
-            post.ref.removeValue().await()
+            step("게시글 삭제 post/${post.key}") { post.ref.removeValue().await() }
         }
     }
 
@@ -70,7 +84,7 @@ class AccountDeleter(
             for (comment in post.child("comments").children) {
                 if (comment.child("author").getValue(String::class.java) != uid) continue
                 if (hasReportByOthers(comment, uid)) continue
-                comment.ref.removeValue().await()
+                step("댓글 삭제 post/${post.key}/comments/${comment.key}") { comment.ref.removeValue().await() }
             }
         }
     }
@@ -81,7 +95,9 @@ class AccountDeleter(
         for (other in users.children) {
             val otherUid = other.key ?: continue
             if (otherUid == uid) continue
-            rtdb.reference.child("chats").child(otherUid + uid).removeValue().await()
+            step("채팅방 사본 삭제 chats/${otherUid.take(6)}…") {
+                rtdb.reference.child("chats").child(otherUid + uid).removeValue().await()
+            }
         }
     }
 
@@ -104,12 +120,13 @@ class AccountDeleter(
             try {
                 storage.reference.child(path).delete().await()
             } catch (e: Exception) {
-                Log.d("AccountDeleter", "프로필 이미지 삭제 건너뜀: $path (${e.javaClass.simpleName})")
+                Log.d(TAG, "프로필 이미지 삭제 건너뜀: $path (${e.javaClass.simpleName})")
             }
         }
     }
 
     companion object {
+        private const val TAG = "AccountDeleter"
         private const val RECENT_LOGIN_MILLIS = 4 * 60 * 1000L
     }
 }
