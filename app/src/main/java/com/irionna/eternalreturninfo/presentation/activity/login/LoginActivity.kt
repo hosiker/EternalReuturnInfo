@@ -115,26 +115,18 @@ class LoginActivity : AppCompatActivity() {
         if (email.isNotEmpty() && pw.isNotEmpty()) {
             auth?.signInWithEmailAndPassword(email, pw)?.addOnCompleteListener {
                 if (it.isSuccessful) {
-                    val docRef = db.collection("EternalReturnInfo").document("$email")
-                    docRef.get()
-                        .addOnSuccessListener { document ->
-                            if (document != null) {
-                                BoardSingletone.Login()
-                                MotionToast.darkColorToast(
-                                    this, "", getString(R.string.login_success),
-                                    MotionToastStyle.SUCCESS,
-                                    MotionToast.GRAVITY_BOTTOM,
-                                    MotionToast.SHORT_DURATION,
-                                    font = null
-                                )
-                                val intent = Intent(this, MainActivity::class.java)
-                                startActivity(intent)
-                                finish()
-                            } else {
-                            }
-                        }
-                        .addOnFailureListener { exception ->
-                        }
+                    // 로그인 성공 후 별도 문서 읽기는 필요 없다. 사용자 정보는 각 화면에서 uid 로 읽는다.
+                    BoardSingletone.Login()
+                    MotionToast.darkColorToast(
+                        this, "", getString(R.string.login_success),
+                        MotionToastStyle.SUCCESS,
+                        MotionToast.GRAVITY_BOTTOM,
+                        MotionToast.SHORT_DURATION,
+                        font = null
+                    )
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    finish()
                 } else {
                     MotionToast.darkColorToast(
                         this, "", getString(R.string.login_fail),
