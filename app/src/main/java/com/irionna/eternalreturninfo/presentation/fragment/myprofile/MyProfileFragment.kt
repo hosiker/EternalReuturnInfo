@@ -218,6 +218,9 @@ class MyProfileFragment : Fragment() {
                 host.finish()
             } catch (e: AccountDeleter.NeedsRecentLoginException) {
                 Toast.makeText(appContext, "보안을 위해 다시 로그인한 뒤 탈퇴해 주세요.", Toast.LENGTH_LONG).show()
+            } catch (e: AccountDeleter.StepFailedException) {
+                Log.w("계정삭제", "탈퇴 처리 실패: ${e.step}", e)
+                Toast.makeText(appContext, "탈퇴 처리에 실패했습니다. (${e.step}) 잠시 후 다시 시도해주세요.", Toast.LENGTH_LONG).show()
             } catch (e: Exception) {
                 Log.w("계정삭제", "탈퇴 처리 실패", e)
                 Toast.makeText(appContext, "탈퇴 처리에 실패했습니다. 잠시 후 다시 시도해주세요.", Toast.LENGTH_LONG).show()
