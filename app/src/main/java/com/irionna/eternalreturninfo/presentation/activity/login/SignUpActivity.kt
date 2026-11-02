@@ -102,10 +102,11 @@ class SignUpActivity : AppCompatActivity() {
                 }
             }
 
-        // 만 14세 이상 확인에 체크해야 가입 버튼이 눌린다.
-        binding.signupSignupBtn.isEnabled = binding.signupAgeCheck.isChecked
+        // 만 14세 이상 확인에 체크하기 전에는 가입 버튼을 흐리게 보여준다.
+        // 버튼은 눌리게 두어서, 체크하지 않고 누르면 이유를 안내한다.
+        binding.signupSignupBtn.alpha = if (binding.signupAgeCheck.isChecked) 1f else 0.4f
         binding.signupAgeCheck.setOnCheckedChangeListener { _, checked ->
-            binding.signupSignupBtn.isEnabled = checked
+            binding.signupSignupBtn.alpha = if (checked) 1f else 0.4f
         }
 
         binding.signupSignupBtn.setOnClickListener {
@@ -135,23 +136,30 @@ class SignUpActivity : AppCompatActivity() {
         nickname: String,
         character: String,
     ) {
-        if (email.isEmpty() || password.isEmpty() || passwordCheck.isEmpty() || nickname.isEmpty()) {
-            toast("CHECK", "회원가입 정보를 입력하세요.", MotionToastStyle.WARNING)
+        if (email.isEmpty()) {
+            toast("CHECK", "이메일을 입력하세요.", MotionToastStyle.WARNING)
             return
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             toast("CHECK", "이메일 형식이 올바르지 않습니다.", MotionToastStyle.WARNING)
             return
         }
+        if (password.isEmpty() || passwordCheck.isEmpty()) {
+            toast("CHECK", "비밀번호를 입력하세요. (6자 이상)", MotionToastStyle.WARNING)
+            return
+        }
         if (password != passwordCheck) {
             toast("CHECK", "같은 비밀번호를 입력하세요.", MotionToastStyle.WARNING)
             return
         }
+        val typedNickname = binding.signupNickNameEt.text.toString()
+        if (typedNickname.isBlank()) {
+            toast("CHECK", "닉네임을 입력하세요.", MotionToastStyle.WARNING)
+            return
+        }
         val nicknameKey = NicknameKey.normalize(nickname)
-        if (nicknameKey == null ||
-            nicknameKey != NicknameKey.normalize(binding.signupNickNameEt.text.toString())
-        ) {
-            toast("CHECK", "닉네임 중복확인을 해주세요.", MotionToastStyle.WARNING)
+        if (nicknameKey == null || nicknameKey != NicknameKey.normalize(typedNickname)) {
+            toast("CHECK", "닉네임 [중복확인]을 눌러주세요.", MotionToastStyle.WARNING)
             return
         }
         if (nickNameCheck) {
@@ -168,7 +176,7 @@ class SignUpActivity : AppCompatActivity() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (!task.isSuccessful) {
-                    binding.signupSignupBtn.isEnabled = binding.signupAgeCheck.isChecked
+                    binding.signupSignupBtn.isEnabled = true
                     val message = when (task.exception) {
                         is FirebaseAuthUserCollisionException -> "이미 사용 중인 이메일입니다."
                         is FirebaseAuthWeakPasswordException -> "비밀번호는 6자 이상이어야 합니다."
@@ -190,7 +198,7 @@ class SignUpActivity : AppCompatActivity() {
                     if (!saved) {
                         // 닉네임을 먼저 선점당했거나 저장에 실패한 경우: 만든 계정을 되돌린다.
                         auth.currentUser?.delete()
-                        binding.signupSignupBtn.isEnabled = binding.signupAgeCheck.isChecked
+                        binding.signupSignupBtn.isEnabled = true
                         toast("", "닉네임이 이미 사용 중이거나 저장에 실패했습니다. 다시 시도해주세요.", MotionToastStyle.ERROR)
                         return@saveAccountData
                     }
