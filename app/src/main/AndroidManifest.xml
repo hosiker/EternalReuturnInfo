@@ -63,7 +63,8 @@
         </activity>
         <activity
             android:name=".presentation.activity.login.SignUpActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".presentation.activity.login.LoginActivity"
             android:exported="false" />
