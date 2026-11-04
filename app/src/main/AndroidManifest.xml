@@ -25,9 +25,6 @@
             android:value="false" />
 
         <activity
-            android:name=".presentation.fragment.findduo.FindduoPopupWindow"
-            android:exported="false" />
-        <activity
             android:name=".presentation.activity.main.WebView"
             android:exported="false" />
         <activity
