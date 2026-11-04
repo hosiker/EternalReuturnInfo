@@ -1,5 +1,6 @@
 package com.irionna.eternalreturninfo.retrofit
 
+import com.irionna.eternalreturninfo.BuildConfig
 import com.irionna.eternalreturninfo.util.Constants
 import com.irionna.eternalreturninfo.util.Constants.Companion.BASE_URL
 import com.irionna.eternalreturninfo.util.Constants.Companion.ETERNAL_RETURN_BASE_URL
@@ -23,7 +24,12 @@ object RetrofitInstance {
     private val eternalRetrofit by lazy {
         val okHttpClient = OkHttpClient.Builder().addInterceptor(
             HttpLoggingInterceptor(logger = HttpLoggingInterceptor.Logger.DEFAULT).apply {
-                level = HttpLoggingInterceptor.Level.BODY
+                // 응답 본문까지 로그에 남기는 것은 디버그 빌드에서만 한다.
+                level = if (BuildConfig.DEBUG) {
+                    HttpLoggingInterceptor.Level.BODY
+                } else {
+                    HttpLoggingInterceptor.Level.NONE
+                }
             }
         ).build()
 
