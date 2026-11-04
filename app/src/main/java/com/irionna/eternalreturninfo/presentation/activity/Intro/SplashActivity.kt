@@ -1,6 +1,7 @@
 package com.irionna.eternalreturninfo.presentation.activity.Intro
 
 import android.content.Intent
+import com.irionna.eternalreturninfo.util.setUpDarkSystemBars
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -17,6 +18,7 @@ class SplashActivity : AppCompatActivity() {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         super.onCreate(savedInstanceState)
+        setUpDarkSystemBars()
         setContentView(R.layout.splash_activity)
 
         /**

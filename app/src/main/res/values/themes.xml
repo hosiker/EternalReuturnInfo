@@ -6,8 +6,8 @@
         <!-- No Title Bar-->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <!-- white status bar -->
-        <item name="android:windowLightStatusBar">true</item>
+        <!-- 앱 화면이 모두 검은 배경이므로 상태바 아이콘은 밝은 색 (edge-to-edge 에서 배경 위에 그려진다) -->
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="Theme.EternalReturnInfo" parent="Base.Theme.EternalReturnInfo" />

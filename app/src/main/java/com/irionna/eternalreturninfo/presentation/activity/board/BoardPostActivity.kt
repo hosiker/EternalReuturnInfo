@@ -1,6 +1,7 @@
 package com.irionna.eternalreturninfo.presentation.activity.board
 
 import com.irionna.eternalreturninfo.util.ProfileImage
+import com.irionna.eternalreturninfo.util.setContentViewEdgeToEdge
 import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
@@ -78,7 +79,7 @@ class BoardPostActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = BoardPostActivityBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentViewEdgeToEdge(binding.root)
 
         initDataload()
         initView()

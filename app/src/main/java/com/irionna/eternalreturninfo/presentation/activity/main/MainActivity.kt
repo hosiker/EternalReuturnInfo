@@ -1,6 +1,7 @@
 package com.irionna.eternalreturninfo.presentation.activity.main
 
 import androidx.appcompat.app.AppCompatActivity
+import com.irionna.eternalreturninfo.util.setContentViewEdgeToEdge
 import android.os.Bundle
 import com.irionna.eternalreturninfo.R
 import com.irionna.eternalreturninfo.databinding.MainActivityBinding
@@ -32,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
 
         binding = MainActivityBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentViewEdgeToEdge(binding.root)
         initView()
     }
 
