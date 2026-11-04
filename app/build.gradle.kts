@@ -11,7 +11,7 @@ plugins {
 
 android {
     namespace = "com.irionna.eternalreturninfo"
-    compileSdk = 34
+    compileSdk = 36
 
     val localProperties = Properties()
     localProperties.load(FileInputStream(rootProject.file("local.properties")))
