@@ -61,6 +61,13 @@ kotlin {
     }
 }
 
+// 일부 라이브러리가 옛 kotlin-android-extensions-runtime(1.4.10)을 가져오는데,
+// Kotlin 2.x 의 kotlin-parcelize-runtime 이 같은 kotlinx.android.parcel 클래스를 이미 포함해서
+// "Duplicate class" 오류가 난다. 옛 런타임을 제외한다(새 런타임이 같은 클래스를 제공한다).
+configurations.all {
+    exclude(group = "org.jetbrains.kotlin", module = "kotlin-android-extensions-runtime")
+}
+
 dependencies {
 
     implementation("androidx.core:core-ktx:1.9.0")
