@@ -1,6 +1,7 @@
 package com.irionna.eternalreturninfo.presentation.activity.login
 
 import android.os.Bundle
+import com.google.firebase.database.FirebaseDatabase
 import android.util.Log
 import android.util.Patterns
 import android.view.View
@@ -22,12 +23,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
-import com.google.firebase.auth.auth
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.database
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestore
-import com.google.firebase.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -38,7 +35,7 @@ import www.sanju.motiontoast.MotionToastStyle
 class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: SignupInformationActivityBinding
     private lateinit var auth: FirebaseAuth
-    private val db = Firebase.firestore
+    private val db = FirebaseFirestore.getInstance()
     private lateinit var database: DatabaseReference
     var nickNameCheck = false
     private var signupNickname: String = ""
@@ -52,8 +49,8 @@ class SignUpActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = SignupInformationActivityBinding.inflate(layoutInflater)
-        auth = Firebase.auth
-        database = Firebase.database.reference
+        auth = FirebaseAuth.getInstance()
+        database = FirebaseDatabase.getInstance().reference
         setContentView(binding.root)
 
         binding.signupBtnIDCheck.setOnClickListener {

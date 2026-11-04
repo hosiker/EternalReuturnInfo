@@ -22,7 +22,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.getValue
 import com.irionna.eternalreturninfo.data.model.ReportModel
 
 
@@ -111,7 +110,7 @@ class BoardFragment : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val unsortedBoardList = mutableListOf<BoardModel>()
                 for (data in snapshot.children) {
-                    val board = data.getValue<BoardModel>()
+                    val board = data.getValue(BoardModel::class.java)
 
                     if (board != null && board!!.report.values.none { r -> r.uid == FBRef.auth.uid })  {
                         unsortedBoardList.add(board)
