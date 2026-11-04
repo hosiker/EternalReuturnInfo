@@ -82,13 +82,13 @@ dependencies {
     implementation("de.hdodenhof:circleimageview:3.1.0")
 
     // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
 
     // Converter ( JSON 타입 결과를 객체로 매핑 )
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
 
     // okhttp3
-    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     // Fragment / Activity (ViewModel 등)
     implementation("androidx.fragment:fragment-ktx:1.9.1")
