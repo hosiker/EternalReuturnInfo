@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import coil.api.load
 import com.irionna.eternalreturninfo.R
 import com.irionna.eternalreturninfo.databinding.BoardRvItemBinding
 import com.irionna.eternalreturninfo.data.model.BoardModel

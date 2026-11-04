@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import coil.api.load
 import com.irionna.eternalreturninfo.databinding.ChatListFragmentBinding
 import com.irionna.eternalreturninfo.presentation.activity.chat.ChatActivity
 import com.irionna.eternalreturninfo.presentation.adapter.chat.ChatListAdapter

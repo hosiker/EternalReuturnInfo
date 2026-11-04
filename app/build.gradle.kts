@@ -101,7 +101,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
     // Coil
-    implementation("io.coil-kt:coil:0.10.0")
+    implementation("io.coil-kt:coil:2.7.0")
 
     // firebase
     implementation(platform("com.google.firebase:firebase-bom:34.12.0"))

@@ -2,7 +2,7 @@ package com.irionna.eternalreturninfo.presentation.activity.board
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import coil.api.load
+import coil.load
 import com.irionna.eternalreturninfo.R
 import com.irionna.eternalreturninfo.databinding.BoardDeletedActivityBinding
 
