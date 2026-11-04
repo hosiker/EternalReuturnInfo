@@ -39,7 +39,6 @@ import com.google.firebase.database.ktx.getValue
                         val user = snapshot.getValue(ERModel::class.java)
                         if (user != null) {
                             loginUser = user
-                            Log.d("user.name",user.name.toString())
                         }
                     }
                 }
