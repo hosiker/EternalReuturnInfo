@@ -1,6 +1,7 @@
 package com.irionna.eternalreturninfo.presentation.activity.login
 
 import android.os.Bundle
+import com.irionna.eternalreturninfo.util.setContentViewEdgeToEdge
 import com.google.firebase.database.FirebaseDatabase
 import android.util.Log
 import android.util.Patterns
@@ -51,7 +52,7 @@ class SignUpActivity : AppCompatActivity() {
         binding = SignupInformationActivityBinding.inflate(layoutInflater)
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
-        setContentView(binding.root)
+        setContentViewEdgeToEdge(binding.root)
 
         binding.signupBtnIDCheck.setOnClickListener {
             val email = binding.signupIDEt.text.toString().trim()

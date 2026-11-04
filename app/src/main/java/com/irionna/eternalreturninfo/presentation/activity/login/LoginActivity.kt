@@ -1,6 +1,7 @@
 package com.irionna.eternalreturninfo.presentation.activity.login
 
 import com.irionna.eternalreturninfo.util.PrivacyConsentDialog
+import com.irionna.eternalreturninfo.util.setContentViewEdgeToEdge
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -40,7 +41,7 @@ class LoginActivity : AppCompatActivity() {
         binding = LoginActivityBinding.inflate(layoutInflater)
         binding_ = FindpwDialogBinding.inflate(layoutInflater)
         googlebinding = GoogleDialogBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentViewEdgeToEdge(binding.root)
 
 
         //구글로그인 기본 설정

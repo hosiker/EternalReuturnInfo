@@ -1,6 +1,7 @@
 package com.irionna.eternalreturninfo.presentation.activity.main
 
 import androidx.appcompat.app.AppCompatActivity
+import com.irionna.eternalreturninfo.util.setContentViewEdgeToEdge
 import android.os.Bundle
 import android.webkit.WebChromeClient
 import android.webkit.WebViewClient
@@ -13,7 +14,7 @@ class WebView : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = WebVewActivityBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentViewEdgeToEdge(binding.root)
 
         // 자바 스크립트 허용
         binding.webView.settings.javaScriptEnabled = true

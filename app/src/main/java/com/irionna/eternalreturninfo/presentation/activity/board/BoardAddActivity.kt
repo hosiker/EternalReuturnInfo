@@ -1,6 +1,7 @@
 package com.irionna.eternalreturninfo.presentation.activity.board
 
 import androidx.appcompat.app.AppCompatActivity
+import com.irionna.eternalreturninfo.util.setContentViewEdgeToEdge
 import android.os.Bundle
 import com.irionna.eternalreturninfo.R
 import com.irionna.eternalreturninfo.databinding.BoardAddActivityBinding
@@ -19,7 +20,7 @@ class BoardAddActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = BoardAddActivityBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentViewEdgeToEdge(binding.root)
 
         initView()
     }

@@ -1,6 +1,7 @@
 package com.irionna.eternalreturninfo.presentation.activity.chat
 
 import android.content.Context
+import com.irionna.eternalreturninfo.util.setContentViewEdgeToEdge
 import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
@@ -69,7 +70,7 @@ class ChatActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ChatActivityBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentViewEdgeToEdge(binding.root)
 
         initView()
         initModel()

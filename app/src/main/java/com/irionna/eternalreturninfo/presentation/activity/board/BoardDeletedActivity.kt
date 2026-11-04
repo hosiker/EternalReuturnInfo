@@ -1,6 +1,7 @@
 package com.irionna.eternalreturninfo.presentation.activity.board
 
 import androidx.appcompat.app.AppCompatActivity
+import com.irionna.eternalreturninfo.util.setContentViewEdgeToEdge
 import android.os.Bundle
 import coil.load
 import com.irionna.eternalreturninfo.R
@@ -12,7 +13,7 @@ class BoardDeletedActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = BoardDeletedActivityBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentViewEdgeToEdge(binding.root)
 
         binding.boardDeletedIv.load(R.drawable.ic_board_alert)
 
