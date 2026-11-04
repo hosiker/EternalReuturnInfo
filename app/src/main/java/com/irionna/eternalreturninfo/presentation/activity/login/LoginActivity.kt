@@ -20,8 +20,6 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestore
-import com.google.firebase.Firebase
 import www.sanju.motiontoast.MotionToast
 import www.sanju.motiontoast.MotionToastStyle
 
@@ -32,7 +30,7 @@ class LoginActivity : AppCompatActivity() {
     private var auth: FirebaseAuth? = null
     var firestore: FirebaseFirestore? = null
     var mGoogleSignInClient: GoogleSignInClient? = null
-    var db = Firebase.firestore
+    var db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

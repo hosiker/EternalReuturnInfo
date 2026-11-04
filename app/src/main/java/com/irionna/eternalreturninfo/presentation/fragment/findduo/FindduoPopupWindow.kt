@@ -1,6 +1,7 @@
 package com.irionna.eternalreturninfo.presentation.fragment.findduo
 
 import android.content.ContentValues
+import com.google.firebase.database.FirebaseDatabase
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -16,10 +17,7 @@ import android.widget.Toast
 import com.irionna.eternalreturninfo.R
 import com.irionna.eternalreturninfo.databinding.FindduoPopupWindowActivityBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.database
-import com.google.firebase.Firebase
 
 class FindduoPopupWindow(private val context: Context) {
     private var popupWindow: PopupWindow? = null
@@ -31,8 +29,8 @@ class FindduoPopupWindow(private val context: Context) {
     fun showPopup(anchorView: View) {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         _binding = FindduoPopupWindowActivityBinding.inflate(inflater, null, false)
-        mAuth = Firebase.auth
-        mDbRef = Firebase.database.reference
+        mAuth = FirebaseAuth.getInstance()
+        mDbRef = FirebaseDatabase.getInstance().reference
 
         popupWindow = PopupWindow(
             binding.root,

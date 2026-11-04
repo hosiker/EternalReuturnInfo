@@ -11,7 +11,6 @@ import com.irionna.eternalreturninfo.retrofit.FBRef
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.getValue
 import com.irionna.eternalreturninfo.data.model.ReportCommentModel
 import com.irionna.eternalreturninfo.data.model.ReportModel
 

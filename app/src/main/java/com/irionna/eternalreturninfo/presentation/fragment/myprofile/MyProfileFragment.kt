@@ -1,6 +1,7 @@
 package com.irionna.eternalreturninfo.presentation.fragment.myprofile
 
 import android.content.Intent
+import com.google.firebase.database.FirebaseDatabase
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -36,12 +37,8 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.auth
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.database
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestore
-import com.google.firebase.Firebase
 import com.skydoves.powermenu.CircularEffect
 import com.skydoves.powermenu.MenuAnimation
 import com.skydoves.powermenu.OnMenuItemClickListener
@@ -54,7 +51,7 @@ class MyProfileFragment : Fragment() {
     private val binding get() = _binding!!
     private var _binding: MyprofileFragmentBinding? = null
     private var auth: FirebaseAuth? = null
-    var db = Firebase.firestore
+    var db = FirebaseFirestore.getInstance()
     private lateinit var characterbinding: MyprofileCharacterDialogBinding
     var email: String? = null
     private lateinit var database: DatabaseReference
@@ -89,7 +86,7 @@ class MyProfileFragment : Fragment() {
         _binding = MyprofileFragmentBinding.inflate(inflater, container, false)
         characterbinding = MyprofileCharacterDialogBinding.inflate(layoutInflater)
         auth = FirebaseAuth.getInstance()
-        database = Firebase.database.reference
+        database = FirebaseDatabase.getInstance().reference
         var uid = auth?.uid.toString()
         Patch(uid)
         setOnClickListener()
@@ -276,7 +273,7 @@ class MyProfileFragment : Fragment() {
 
                 1 -> {
                     refPowerMenu.dismiss()
-                    Firebase.auth.signOut()
+                    FirebaseAuth.getInstance().signOut()
                     var intent = Intent(activity, LoginActivity::class.java)
                     startActivity(intent)
                     requireActivity().finish()

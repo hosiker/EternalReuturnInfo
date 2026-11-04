@@ -1,6 +1,7 @@
 package com.irionna.eternalreturninfo.presentation.viewmodel
 
 import android.os.Build
+import com.google.firebase.database.FirebaseDatabase
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,8 +12,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.database
-import com.google.firebase.Firebase
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.atomic.AtomicLong
@@ -75,7 +74,7 @@ class ChatViewModel(
 
             if (message != "") {
                 // 송수신 방 둘 다 저장
-                database = Firebase.database.reference
+                database = FirebaseDatabase.getInstance().reference
                 database.child("chats").child(senderRoom).child("messages").push()
                     .setValue(messageObject).addOnSuccessListener {
                         database.child("chats").child(receiverRoom).child("messages").push()
@@ -103,7 +102,7 @@ class ChatViewModel(
 
         var finalMessage = ""
         var finalTime = ""
-        database = Firebase.database.reference
+        database = FirebaseDatabase.getInstance().reference
         refDb = database.child("chats").child(senderRoom).child("messages")
         refEventListener = object : ValueEventListener {
             override fun onDataChange(snapShot: DataSnapshot) {

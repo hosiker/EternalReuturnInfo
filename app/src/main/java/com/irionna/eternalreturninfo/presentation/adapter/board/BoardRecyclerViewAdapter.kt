@@ -17,7 +17,6 @@ import com.irionna.eternalreturninfo.retrofit.FBRef
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.getValue
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date

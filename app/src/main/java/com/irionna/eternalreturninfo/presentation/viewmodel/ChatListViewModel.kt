@@ -1,19 +1,18 @@
 package com.irionna.eternalreturninfo.presentation.viewmodel
 
 import android.util.Log
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.auth.FirebaseAuth
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.irionna.eternalreturninfo.data.model.ERModel
 import com.irionna.eternalreturninfo.data.model.Message
 import com.irionna.eternalreturninfo.presentation.repository.ChatListRepository
-import com.google.firebase.auth.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.database
-import com.google.firebase.Firebase
 
 class ChatListViewModel(
     val repository: ChatListRepository
@@ -29,7 +28,7 @@ class ChatListViewModel(
 
 
     private lateinit var database: DatabaseReference
-    private var auth = Firebase.auth
+    private var auth = FirebaseAuth.getInstance()
     private lateinit var refEventListener: ValueEventListener
     private lateinit var refDb: DatabaseReference
 
@@ -52,7 +51,7 @@ class ChatListViewModel(
     }
 
     fun addChatList() {
-        database = Firebase.database.reference
+        database = FirebaseDatabase.getInstance().reference
         refDb = database.child("user")
         refEventListener = object : ValueEventListener {
 
@@ -135,7 +134,7 @@ class ChatListViewModel(
     }
 
     fun loadProfilePicture()  {
-        database = Firebase.database.reference
+        database = FirebaseDatabase.getInstance().reference
         database.child("user").get().addOnSuccessListener {
             for(child in it.children) {
                 val currentUser = child.getValue(ERModel::class.java)

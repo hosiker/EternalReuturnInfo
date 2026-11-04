@@ -20,7 +20,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.Query
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.getValue
 
 class BoardSearchActivity : AppCompatActivity() {
 
@@ -94,7 +93,7 @@ class BoardSearchActivity : AppCompatActivity() {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         if (dataSnapshot.exists()) {
 
-                            val board = dataSnapshot.getValue<BoardModel>()
+                            val board = dataSnapshot.getValue(BoardModel::class.java)
 
                             val views = board?.views?.plus(1)
                             FBRef.postRef.child(boardItem.id).child("views").setValue(views)
@@ -151,7 +150,7 @@ class BoardSearchActivity : AppCompatActivity() {
                     boardSearchTvResult.visibility = View.INVISIBLE
 
                     for (snapshot in dataSnapshot.children) {
-                        val searchBoard = snapshot.getValue<BoardModel>()
+                        val searchBoard = snapshot.getValue(BoardModel::class.java)
                         if (searchBoard != null) {
                             boardViewModel.addSearchBoard(searchBoard)
                         }
