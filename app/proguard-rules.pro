@@ -31,9 +31,8 @@
 ##---------------Begin: proguard configuration for firebase  ----------
 -keepattributes Signature
 
--keepclassmembers class com.irionna.eternalreturninfo.models.** {
-  *;
-}
+# Realtime Database / Firestore 는 리플렉션으로 필드 이름을 읽고 쓰므로 모델을 난독화하면 안 된다.
+-keep class com.irionna.eternalreturninfo.data.model.** { *; }
 
 ##---------------End: proguard configuration for firebase  ----------
 
@@ -52,7 +51,8 @@
 #-keep class com.google.gson.stream.** { *; }
 
 # Application classes that will be serialized/deserialized over Gson
--keep class com.google.gson.examples.android.model.** { *; }
+# (Retrofit 응답 모델은 retrofit 패키지의 YoutubeVideo.kt 에 모여 있다)
+-keep class com.irionna.eternalreturninfo.retrofit.** { *; }
 
 # Prevent proguard from stripping interface information from TypeAdapterFactory,
 # JsonSerializer, JsonDeserializer instances (so they can be used in @JsonAdapter)
