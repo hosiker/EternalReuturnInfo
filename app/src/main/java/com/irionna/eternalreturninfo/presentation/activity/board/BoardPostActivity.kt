@@ -11,7 +11,6 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import coil.api.load
 import com.irionna.eternalreturninfo.R
 import com.irionna.eternalreturninfo.databinding.BoardPostActivityBinding
 import com.irionna.eternalreturninfo.data.model.BoardModel

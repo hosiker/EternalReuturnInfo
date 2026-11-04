@@ -11,7 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import coil.api.load
 import com.irionna.eternalreturninfo.R
 import com.irionna.eternalreturninfo.databinding.BoardPostRvCommentItemBinding
 import com.irionna.eternalreturninfo.data.model.CommentModel
