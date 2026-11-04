@@ -76,58 +76,42 @@ dependencies {
     // okhttp3
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
-    // PowerSpinner
+    // Fragment / Activity (ViewModel 등)
     implementation("androidx.fragment:fragment-ktx:1.6.1")
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    implementation("com.github.skydoves:powerspinner:1.2.7")
-
-    //SplashScreen
-    implementation("androidx.core:core-splashscreen:1.0.1")
-    // Also add the dependency for the Google Play services library and specify its version
-    implementation("com.google.android.gms:play-services-auth:20.7.0")
-    implementation("com.google.gms:google-services:4.3.15")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.5.0")
-    //Coil
-    implementation("io.coil-kt:coil:0.10.0")
-    //ViewModel
     implementation("androidx.activity:activity-ktx:1.8.0")
-    implementation("androidx.fragment:fragment-ktx:1.3.6")
+
+    // SplashScreen
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
+    // Google 로그인 (Google Play services)
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+
+    // Coil
+    implementation("io.coil-kt:coil:0.10.0")
+
     // firebase
-//    implementation(platform("com.google.firebase:firebase-bom:32.4.0"))
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-firestore")
-    // muddz
-    implementation("io.github.muddz:styleabletoast:2.4.0")
+
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.1")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
-    // swiperfreshlayout
+    // swiperefreshlayout
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
-    // Also add the dependency for the Google Play services library and specify its version
-    implementation("com.google.android.gms:play-services-auth:20.7.0")
-    implementation("com.google.gms:google-services:4.3.15")
-
-    // glide
-    implementation ("com.github.bumptech.glide:glide:4.12.0")
-    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
-
     // spinner
-    implementation ("com.github.skydoves:powerspinner:1.2.6")
+    implementation("com.github.skydoves:powerspinner:1.2.7")
 
     // powerMenu
-    implementation ("com.github.skydoves:powermenu:2.2.4")
+    implementation("com.github.skydoves:powermenu:2.2.4")
 
     // MotionToast
     implementation("com.github.Spikeysanju:MotionToast:1.4")
 
-    // Splash API
-    implementation("androidx.core:core-splashscreen:1.0.0-rc01")
-
     // reCaptcha for firebase auth issue
-    implementation ("com.google.android.recaptcha:recaptcha:18.4.0")
+    implementation("com.google.android.recaptcha:recaptcha:18.4.0")
 }
