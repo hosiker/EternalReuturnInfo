@@ -6,6 +6,8 @@
         <!-- No Title Bar-->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <!-- 레이아웃에서 배경을 빠뜨린 영역(상태바·내비게이션 바 여백 등)에 흰색이 비치지 않게 창 기본 배경을 검정으로 -->
+        <item name="android:windowBackground">@color/black</item>
         <!-- 앱 화면이 모두 검은 배경이므로 상태바 아이콘은 밝은 색 (edge-to-edge 에서 배경 위에 그려진다) -->
         <item name="android:windowLightStatusBar">false</item>
     </style>
