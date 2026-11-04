@@ -31,6 +31,11 @@ android {
 
     buildTypes {
         release {
+            // 로컬 점검용: local.properties 에 signReleaseWithDebug=true 가 있으면 디버그 키로 서명해서
+            // 난독화(R8)가 적용된 릴리스 빌드를 에뮬레이터에 설치해 볼 수 있다. 배포용 서명이 아니다.
+            if (localProperties.getProperty("signReleaseWithDebug") == "true") {
+                signingConfig = signingConfigs.getByName("debug")
+            }
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
