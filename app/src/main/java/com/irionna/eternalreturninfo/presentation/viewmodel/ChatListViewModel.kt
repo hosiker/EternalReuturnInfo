@@ -7,13 +7,13 @@ import androidx.lifecycle.ViewModel
 import com.irionna.eternalreturninfo.data.model.ERModel
 import com.irionna.eternalreturninfo.data.model.Message
 import com.irionna.eternalreturninfo.presentation.repository.ChatListRepository
-import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.database.database
+import com.google.firebase.Firebase
 
 class ChatListViewModel(
     val repository: ChatListRepository

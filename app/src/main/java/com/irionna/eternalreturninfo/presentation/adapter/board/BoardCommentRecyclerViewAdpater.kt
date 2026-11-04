@@ -24,7 +24,7 @@ import com.irionna.eternalreturninfo.presentation.activity.chat.ChatActivity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.getValue
+import com.google.firebase.database.getValue
 import com.skydoves.powermenu.CircularEffect
 import com.skydoves.powermenu.MenuAnimation
 import com.skydoves.powermenu.OnMenuItemClickListener
