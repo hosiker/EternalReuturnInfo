@@ -2,7 +2,6 @@ package com.irionna.eternalreturninfo.util
 
 import android.app.Activity
 import android.app.Dialog
-import android.graphics.Bitmap
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Gravity
@@ -10,35 +9,29 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
-import coil.size.Size
-import coil.transform.Transformation
 import com.irionna.eternalreturninfo.R
 import com.irionna.eternalreturninfo.databinding.CharacterPickerItemBinding
 import com.irionna.eternalreturninfo.databinding.CharacterPickerSheetBinding
 
 /**
  * 선호 실험체를 얼굴 그림과 함께 고르는 하단 시트 (4열 그리드 + 이름 검색).
- * 실험체 이미지는 전신 그림이라 위쪽 정사각형만 잘라 얼굴이 보이게 한다.
+ * 실험체 이미지는 전신 그림이라 얼굴 부분만 미리 잘라 둔 face_{번호} 이미지를 쓴다.
  * names[0] 은 "선택"(선택 안 함)이고, 그림은 ProfileImage 규칙(character_{index})을 따른다.
  */
 object CharacterPicker {
 
-    /** 이미지 위쪽에서 가로 길이만큼 잘라 정사각형으로 만든다 (얼굴 영역). */
-    private class TopSquare : Transformation {
-        override val cacheKey = "TopSquare"
-        override suspend fun transform(input: Bitmap, size: Size): Bitmap {
-            val side = minOf(input.width, input.height)
-            return Bitmap.createBitmap(input, 0, 0, side, side)
-        }
-    }
-
+    /**
+     * 실험체 얼굴 썸네일을 보여준다. 얼굴 그림은 전신 그림에서 미리 잘라 둔 drawable(face_{번호}) 이다.
+     * 선택 안 함(0번)은 이미지를 비우고, 얼굴 그림이 없는 실험체는 기본 이미지를 보여준다.
+     */
     fun loadFace(imageView: android.widget.ImageView, index: Int) {
-        val resId = ProfileImage.resIdOf(imageView.context, ProfileImage.keyForCharacterIndex(index))
-        imageView.load(resId) {
-            if (index >= 1) transformations(TopSquare())
-            size(160)
+        if (index < 1) {
+            imageView.setImageDrawable(null)
+            return
         }
+        val ctx = imageView.context
+        val id = ctx.resources.getIdentifier("face_$index", "drawable", ctx.packageName)
+        imageView.setImageResource(if (id != 0) id else R.drawable.ic_baseimage)
     }
 
     fun show(activity: Activity, names: Array<String>, selected: Int, onPicked: (Int) -> Unit) {

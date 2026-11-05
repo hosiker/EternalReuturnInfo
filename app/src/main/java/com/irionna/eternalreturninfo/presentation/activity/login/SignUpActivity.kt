@@ -73,9 +73,9 @@ class SignUpActivity : AppCompatActivity() {
         fun showSelectedCharacter() {
             binding.signupCharacterName.text =
                 if (selectedIndex == 0) getString(R.string.character_picker_none) else characterlist[selectedIndex]
+            // 선택 안 함일 때는 얼굴 이미지를 보여주지 않는다.
+            binding.signupCharacterThumb.visibility = if (selectedIndex == 0) View.GONE else View.VISIBLE
             CharacterPicker.loadFace(binding.signupCharacterThumb, selectedIndex)
-            // 프로필 이미지는 선택한 실험체 이미지로 자동 정해진다.
-            ProfileImage.load(binding.signupProfileImg, ProfileImage.keyForCharacterIndex(selectedIndex))
         }
         showSelectedCharacter()
         binding.signupCharacterBtn.setOnClickListener {
