@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.irionna.eternalreturninfo.data.model.Notice
 import com.irionna.eternalreturninfo.data.model.VideoModel
+import com.irionna.eternalreturninfo.data.repository.FreeCharactersCache
+import com.irionna.eternalreturninfo.data.repository.GameStats
 import com.irionna.eternalreturninfo.data.repository.VideoCache
 import com.irionna.eternalreturninfo.retrofit.RetrofitInstance
 import com.irionna.eternalreturninfo.util.Constants
@@ -38,6 +40,34 @@ class MainListViewModel() : ViewModel(){
         get() = _streamerList
 
 
+
+    /** 이번에 무료인 실험체 번호 (비어 있으면 줄을 숨긴다) */
+    private val _freeCharacters = MutableLiveData<List<Int>>()
+    val freeCharacters: LiveData<List<Int>>
+        get() = _freeCharacters
+
+    private var freeRequested = false
+
+    /** 무료 실험체를 불러온다. 6시간 저장이 있으면 그대로 쓰고, [force] 면 새로 받는다. 실패하면 오래된 저장본. */
+    fun loadFreeCharacters(context: Context, force: Boolean = false) {
+        if (freeRequested && !force) return
+        freeRequested = true
+        val appContext = context.applicationContext
+        viewModelScope.launch {
+            val saved = FreeCharactersCache.load(appContext)
+            if (!force && saved != null && saved.isFresh()) {
+                _freeCharacters.postValue(saved.list)
+                return@launch
+            }
+            val fresh = GameStats.freeCharacters()
+            if (!fresh.isNullOrEmpty()) {
+                FreeCharactersCache.save(appContext, fresh)
+                _freeCharacters.postValue(fresh)
+            } else {
+                _freeCharacters.postValue(saved?.list ?: emptyList())
+            }
+        }
+    }
 
     /** 공지를 받지 못했을 때 true (배너 자리에 안내 문구를 보여준다) */
     private val _noticeFailed = MutableLiveData<Boolean>()
@@ -81,6 +111,7 @@ class MainListViewModel() : ViewModel(){
         loadNotices()
         videosRequested = false
         loadVideos(context, force = true)
+        loadFreeCharacters(context, force = true)
     }
 
     private var videosRequested = false

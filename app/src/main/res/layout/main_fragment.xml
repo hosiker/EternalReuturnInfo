@@ -77,6 +77,58 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- 이번에 무료인 실험체 (일반 게임 기준). 불러오지 못하면 통째로 숨긴다 -->
+            <LinearLayout
+                android:id="@+id/main_free_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout5">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="28dp"
+                    android:gravity="bottom"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/main_free_title"
+                        android:textColor="@color/white"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginBottom="3dp"
+                        android:text="@string/main_free_sub"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/main_free_row"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="16dp" />
+                </HorizontalScrollView>
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/textView4"
                 android:layout_width="wrap_content"
@@ -88,7 +140,7 @@
                 android:textSize="22sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout5" />
+                app:layout_constraintTop_toBottomOf="@+id/main_free_container" />
 
             <Button
                 android:id="@+id/main_btn_see_more"

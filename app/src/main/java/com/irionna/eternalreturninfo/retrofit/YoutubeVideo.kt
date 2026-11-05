@@ -268,3 +268,13 @@ data class VideoDetailSnippet(
     @SerializedName("thumbnails")
     val thumbnails: ThumbNail? = null
 )
+
+
+/** 무료 실험체 응답 (GET v1/freeCharacters/{matchingMode}). 일반(2)만 목록이 오고 랭크(3)는 빈 목록. 번호 = 실험체 번호. */
+@Keep
+data class FreeCharactersResponse(
+    @SerializedName("code")
+    val code: Int? = null,
+    @SerializedName("freeCharacters")
+    val freeCharacters: List<Int>? = null
+)
