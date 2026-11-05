@@ -87,6 +87,9 @@ object GameStats {
                 if (BuildConfig.DEBUG) Log.d(TAG, "시즌 목록 조회 실패: HTTP ${r?.code()}")
                 emptyList()
             }
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "시즌 목록 ${list.size}개: " + list.joinToString { "${it.id}=${it.name}${if (it.isCurrent) "(현재)" else ""}" })
+            }
             if (list.isNotEmpty()) {
                 seasonCache = list
                 return list
@@ -107,6 +110,7 @@ object GameStats {
             RetrofitInstance.searchUserStateApi.getUserStats(Constants.MAIN_APIKEY, userNum.toString(), seasonId.toString()).execute()
         }
         if (r == null) return null
+        if (BuildConfig.DEBUG) Log.d(TAG, "전적 요청 season=$seasonId → HTTP ${r.code()}")
         if (!r.isSuccessful) {
             // 기록이 없는 시즌은 404 로 온다. 이 경우는 "기록 없음"으로 본다.
             if (BuildConfig.DEBUG) Log.d(TAG, "전적 조회 HTTP ${r.code()} (season=$seasonId)")
