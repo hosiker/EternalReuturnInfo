@@ -31,7 +31,7 @@ class StatsPanel(
     private val scope: CoroutineScope,
     private val onStatsChanged: (UserStats?) -> Unit = {}
 ) {
-    private var userNum: Long? = null
+    private var userId: String? = null
     private var seasons: List<GameStats.SeasonInfo> = emptyList()
     private var seasonId: Int? = null
     private var stats: List<UserStats> = emptyList()
@@ -47,12 +47,12 @@ class StatsPanel(
         showMessage(activity.getString(R.string.stats_loading))
         scope.launch {
             val nickname = nicknameProvider()
-            val num = if (nickname.isNullOrBlank()) null else GameStats.userNum(nickname)
+            val num = if (nickname.isNullOrBlank()) null else GameStats.userId(nickname)
             if (num == null) {
                 showMessage(activity.getString(R.string.stats_unavailable))
                 return@launch
             }
-            userNum = num
+            userId = num
             seasons = GameStats.seasons()
             val current = GameStats.currentSeasonId(seasons)
             if (current == null) {
@@ -64,7 +64,7 @@ class StatsPanel(
     }
 
     private fun loadSeason(id: Int, firstLoad: Boolean = false) {
-        val num = userNum ?: return
+        val num = userId ?: return
         seasonId = id
         updateChip()
         showMessage(activity.getString(R.string.stats_loading))
