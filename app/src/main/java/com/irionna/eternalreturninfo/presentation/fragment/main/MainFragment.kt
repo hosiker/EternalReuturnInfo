@@ -1,7 +1,12 @@
 package com.irionna.eternalreturninfo.presentation.fragment.main
 
 import android.content.Intent
+import android.content.Context
 import android.net.Uri
+import com.irionna.eternalreturninfo.R
+import android.widget.Toast
+import android.view.inputmethod.InputMethodManager
+import android.view.inputmethod.EditorInfo
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -13,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.irionna.eternalreturninfo.databinding.MainFragmentBinding
 import androidx.lifecycle.lifecycleScope
-import com.irionna.eternalreturninfo.retrofit.BoardSingletone
 import com.irionna.eternalreturninfo.util.StatsPanel
 import com.irionna.eternalreturninfo.data.model.Notice
 import com.irionna.eternalreturninfo.data.model.VideoModel
@@ -81,13 +85,36 @@ class MainFragment : Fragment() {
         initView()
         initModel()
 
-        // 전적 카드: 시즌·모드 선택 가능 (프로필·듀오 카드와 같은 GameStats 사용)
-        StatsPanel(binding.constraintLayout6, requireActivity(), viewLifecycleOwner.lifecycleScope).load {
-            StatsPanel.waitForNickname { BoardSingletone.LoginUser().name }
-        }
+        initStatsSearch()
     }
 
+    /** 전적 검색: 입력한 게임 닉네임의 전적을 시즌·모드별로 보여준다 (내 전적은 프로필 화면에서). */
+    private fun initStatsSearch() {
+        val panel = StatsPanel(binding.mainStatsPanel, requireActivity(), viewLifecycleOwner.lifecycleScope)
 
+        fun search() {
+            val q = binding.mainSearchEt.text.toString().trim()
+            if (q.isEmpty()) {
+                Toast.makeText(requireContext(), R.string.main_search_empty, Toast.LENGTH_SHORT).show()
+                return
+            }
+            // 키보드를 내리고 결과 카드를 보여준다
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(binding.mainSearchEt.windowToken, 0)
+            binding.mainSearchEt.clearFocus()
+            binding.mainSearchGuide.visibility = View.GONE
+            binding.mainStatsPanel.root.visibility = View.VISIBLE
+            panel.load { q }
+        }
+
+        binding.mainSearchBtn.setOnClickListener { search() }
+        binding.mainSearchEt.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                search()
+                true
+            } else false
+        }
+    }
 
     override fun onDestroyView() {
         _binding = null

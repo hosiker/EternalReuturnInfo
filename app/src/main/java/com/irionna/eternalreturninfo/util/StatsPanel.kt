@@ -38,6 +38,7 @@ class StatsPanel(
     private var selMode = GameStats.MODE_RANKED
     private var selTeam = 0
     private var notice: String? = null
+    private var loadToken = 0
 
     init {
         b.statsSeasonChip.setOnClickListener { if (seasons.isNotEmpty()) showSeasonSheet() }
@@ -45,16 +46,24 @@ class StatsPanel(
 
     /** [nicknameProvider] 는 닉네임이 준비될 때까지 기다려 돌려주는 함수 (로그인 직후엔 비어 있을 수 있다). */
     fun load(nicknameProvider: suspend () -> String?) {
+        val token = ++loadToken
+        userId = null
+        seasonId = null
+        stats = emptyList()
+        notice = null
+        updateChip()
         showMessage(activity.getString(R.string.stats_loading))
         scope.launch {
             val nickname = nicknameProvider()
             val num = if (nickname.isNullOrBlank()) null else GameStats.userId(nickname)
+            if (token != loadToken) return@launch // 그 사이 다른 닉네임을 검색했다
             if (num == null) {
                 showMessage(activity.getString(R.string.stats_unavailable))
                 return@launch
             }
             userId = num
             seasons = GameStats.seasons()
+            if (token != loadToken) return@launch
             val current = GameStats.currentSeasonId(seasons)
             if (current == null) {
                 showMessage(activity.getString(R.string.stats_unavailable))
@@ -66,12 +75,13 @@ class StatsPanel(
 
     private fun loadSeason(id: Int, firstLoad: Boolean = false) {
         val num = userId ?: return
+        val token = loadToken
         seasonId = id
         updateChip()
         showMessage(activity.getString(R.string.stats_loading))
         scope.launch {
             val list = GameStats.stats(num, id)
-            if (seasonId != id) return@launch // 그 사이 다른 시즌을 골랐다
+            if (seasonId != id || token != loadToken) return@launch // 그 사이 다른 시즌·닉네임을 골랐다
             if (list == null) {
                 val denied = GameStats.lastStatsError.let { it == 401 || it == 403 }
                 showMessage(activity.getString(if (denied) R.string.stats_denied else R.string.stats_unavailable))
@@ -83,7 +93,7 @@ class StatsPanel(
                 // 현재 시즌 기록이 없으면 기록이 있는 가장 최근 시즌을 대신 보여준다
                 showMessage(activity.getString(R.string.stats_searching))
                 val found = GameStats.latestWithRecords(num, seasons, id, FALLBACK_TRIES)
-                if (seasonId != id) return@launch
+                if (seasonId != id || token != loadToken) return@launch
                 if (found != null) {
                     shownId = found.first.id
                     shown = found.second
