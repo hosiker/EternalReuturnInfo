@@ -192,3 +192,18 @@ data class CharacterStats(
     val top3Rate: Float,
     val averageRank: Float
 )
+
+/** 시즌 목록 응답 (GET v2/data/Season). 필드가 바뀌어도 앱이 죽지 않도록 모두 nullable. */
+@Keep
+data class SeasonResponse(
+    val code: Int?,
+    val message: String?,
+    val data: List<SeasonData>?
+)
+
+@Keep
+data class SeasonData(
+    val seasonID: Int?,
+    val seasonName: String?,
+    val isCurrent: Int?
+)

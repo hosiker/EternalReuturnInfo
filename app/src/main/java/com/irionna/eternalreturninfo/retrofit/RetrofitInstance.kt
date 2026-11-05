@@ -59,4 +59,8 @@ object RetrofitInstance {
         userRetrofit.create(UserStatsService::class.java)
     }
 
+    val seasonApi by lazy {
+        userRetrofit.create(SeasonService::class.java)
+    }
+
 }

@@ -8,13 +8,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.irionna.eternalreturninfo.data.model.Notice
 import com.irionna.eternalreturninfo.data.model.VideoModel
-import com.irionna.eternalreturninfo.retrofit.BoardSingletone
 import com.irionna.eternalreturninfo.retrofit.RetrofitInstance
-import com.irionna.eternalreturninfo.retrofit.UserStats
-import com.irionna.eternalreturninfo.util.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainListViewModel() : ViewModel(){
@@ -26,10 +22,6 @@ class MainListViewModel() : ViewModel(){
     private val _videoList = MutableLiveData<MutableList<VideoModel>>()
     val videoList: LiveData<MutableList<VideoModel>>
         get() = _videoList
-
-    private val _userRecordList = MutableLiveData<UserStats?>()
-    val userRecordList: LiveData<UserStats?>
-        get() = _userRecordList
 
 
 
@@ -56,37 +48,6 @@ class MainListViewModel() : ViewModel(){
                 }
 
 
-                //전적 검색
-                val nickname = fetchNonNullableNickname()
-
-                val userIDCall = RetrofitInstance.searchUserIDApi.getUserByNickname(Constants.MAIN_APIKEY, nickname)
-                val userIDResponse = userIDCall.execute()
-
-                if (userIDResponse.isSuccessful) {
-                    val gameResponse = userIDResponse.body()
-
-                    if(gameResponse != null){
-                        val userNum = gameResponse?.user?.userNum.toString()
-                        val seasonId = BoardSingletone.seasonID()
-
-                        val userStateCall = RetrofitInstance.searchUserStateApi.getUserStats(
-                            Constants.MAIN_APIKEY, userNum, seasonId)
-                        val userStateResponse = userStateCall.execute()
-
-                        if (userStateResponse.isSuccessful) {
-                            val userState = userStateResponse.body()
-
-                            if(userState != null){
-                                val user = userState?.userStats?.get(0)
-                                _userRecordList.postValue(user)
-                            }
-
-                        } else {
-                            Log.d("userStateResponse", "${userStateResponse}")
-                        }
-                    }
-
-                }
 
             }catch (e: Exception) {
                 e.printStackTrace()
@@ -134,18 +95,6 @@ class MainListViewModel() : ViewModel(){
         } catch (e: Exception) {
             Log.e("#error check", "Error: ${e.message}")
         }
-    }
-
-    private suspend fun fetchNonNullableNickname(): String {
-        var nickname: String? = null
-        while (nickname == null) {
-            nickname = BoardSingletone.LoginUser().name
-            if (nickname == null) {
-                // 닉네임이 null인 경우 잠시 대기하거나 다른 작업 수행
-                delay(1000)
-            }
-        }
-        return nickname
     }
 
 }

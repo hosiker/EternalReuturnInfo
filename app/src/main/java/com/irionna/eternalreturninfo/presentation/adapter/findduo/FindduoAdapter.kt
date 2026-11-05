@@ -11,6 +11,7 @@ import com.irionna.eternalreturninfo.R
 import com.irionna.eternalreturninfo.databinding.FindDuoListItemBinding
 import com.irionna.eternalreturninfo.data.model.ERModel
 import com.irionna.eternalreturninfo.retrofit.RetrofitInstance
+import com.irionna.eternalreturninfo.data.repository.GameStats
 import com.irionna.eternalreturninfo.util.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -197,50 +198,21 @@ class FindduoAdapter(
         }
     }
 
+    /** 듀오 카드의 전적 한 줄: 현재 시즌의 기본 기록(랭크 중 가장 많이 한 모드)의 승률과 평균 순위. */
     class StatePacth {
-
         fun setState(name: String?, textView: TextView, textView2: TextView) {
-            GlobalScope.launch(Dispatchers.IO) {
-                try {
-                    val nickname = name
-
-                    val userID_call = RetrofitInstance.searchUserIDApi.getUserByNickname(
-                        Constants.MAIN_APIKEY,
-                        nickname
-                    )
-                    val userID_response = userID_call.execute()
-
-                    if (userID_response.isSuccessful) {
-                        val gameResponse = userID_response.body()
-                        val userNum = gameResponse?.user?.userNum.toString()
-                        val seasonId = "19"
-
-                        val userstate_call = RetrofitInstance.searchUserStateApi.getUserStats(
-                            Constants.MAIN_APIKEY, userNum, seasonId
-                        )
-                        val userstate_response = userstate_call.execute()
-
-                        if (userstate_response.isSuccessful) {
-                            val userStateResponse = userstate_response.body()
-
-                            withContext(Dispatchers.Main) {
-
-                                val user = userStateResponse?.userStats?.get(0)
-
-                                textView.text = (user?.top1?.times(100) ?: 0).toString() + "%"
-                                textView2.text = "#" + (user?.averageRank ?: 0).toString()
-                            }
-
-                        } else {
-                            Log.d("userStateResponse", "${userstate_response}")
-                        }
-                    }
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
+            textView.tag = name
+            textView.text = "-"
+            textView2.text = "-"
+            if (name.isNullOrBlank()) return
+            GlobalScope.launch(Dispatchers.Main) {
+                val s = GameStats.summary(name)
+                // 목록이 스크롤되어 다른 카드로 재사용됐다면 쓰지 않는다
+                if (s != null && textView.tag == name) {
+                    textView.text = String.format("%.1f", s.top1 * 100) + "%"
+                    textView2.text = "#" + String.format("%.1f", s.averageRank)
                 }
             }
         }
     }
-
 }

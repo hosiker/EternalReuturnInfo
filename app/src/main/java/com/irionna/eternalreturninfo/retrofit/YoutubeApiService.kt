@@ -55,3 +55,8 @@ interface UserService {
         @Query("query") query: String?
     ): Call<UserResponse>
 }
+
+interface SeasonService {
+    @GET("v2/data/Season")
+    fun getSeasons(@Header("x-api-key") apiKey: String): Call<SeasonResponse>
+}

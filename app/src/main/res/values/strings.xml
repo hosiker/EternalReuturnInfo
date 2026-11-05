@@ -141,4 +141,21 @@
     <string name="character_picker_title">선호 실험체</string>
     <string name="character_picker_search">실험체 검색</string>
     <string name="character_picker_none">선택 안 함</string>
+    <string name="stats_season_loading">시즌</string>
+    <string name="stats_season_title">시즌 선택</string>
+    <string name="stats_season_current">현재</string>
+    <string name="stats_loading">전적을 불러오는 중…</string>
+    <string name="stats_unavailable">전적을 불러오지 못했어요.\n닉네임이 게임과 같은지, 잠시 후 다시 시도해 보세요.</string>
+    <string name="stats_no_record">이 시즌에는 기록이 없어요.</string>
+    <string name="stats_mode_ranked">랭크</string>
+    <string name="stats_mode_normal">일반</string>
+    <string name="stats_mode_other">기타 %1$d</string>
+    <string name="stats_team_solo">솔로</string>
+    <string name="stats_team_duo">듀오</string>
+    <string name="stats_team_squad">스쿼드</string>
+    <string name="stats_team_other">%1$d인</string>
+    <string name="stats_games_unit">%1$d판</string>
+    <string name="stats_rank_line">%1$d위 · 상위 %2$s%%</string>
+    <string name="stats_no_rank">순위 없음</string>
+    <string name="myprofile_character_stats">실험체 통계 (선택한 모드)</string>
 </resources>
