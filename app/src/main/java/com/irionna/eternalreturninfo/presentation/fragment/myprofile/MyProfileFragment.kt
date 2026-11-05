@@ -18,7 +18,6 @@ import com.irionna.eternalreturninfo.R
 import com.irionna.eternalreturninfo.util.CharacterPicker
 import com.irionna.eternalreturninfo.data.repository.BlockedUsers
 import com.irionna.eternalreturninfo.presentation.activity.block.BlockedUsersActivity
-import com.irionna.eternalreturninfo.databinding.MyprofileCharacterDialogBinding
 import com.irionna.eternalreturninfo.databinding.MyprofileFragmentBinding
 import com.irionna.eternalreturninfo.retrofit.BoardSingletone
 import com.irionna.eternalreturninfo.presentation.activity.login.LoginActivity
@@ -50,7 +49,6 @@ class MyProfileFragment : Fragment() {
     private var _binding: MyprofileFragmentBinding? = null
     private var auth: FirebaseAuth? = null
     var db = FirebaseFirestore.getInstance()
-    private lateinit var characterbinding: MyprofileCharacterDialogBinding
     var email: String? = null
     private lateinit var database: DatabaseReference
 
@@ -83,7 +81,6 @@ class MyProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = MyprofileFragmentBinding.inflate(inflater, container, false)
-        characterbinding = MyprofileCharacterDialogBinding.inflate(layoutInflater)
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
         var uid = auth?.uid.toString()
