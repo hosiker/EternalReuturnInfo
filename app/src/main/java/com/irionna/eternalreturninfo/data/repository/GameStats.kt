@@ -118,6 +118,7 @@ object GameStats {
         }
         val list = r.body()?.userStats.orEmpty()
         if (BuildConfig.DEBUG) {
+            Log.d(TAG, "응답 본문 code=${r.body()?.code} message=${r.body()?.message}")
             Log.d(TAG, "season=$seasonId 기록 ${list.size}개")
             list.forEach {
                 Log.d(TAG, "  season=${it.seasonId} mode=${it.matchingMode} team=${it.matchingTeamMode} mmr=${it.mmr} rank=${it.rank} games=${it.totalGames}")
