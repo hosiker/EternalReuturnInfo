@@ -27,7 +27,7 @@ interface YoutubeApiService {
         @Query("key") apiKey: String = AUTH_KEY,
         @Query("playlistId") playlistId: String,
         @Query("maxResults") maxResults: Int = 10,
-        @Query("part") part: String = "snippet",
+        @Query("part") part: String = "snippet,contentDetails",
     ): Response<PlaylistItemsResponse>
 
     @GET("search")

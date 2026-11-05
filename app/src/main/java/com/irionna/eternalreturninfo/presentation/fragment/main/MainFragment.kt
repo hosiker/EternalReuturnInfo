@@ -3,6 +3,9 @@ package com.irionna.eternalreturninfo.presentation.fragment.main
 import android.content.Intent
 import android.content.Context
 import android.net.Uri
+import androidx.core.content.ContextCompat
+import android.widget.TextView
+import android.graphics.Typeface
 import com.irionna.eternalreturninfo.R
 import android.widget.Toast
 import android.view.inputmethod.InputMethodManager
@@ -87,6 +90,7 @@ class MainFragment : Fragment() {
         mainViewModel.loadVideos(requireContext())
 
         initStatsSearch()
+        initVideoTabs()
     }
 
     /** 전적 검색: 입력한 게임 닉네임의 전적을 시즌·모드별로 보여준다 (내 전적은 프로필 화면에서). */
@@ -151,13 +155,55 @@ class MainFragment : Fragment() {
 
     }
 
+    // 게임 방송: 공식 채널 / 스트리머 탭
+    private var officialVideos: List<VideoModel> = emptyList()
+    private var streamerVideos: List<VideoModel> = emptyList()
+    private var showStreamer = false
+
+    private fun showVideos() {
+        videoListAdapter.submitList((if (showStreamer) streamerVideos else officialVideos).toList())
+        styleVideoTab(binding.mainSegOfficial, !showStreamer)
+        styleVideoTab(binding.mainSegStreamer, showStreamer)
+    }
+
+    private fun styleVideoTab(tab: TextView, selected: Boolean) {
+        if (selected) {
+            tab.setBackgroundResource(R.drawable.shape_seg_on)
+            tab.setTextColor(ContextCompat.getColor(requireContext(), R.color.brand_mint))
+            tab.setTypeface(null, Typeface.BOLD)
+        } else {
+            tab.background = null
+            tab.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary))
+            tab.setTypeface(null, Typeface.NORMAL)
+        }
+    }
+
+    private fun initVideoTabs() {
+        binding.mainSegOfficial.setOnClickListener {
+            showStreamer = false
+            showVideos()
+        }
+        binding.mainSegStreamer.setOnClickListener {
+            showStreamer = true
+            mainViewModel.loadStreamerVideos(requireContext()) // 처음 열 때만 실제로 불러온다
+            showVideos()
+        }
+        showVideos()
+    }
+
     private fun initModel() = with(mainViewModel){
         noticeList.observe(viewLifecycleOwner){
             noticeListAdapter.submitList(it)
         }
 
         videoList.observe(viewLifecycleOwner){
-            videoListAdapter.submitList(it)
+            officialVideos = it
+            showVideos()
+        }
+
+        streamerList.observe(viewLifecycleOwner){
+            streamerVideos = it
+            showVideos()
         }
 
 

@@ -18,6 +18,12 @@ import kotlinx.coroutines.launch
 
 class MainListViewModel() : ViewModel(){
 
+    private companion object {
+        const val PER_STREAMER = 5
+        const val MAX_STREAMER_VIDEOS = 20
+    }
+
+
     private val _noticeList = MutableLiveData<MutableList<Notice>>()
     val noticeList: LiveData<MutableList<Notice>>
         get() = _noticeList
@@ -25,6 +31,10 @@ class MainListViewModel() : ViewModel(){
     private val _videoList = MutableLiveData<MutableList<VideoModel>>()
     val videoList: LiveData<MutableList<VideoModel>>
         get() = _videoList
+
+    private val _streamerList = MutableLiveData<MutableList<VideoModel>>()
+    val streamerList: LiveData<MutableList<VideoModel>>
+        get() = _streamerList
 
 
 
@@ -72,19 +82,84 @@ class MainListViewModel() : ViewModel(){
         videosRequested = true
         val appContext = context.applicationContext
         viewModelScope.launch {
-            val saved = VideoCache.load(appContext)
+            val saved = VideoCache.load(appContext, VideoCache.KIND_OFFICIAL)
             if (saved != null && saved.isFresh()) {
                 _videoList.postValue(saved.list.toMutableList())
                 return@launch
             }
             val fresh = fetchItemResults()
             if (!fresh.isNullOrEmpty()) {
-                VideoCache.save(appContext, fresh)
+                VideoCache.save(appContext, VideoCache.KIND_OFFICIAL, fresh)
                 _videoList.postValue(fresh.toMutableList())
             } else {
                 _videoList.postValue((saved?.list ?: emptyList()).toMutableList())
             }
         }
+    }
+
+    private var streamersRequested = false
+
+    /**
+     * 스트리머 탭: 등록한 채널들의 최근 영상을 모아 최신순으로 보여준다. 탭을 처음 열 때 한 번만 불러온다.
+     * 저장·실패 처리는 공식 채널 목록과 같다 (6시간 이내면 저장본, 실패하면 오래된 저장본).
+     */
+    fun loadStreamerVideos(context: Context) {
+        if (streamersRequested) return
+        streamersRequested = true
+        val appContext = context.applicationContext
+        viewModelScope.launch {
+            val saved = VideoCache.load(appContext, VideoCache.KIND_STREAMER)
+            if (saved != null && saved.isFresh()) {
+                _streamerList.postValue(saved.list.toMutableList())
+                return@launch
+            }
+            val fresh = fetchStreamerVideos()
+            if (!fresh.isNullOrEmpty()) {
+                VideoCache.save(appContext, VideoCache.KIND_STREAMER, fresh)
+                _streamerList.postValue(fresh.toMutableList())
+            } else {
+                _streamerList.postValue((saved?.list ?: emptyList()).toMutableList())
+            }
+        }
+    }
+
+    /** 채널마다 최근 영상 몇 개를 받아 합친 뒤 최신순으로 정렬한다. 채널 하나가 실패해도 나머지는 보여준다. 전부 실패하면 null. */
+    private suspend fun fetchStreamerVideos(): List<VideoModel>? {
+        val all = mutableListOf<Pair<String, VideoModel>>() // (게시 시각, 영상)
+        var anySuccess = false
+        for (channelId in Constants.STREAMER_CHANNEL_IDS) {
+            try {
+                val response = RetrofitInstance.api.getPlaylistVideos(
+                    playlistId = Constants.uploadsPlaylistOf(channelId),
+                    maxResults = PER_STREAMER
+                )
+                if (!response.isSuccessful) {
+                    Log.e("YouTube", "스트리머 목록 실패 HTTP ${response.code()}: ${response.errorBody()?.string()?.take(200)}")
+                    continue
+                }
+                anySuccess = true
+                response.body()?.items.orEmpty().forEach { item ->
+                    val sn = item.snippet ?: return@forEach
+                    val videoId = sn.resourceId?.videoId ?: return@forEach
+                    val title = sn.title
+                    if (title == "Private video" || title == "Deleted video") return@forEach
+                    val at = item.contentDetails?.videoPublishedAt ?: ""
+                    all.add(
+                        at to VideoModel(
+                            id = videoId,
+                            title = title,
+                            thumbnail = sn.thumbnails?.medium?.url,
+                            url = "https://www.youtube.com/watch?v=$videoId"
+                        )
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e("YouTube", "스트리머 목록 오류: ${e.javaClass.simpleName} ${e.message}")
+            }
+        }
+        if (!anySuccess) return null
+        Log.d("YouTube", "스트리머 영상 ${all.size}개")
+        return all.sortedByDescending { it.first }.map { it.second }.distinctBy { it.id }.take(MAX_STREAMER_VIDEOS)
     }
 
     /** 새로 받은 영상 목록(공식 채널 최신 업로드). 실패하면 null. */

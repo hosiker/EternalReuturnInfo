@@ -13,29 +13,32 @@ import com.irionna.eternalreturninfo.data.model.VideoModel
 object VideoCache {
     const val TTL_MS = 6 * 60 * 60 * 1000L
     private const val PREFS = "video_cache"
-    private const val KEY_JSON = "list_official_v1"
-    private const val KEY_TIME = "saved_at_official_v1"
+    private fun keyJson(kind: String) = "list_${kind}_v1"
+    private fun keyTime(kind: String) = "saved_at_${kind}_v1"
+
+    const val KIND_OFFICIAL = "official"
+    const val KIND_STREAMER = "streamer"
 
     class Saved(val list: List<VideoModel>, val savedAt: Long) {
         fun isFresh(now: Long = System.currentTimeMillis()) = now - savedAt in 0 until TTL_MS
     }
 
-    fun load(context: Context): Saved? = try {
+    fun load(context: Context, kind: String): Saved? = try {
         val p = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-        val json = p.getString(KEY_JSON, null)
+        val json = p.getString(keyJson(kind), null)
         val list: List<VideoModel>? = json?.let {
             Gson().fromJson(it, object : TypeToken<List<VideoModel>>() {}.type)
         }
-        if (list.isNullOrEmpty()) null else Saved(list, p.getLong(KEY_TIME, 0L))
+        if (list.isNullOrEmpty()) null else Saved(list, p.getLong(keyTime(kind), 0L))
     } catch (e: Exception) {
         null
     }
 
-    fun save(context: Context, list: List<VideoModel>) {
+    fun save(context: Context, kind: String, list: List<VideoModel>) {
         if (list.isEmpty()) return
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
-            .putString(KEY_JSON, Gson().toJson(list))
-            .putLong(KEY_TIME, System.currentTimeMillis())
+            .putString(keyJson(kind), Gson().toJson(list))
+            .putLong(keyTime(kind), System.currentTimeMillis())
             .apply()
     }
 }

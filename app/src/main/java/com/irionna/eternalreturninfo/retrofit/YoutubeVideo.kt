@@ -222,7 +222,15 @@ data class PlaylistItemsResponse(
 @Keep
 data class PlaylistItem(
     @SerializedName("snippet")
-    val snippet: PlaylistSnippet? = null
+    val snippet: PlaylistSnippet? = null,
+    @SerializedName("contentDetails")
+    val contentDetails: PlaylistContentDetails? = null
+)
+
+@Keep
+data class PlaylistContentDetails(
+    @SerializedName("videoPublishedAt")
+    val videoPublishedAt: String? = null
 )
 
 @Keep
