@@ -56,6 +56,14 @@ class LoginActivity : AppCompatActivity() {
             Login(binding.loginIDEt.text.toString(), binding.loginPWEt.text.toString())
         }
 
+        // 키보드의 완료 버튼으로도 로그인
+        binding.loginPWEt.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE) {
+                binding.loginLoginBtn.performClick()
+                true
+            } else false
+        }
+
         //비밀번호찾기 다이얼로그 버튼
         binding.loginLostBtn.setOnClickListener {
             val dialogView = layoutInflater.inflate(R.layout.findpw_dialog, null)

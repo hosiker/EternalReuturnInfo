@@ -135,4 +135,11 @@
     <string name="terms_gate_message">ER info 이용약관(커뮤니티 규칙)이 시행되었습니다.\n\n• 금지되는 게시물과 행동, 신고와 차단, 이용 제한 기준이 담겨 있습니다.\n• 동의해야 앱을 계속 이용할 수 있습니다. 동의하지 않으면 로그아웃됩니다.\n\n자세한 내용은 \"약관·방침 보기\"에서 확인하세요.</string>
     <string name="terms_gate_agree">동의하고 계속</string>
     <string name="terms_gate_decline">동의하지 않음</string>
+    <string name="login_tagline">듀오 찾기 · 게시판 · 채팅을 한곳에서</string>
+    <string name="login_hint_email">이메일</string>
+    <string name="login_hint_password">비밀번호</string>
+    <string name="login_btn">로그인</string>
+    <string name="login_find_pw">비밀번호 찾기</string>
+    <string name="login_signup_btn">이메일로 회원가입</string>
+    <string name="login_no_account">아직 계정이 없으신가요?</string>
 </resources>
