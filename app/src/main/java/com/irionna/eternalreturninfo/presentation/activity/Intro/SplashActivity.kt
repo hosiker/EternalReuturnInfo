@@ -9,6 +9,9 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.irionna.eternalreturninfo.R
 import com.irionna.eternalreturninfo.presentation.activity.login.LoginActivity
+import com.irionna.eternalreturninfo.presentation.activity.main.MainActivity
+import com.irionna.eternalreturninfo.retrofit.BoardSingletone
+import com.irionna.eternalreturninfo.util.AutoLogin
 
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +43,13 @@ class SplashActivity : AppCompatActivity() {
 //            finish()
 
             Handler().postDelayed({
-                val intent = Intent(this, LoginActivity::class.java)
+                // 자동 로그인(30일)이 유효하면 로그인 화면을 건너뛴다
+                val intent = if (AutoLogin.isActive(this)) {
+                    BoardSingletone.Login()
+                    Intent(this, MainActivity::class.java)
+                } else {
+                    Intent(this, LoginActivity::class.java)
+                }
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
                 finish()

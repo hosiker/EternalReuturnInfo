@@ -85,11 +85,24 @@
                 android:textColorHint="@color/text_secondary"
                 android:textSize="15sp" />
 
+            <CheckBox
+                android:id="@+id/login_auto_cb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="8dp"
+                android:buttonTint="@color/checkbox_tint"
+                android:checked="true"
+                android:minHeight="40dp"
+                android:text="@string/login_auto"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+
             <Button
                 android:id="@+id/login_login_btn"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/shape_btn_primary"
                 android:stateListAnimator="@null"
                 android:text="@string/login_btn"
@@ -133,6 +146,16 @@
                 android:textColor="@color/brand_mint"
                 android:textSize="15sp"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/login_disclaimer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:gravity="center"
+                android:text="@string/disclaimer_unofficial"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
