@@ -2,6 +2,8 @@ package com.irionna.eternalreturninfo.retrofit
 
 import android.util.Log
 import androidx.annotation.Keep
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.irionna.eternalreturninfo.data.model.ERModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -11,6 +13,11 @@ import com.google.firebase.database.ValueEventListener
 @Keep object BoardSingletone {
 
     private var loginUser: ERModel = ERModel()
+
+    /** 내 정보가 서버에서 도착하거나 바뀔 때마다 알린다. 로그인 직후에는 닉네임이 늦게 오므로, 화면이 이걸 보고 다시 그린다. */
+    private val _loginUserLive = MutableLiveData<ERModel>()
+    val loginUserLive: LiveData<ERModel>
+        get() = _loginUserLive
     private var seasonID: String = ""
 
     fun LoginUser(): ERModel {
@@ -38,6 +45,7 @@ import com.google.firebase.database.ValueEventListener
                         val user = snapshot.getValue(ERModel::class.java)
                         if (user != null) {
                             loginUser = user
+                            _loginUserLive.postValue(user)
                         }
                     }
                 }

@@ -121,6 +121,8 @@ class MainFragment : Fragment() {
             } else false
         }
         refreshChips()
+        // 내 닉네임은 로그인 직후 조금 늦게 도착한다. 도착하면 [내 전적] 칩을 다시 만든다.
+        BoardSingletone.loginUserLive.observe(viewLifecycleOwner) { refreshChips() }
     }
 
     private var searchPanel: StatsPanel? = null
