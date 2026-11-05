@@ -152,6 +152,21 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
+                <!-- 내 전적 바로가기 + 최근 검색한 닉네임 (이 기기에만 저장) -->
+                <HorizontalScrollView
+                    android:id="@+id/main_chips_scroll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/main_chips"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
+
                 <TextView
                     android:id="@+id/main_search_guide"
                     android:layout_width="match_parent"

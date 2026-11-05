@@ -9,6 +9,9 @@ import android.widget.TextView
 import android.graphics.Typeface
 import com.irionna.eternalreturninfo.R
 import android.widget.Toast
+import com.irionna.eternalreturninfo.retrofit.BoardSingletone
+import com.irionna.eternalreturninfo.util.RecentSearches
+import android.widget.LinearLayout
 import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.EditorInfo
 import android.os.Bundle
@@ -97,34 +100,113 @@ class MainFragment : Fragment() {
         initRefresh()
     }
 
-    /** 전적 검색: 입력한 게임 닉네임의 전적을 시즌·모드별로 보여준다 (내 전적은 프로필 화면에서). */
+    /** 전적 검색: 입력한 게임 닉네임의 전적을 시즌·모드별로 보여준다. 내 전적 칩과 최근 검색 칩(최대 5개)으로 바로 검색할 수 있다. */
     private fun initStatsSearch() {
-        val panel = StatsPanel(binding.mainStatsPanel, requireActivity(), viewLifecycleOwner.lifecycleScope)
-
-        fun search() {
-            val q = binding.mainSearchEt.text.toString().trim()
-            if (q.isEmpty()) {
-                Toast.makeText(requireContext(), R.string.main_search_empty, Toast.LENGTH_SHORT).show()
-                return
+        // 전적이 실제로 나온 닉네임만 최근 검색에 저장한다 (서버가 알려 준 정확한 철자로)
+        val panel = StatsPanel(binding.mainStatsPanel, requireActivity(), viewLifecycleOwner.lifecycleScope) { stats ->
+            val mine = BoardSingletone.LoginUser().name?.trim().orEmpty()
+            // 내 닉네임은 [내 전적] 칩이 있으니 최근 검색에는 따로 남기지 않는다
+            if (stats != null && stats.nickname.isNotBlank() && !stats.nickname.equals(mine, ignoreCase = true)) {
+                RecentSearches.add(requireContext(), stats.nickname)
+                refreshChips()
             }
-            // 키보드를 내리고 결과 카드를 보여준다
-            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(binding.mainSearchEt.windowToken, 0)
-            binding.mainSearchEt.clearFocus()
-            binding.mainSearchGuide.visibility = View.GONE
-            binding.mainStatsPanel.root.visibility = View.VISIBLE
-            panel.load { q }
-            // 결과 카드가 화면 안에 보이도록 스크롤한다
-            binding.mainScroll.post { _binding?.mainScroll?.smoothScrollTo(0, binding.mainStatsContainer.top) }
         }
+        searchPanel = panel
 
-        binding.mainSearchBtn.setOnClickListener { search() }
+        binding.mainSearchBtn.setOnClickListener { search(binding.mainSearchEt.text.toString()) }
         binding.mainSearchEt.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                search()
+                search(binding.mainSearchEt.text.toString())
                 true
             } else false
         }
+        refreshChips()
+    }
+
+    private var searchPanel: StatsPanel? = null
+
+    private fun search(input: String) {
+        val q = input.trim()
+        if (q.isEmpty()) {
+            Toast.makeText(requireContext(), R.string.main_search_empty, Toast.LENGTH_SHORT).show()
+            return
+        }
+        binding.mainSearchEt.setText(q)
+        // 키보드를 내리고 결과 카드를 보여준다
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.mainSearchEt.windowToken, 0)
+        binding.mainSearchEt.clearFocus()
+        binding.mainSearchGuide.visibility = View.GONE
+        binding.mainStatsPanel.root.visibility = View.VISIBLE
+        searchPanel?.load { q }
+        // 결과 카드가 화면 안에 보이도록 스크롤한다
+        binding.mainScroll.post { _binding?.mainScroll?.smoothScrollTo(0, binding.mainStatsContainer.top) }
+    }
+
+    /** 검색창 아래 칩: [내 전적] + 최근 검색 닉네임. 비어 있으면 줄 자체를 숨긴다. */
+    private fun refreshChips() {
+        val b = _binding ?: return
+        val ctx = requireContext()
+        val dp = resources.displayMetrics.density
+        val row = b.mainChips
+        row.removeAllViews()
+
+        fun chip(label: String, accent: Boolean, onClick: () -> Unit): TextView = TextView(ctx).apply {
+            text = label
+            textSize = 13f
+            gravity = android.view.Gravity.CENTER
+            minHeight = (40 * dp).toInt()
+            setPadding((14 * dp).toInt(), 0, (14 * dp).toInt(), 0)
+            setBackgroundResource(R.drawable.shape_chip)
+            setTextColor(ContextCompat.getColor(ctx, if (accent) R.color.brand_mint else R.color.white))
+            setOnClickListener { onClick() }
+        }
+
+        fun gap() = View(ctx).apply { layoutParams = LinearLayout.LayoutParams((8 * dp).toInt(), 1) }
+
+        val mine = BoardSingletone.LoginUser().name?.trim().orEmpty()
+        if (mine.isNotEmpty()) {
+            row.addView(chip(getString(R.string.main_chip_mine), true) { search(mine) })
+        }
+        RecentSearches.get(ctx).forEach { name ->
+            if (row.childCount > 0) row.addView(gap())
+            // 닉네임 칩 + 삭제(✕)
+            val box = LinearLayout(ctx).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = android.view.Gravity.CENTER_VERTICAL
+                setBackgroundResource(R.drawable.shape_chip)
+            }
+            box.addView(TextView(ctx).apply {
+                text = name
+                textSize = 13f
+                gravity = android.view.Gravity.CENTER
+                minHeight = (40 * dp).toInt()
+                setPadding((14 * dp).toInt(), 0, (4 * dp).toInt(), 0)
+                setTextColor(ContextCompat.getColor(ctx, R.color.white))
+                setOnClickListener { search(name) }
+            })
+            box.addView(TextView(ctx).apply {
+                text = "✕"
+                textSize = 12f
+                gravity = android.view.Gravity.CENTER
+                minWidth = (36 * dp).toInt()
+                minHeight = (40 * dp).toInt()
+                setTextColor(ContextCompat.getColor(ctx, R.color.text_secondary))
+                contentDescription = getString(R.string.main_chip_remove_desc, name)
+                setOnClickListener {
+                    RecentSearches.remove(ctx, name)
+                    refreshChips()
+                }
+            })
+            row.addView(box)
+        }
+        b.mainChipsScroll.visibility = if (row.childCount > 0) View.VISIBLE else View.GONE
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // 로그인 직후에는 내 닉네임이 늦게 준비될 수 있어서 화면이 보일 때 칩을 다시 만든다
+        refreshChips()
     }
 
     override fun onDestroyView() {

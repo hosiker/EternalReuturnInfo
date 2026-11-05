@@ -174,4 +174,6 @@
     <string name="main_banner_failed">공지를 불러오지 못했어요.\n아래로 당겨서 다시 시도해 보세요.</string>
     <string name="main_video_empty">영상을 불러오지 못했거나 아직 없어요.\n아래로 당겨서 다시 시도해 보세요.</string>
     <string name="main_video_thumb_desc">%1$s 영상</string>
+    <string name="main_chip_mine">내 전적</string>
+    <string name="main_chip_remove_desc">%1$s 검색 기록 삭제</string>
 </resources>
