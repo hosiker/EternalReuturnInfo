@@ -31,6 +31,8 @@ import com.irionna.eternalreturninfo.presentation.viewmodel.MainListViewModel
 
 class MainFragment : Fragment() {
     companion object {
+        private const val SORT_DATE = "date"
+        private const val SORT_VIEWS = "viewCount"
         fun newInstance() = MainFragment()
     }
 
@@ -155,15 +157,20 @@ class MainFragment : Fragment() {
 
     }
 
-    // 게임 방송: 공식 채널 / 스트리머 탭
+    // 게임 방송: 공식 채널 / 스트리머 탭 (스트리머는 최신순·조회순 검색 결과)
     private var officialVideos: List<VideoModel> = emptyList()
-    private var streamerVideos: List<VideoModel> = emptyList()
+    private val streamerVideos = HashMap<String, List<VideoModel>>()
     private var showStreamer = false
+    private var streamerSort = SORT_DATE
 
     private fun showVideos() {
-        videoListAdapter.submitList((if (showStreamer) streamerVideos else officialVideos).toList())
+        val list = if (showStreamer) streamerVideos[streamerSort].orEmpty() else officialVideos
+        videoListAdapter.submitList(list.toList())
         styleVideoTab(binding.mainSegOfficial, !showStreamer)
         styleVideoTab(binding.mainSegStreamer, showStreamer)
+        binding.mainSortSeg.visibility = if (showStreamer) View.VISIBLE else View.GONE
+        styleVideoTab(binding.mainSortLatest, streamerSort == SORT_DATE)
+        styleVideoTab(binding.mainSortViews, streamerSort == SORT_VIEWS)
     }
 
     private fun styleVideoTab(tab: TextView, selected: Boolean) {
@@ -185,9 +192,17 @@ class MainFragment : Fragment() {
         }
         binding.mainSegStreamer.setOnClickListener {
             showStreamer = true
-            mainViewModel.loadStreamerVideos(requireContext()) // 처음 열 때만 실제로 불러온다
+            mainViewModel.loadStreamerVideos(requireContext(), streamerSort) // 처음 열 때만 실제로 불러온다
             showVideos()
         }
+        binding.mainSortLatest.setOnClickListener { selectSort(SORT_DATE) }
+        binding.mainSortViews.setOnClickListener { selectSort(SORT_VIEWS) }
+        showVideos()
+    }
+
+    private fun selectSort(sort: String) {
+        streamerSort = sort
+        mainViewModel.loadStreamerVideos(requireContext(), sort)
         showVideos()
     }
 
@@ -201,8 +216,8 @@ class MainFragment : Fragment() {
             showVideos()
         }
 
-        streamerList.observe(viewLifecycleOwner){
-            streamerVideos = it
+        streamerList.observe(viewLifecycleOwner){ (sort, list) ->
+            streamerVideos[sort] = list
             showVideos()
         }
 

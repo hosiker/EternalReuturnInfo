@@ -12,6 +12,7 @@ import com.irionna.eternalreturninfo.data.model.VideoModel
 import com.irionna.eternalreturninfo.data.repository.VideoCache
 import com.irionna.eternalreturninfo.retrofit.RetrofitInstance
 import com.irionna.eternalreturninfo.util.Constants
+import com.irionna.eternalreturninfo.util.VideoFilter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -19,7 +20,6 @@ import kotlinx.coroutines.launch
 class MainListViewModel() : ViewModel(){
 
     private companion object {
-        const val PER_STREAMER = 5
         const val MAX_STREAMER_VIDEOS = 20
     }
 
@@ -32,8 +32,9 @@ class MainListViewModel() : ViewModel(){
     val videoList: LiveData<MutableList<VideoModel>>
         get() = _videoList
 
-    private val _streamerList = MutableLiveData<MutableList<VideoModel>>()
-    val streamerList: LiveData<MutableList<VideoModel>>
+    /** 스트리머 탭 결과: (정렬 종류, 영상 목록) */
+    private val _streamerList = MutableLiveData<Pair<String, List<VideoModel>>>()
+    val streamerList: LiveData<Pair<String, List<VideoModel>>>
         get() = _streamerList
 
 
@@ -97,69 +98,72 @@ class MainListViewModel() : ViewModel(){
         }
     }
 
-    private var streamersRequested = false
+    private val streamersRequested = mutableSetOf<String>()
 
     /**
-     * 스트리머 탭: 등록한 채널들의 최근 영상을 모아 최신순으로 보여준다. 탭을 처음 열 때 한 번만 불러온다.
-     * 저장·실패 처리는 공식 채널 목록과 같다 (6시간 이내면 저장본, 실패하면 오래된 저장본).
+     * 스트리머 탭: YouTube 검색 결과 중 이터널 리턴 관련 영상만 보여준다. [sort] = "date"(최신순) 또는 "viewCount"(조회순, 최근 30일).
+     * 정렬마다 6시간 저장하고, 처음 열 때 한 번만 불러온다. 검색은 호출당 한도 100 이라 새로 받기는 정렬당 6시간에 한 번뿐이다.
      */
-    fun loadStreamerVideos(context: Context) {
-        if (streamersRequested) return
-        streamersRequested = true
+    fun loadStreamerVideos(context: Context, sort: String) {
+        if (!streamersRequested.add(sort)) return
         val appContext = context.applicationContext
+        val kind = "streamer_$sort"
         viewModelScope.launch {
-            val saved = VideoCache.load(appContext, VideoCache.KIND_STREAMER)
+            val saved = VideoCache.load(appContext, kind)
             if (saved != null && saved.isFresh()) {
-                _streamerList.postValue(saved.list.toMutableList())
+                _streamerList.postValue(sort to saved.list)
                 return@launch
             }
-            val fresh = fetchStreamerVideos()
+            val fresh = fetchStreamerVideos(sort)
             if (!fresh.isNullOrEmpty()) {
-                VideoCache.save(appContext, VideoCache.KIND_STREAMER, fresh)
-                _streamerList.postValue(fresh.toMutableList())
+                VideoCache.save(appContext, kind, fresh)
+                _streamerList.postValue(sort to fresh)
             } else {
-                _streamerList.postValue((saved?.list ?: emptyList()).toMutableList())
+                _streamerList.postValue(sort to (saved?.list ?: emptyList()))
             }
         }
     }
 
-    /** 채널마다 최근 영상 몇 개를 받아 합친 뒤 최신순으로 정렬한다. 채널 하나가 실패해도 나머지는 보여준다. 전부 실패하면 null. */
-    private suspend fun fetchStreamerVideos(): List<VideoModel>? {
-        val all = mutableListOf<Pair<String, VideoModel>>() // (게시 시각, 영상)
-        var anySuccess = false
-        for (channelId in Constants.STREAMER_CHANNEL_IDS) {
-            try {
-                val response = RetrofitInstance.api.getPlaylistVideos(
-                    playlistId = Constants.uploadsPlaylistOf(channelId),
-                    maxResults = PER_STREAMER
-                )
-                if (!response.isSuccessful) {
-                    Log.e("YouTube", "스트리머 목록 실패 HTTP ${response.code()}: ${response.errorBody()?.string()?.take(200)}")
-                    continue
-                }
-                anySuccess = true
-                response.body()?.items.orEmpty().forEach { item ->
-                    val sn = item.snippet ?: return@forEach
-                    val videoId = sn.resourceId?.videoId ?: return@forEach
-                    val title = sn.title
-                    if (title == "Private video" || title == "Deleted video") return@forEach
-                    val at = item.contentDetails?.videoPublishedAt ?: ""
-                    all.add(
-                        at to VideoModel(
-                            id = videoId,
-                            title = title,
-                            thumbnail = sn.thumbnails?.medium?.url,
-                            url = "https://www.youtube.com/watch?v=$videoId"
-                        )
-                    )
-                }
-            } catch (e: Exception) {
-                Log.e("YouTube", "스트리머 목록 오류: ${e.javaClass.simpleName} ${e.message}")
+    /** 검색 → 영상 정보(태그) 조회 → 키워드로 거르기. 검색·조회가 실패하면 null. */
+    private suspend fun fetchStreamerVideos(sort: String): List<VideoModel>? {
+        return try {
+            // 조회순은 오래된 인기 영상만 나오지 않도록 최근 30일로 제한한다
+            val after = if (sort == "viewCount") {
+                val fmt = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", java.util.Locale.US)
+                fmt.timeZone = java.util.TimeZone.getTimeZone("UTC")
+                fmt.format(java.util.Date(System.currentTimeMillis() - 30L * 24 * 60 * 60 * 1000))
+            } else null
+            val search = RetrofitInstance.api.searchVideos(query = VideoFilter.SEARCH_QUERY, order = sort, publishedAfter = after)
+            if (!search.isSuccessful) {
+                Log.e("YouTube", "스트리머 검색 실패 HTTP ${search.code()}: ${search.errorBody()?.string()?.take(300)}")
+                return null
             }
+            val ids = search.body()?.items.orEmpty().mapNotNull { it.id.videoId }
+            if (ids.isEmpty()) return emptyList()
+
+            val details = RetrofitInstance.api.getVideoDetails(ids = ids.joinToString(","))
+            if (!details.isSuccessful) {
+                Log.e("YouTube", "영상 정보 실패 HTTP ${details.code()}: ${details.errorBody()?.string()?.take(300)}")
+                return null
+            }
+            val byId = details.body()?.items.orEmpty().filter { it.id != null }.associateBy { it.id!! }
+            val result = ids.mapNotNull { id ->
+                val d = byId[id] ?: return@mapNotNull null
+                val sn = d.snippet ?: return@mapNotNull null
+                if (!VideoFilter.matches(sn.title, sn.tags)) return@mapNotNull null
+                VideoModel(
+                    id = id,
+                    title = sn.title,
+                    thumbnail = sn.thumbnails?.medium?.url,
+                    url = "https://www.youtube.com/watch?v=$id"
+                )
+            }.take(MAX_STREAMER_VIDEOS)
+            Log.d("YouTube", "스트리머($sort) 검색 ${ids.size}개 중 ${result.size}개 통과")
+            result
+        } catch (e: Exception) {
+            Log.e("YouTube", "스트리머 목록 오류: ${e.javaClass.simpleName} ${e.message}")
+            null
         }
-        if (!anySuccess) return null
-        Log.d("YouTube", "스트리머 영상 ${all.size}개")
-        return all.sortedByDescending { it.first }.map { it.second }.distinctBy { it.id }.take(MAX_STREAMER_VIDEOS)
     }
 
     /** 새로 받은 영상 목록(공식 채널 최신 업로드). 실패하면 null. */

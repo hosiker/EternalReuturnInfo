@@ -7,18 +7,6 @@ class Constants {
         // 홈 "게임 방송"에 보여줄 공식 채널 ("이터널 리턴", YouTube 검색으로 확인).
         // 채널 번호가 UC 로 시작하면 업로드 목록 번호는 UU + 나머지 글자이다.
         const val OFFICIAL_CHANNEL_ID = "UCEOaB76vS9RfiAwEzxB8QGw"
-        // 홈 "게임 방송"의 스트리머 탭에 모아서 보여줄 채널 (이터널 리턴 방송을 하는 채널). 추가·삭제는 여기서만 한다.
-        // 채널마다 호출 한도 1 을 쓰고 6시간마다 한 번만 새로 받는다.
-        val STREAMER_CHANNEL_IDS = listOf(
-            "UC_Z0gHDvywubtL0TTrxFwvg", // 신열-이터널리턴
-            "UChHxLcNi7e0zu-e33HM6v6A", // 배돈
-            "UCd8uwNFneK7oapu3ADGyA-Q", // 실버실비아
-            "UCBjoVQJNPIjeqth-7V-76LA", // 설원
-            "UC5AhJi__iLUxNlVzTfDWQ1w", // 에비나
-            "UCYiLi_IhhiuVgkoOnS9khVw", // 루화
-            "UCMWt1oyN-DNNRaAQh9eOEcw"  // 한동그라미 OneCircle
-        )
-
         /** 채널 번호(UC…)에서 업로드 목록 번호(UU…)를 만든다. */
         fun uploadsPlaylistOf(channelId: String): String = "UU" + channelId.substring(2)
 

@@ -167,4 +167,6 @@
     <string name="main_search_empty">닉네임을 입력하세요</string>
     <string name="main_video_official">공식</string>
     <string name="main_video_streamer">스트리머</string>
+    <string name="main_sort_latest">최신순</string>
+    <string name="main_sort_views">조회순</string>
 </resources>
