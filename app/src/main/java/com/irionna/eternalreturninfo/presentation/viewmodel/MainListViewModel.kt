@@ -88,6 +88,8 @@ class MainListViewModel() : ViewModel(){
                 }
 
             }else{
+                // 실패 이유(키 제한, 한도 초과, API 미사용 등)를 로그로 남긴다. 키는 포함되지 않는다.
+                Log.e("YouTube", "검색 실패 HTTP ${response.code()}: ${response.errorBody()?.string()?.take(400)}")
             }
 
             _videoList.postValue(resItems.toMutableList())
