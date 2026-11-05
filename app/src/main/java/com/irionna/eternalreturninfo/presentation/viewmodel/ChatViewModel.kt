@@ -150,6 +150,15 @@ class ChatViewModel(
     }
 
     fun disconnectFirebase() {
-        refDb.removeEventListener(refEventListener)
+        // loadChat 이 호출되기 전(변수가 아직 만들어지지 않은 상태)에 불려도 꺼지지 않게 한다.
+        if (::refDb.isInitialized && ::refEventListener.isInitialized) {
+            refDb.removeEventListener(refEventListener)
+        }
+    }
+
+    // 채팅 화면이 닫히면(뒤로가기 제스처 포함) 뷰모델이 정리되면서 리스너가 해제된다.
+    override fun onCleared() {
+        disconnectFirebase()
+        super.onCleared()
     }
 }

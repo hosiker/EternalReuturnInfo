@@ -61,12 +61,6 @@ class ChatActivity : AppCompatActivity() {
         )
     }
 
-    override fun onBackPressed() {
-        viewModel.disconnectFirebase()
-        finish()
-        super.onBackPressed()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ChatActivityBinding.inflate(layoutInflater)
