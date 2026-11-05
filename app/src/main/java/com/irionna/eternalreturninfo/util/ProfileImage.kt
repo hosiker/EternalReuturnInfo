@@ -28,6 +28,10 @@ object ProfileImage {
 
     fun resIdOf(context: Context, value: String?): Int {
         val name = drawableNameOf(value) ?: return R.drawable.ic_baseimage
+        // 실험체 그림(character_N)은 전신이라 아바타에는 미리 잘라 둔 얼굴 그림(face_N)을 쓴다.
+        val faceName = if (name.startsWith("character_")) "face_" + name.removePrefix("character_") else name
+        val faceId = context.resources.getIdentifier(faceName, "drawable", context.packageName)
+        if (faceId != 0) return faceId
         val id = context.resources.getIdentifier(name, "drawable", context.packageName)
         return if (id != 0) id else R.drawable.ic_baseimage
     }
