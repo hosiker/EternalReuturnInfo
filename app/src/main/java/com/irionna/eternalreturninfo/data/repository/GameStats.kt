@@ -40,7 +40,7 @@ object GameStats {
     private val gate = Mutex()
     private var lastCallAt = 0L
 
-    private val userNums = HashMap<String, Long>()
+    private val userIds = HashMap<String, String>()
     private var seasonCache: List<SeasonInfo>? = null
     private val statsCache = HashMap<String, List<UserStats>>()
 
@@ -67,14 +67,15 @@ object GameStats {
 
     private fun keyReady() = Constants.MAIN_APIKEY.isNotBlank()
 
-    suspend fun userNum(nickname: String): Long? {
+    /** 닉네임으로 게임 유저 id 를 찾는다. (서버가 userNum 대신 userId 문자열을 준다) */
+    suspend fun userId(nickname: String): String? {
         if (nickname.isBlank() || !keyReady()) return null
-        userNums[nickname]?.let { return it }
+        userIds[nickname]?.let { return it }
         val r = throttled { RetrofitInstance.searchUserIDApi.getUserByNickname(Constants.MAIN_APIKEY, nickname).execute() }
-        val num = if (r?.isSuccessful == true) r.body()?.user?.userNum else null
-        if (num != null) userNums[nickname] = num
-        else if (BuildConfig.DEBUG) Log.d(TAG, "유저 번호 조회 실패: HTTP ${r?.code()}")
-        return num
+        val id = if (r?.isSuccessful == true) r.body()?.user?.userId?.takeIf { it.isNotBlank() } else null
+        if (id != null) userIds[nickname] = id
+        else if (BuildConfig.DEBUG) Log.d(TAG, "유저 id 조회 실패: HTTP ${r?.code()} code=${r?.body()?.code}")
+        return id
     }
 
     /** 시즌 목록(최신이 위). 서버 목록을 못 받으면 데이터베이스의 현재 시즌 값 하나로 대신한다. */
@@ -107,11 +108,11 @@ object GameStats {
         seasons.firstOrNull { it.isCurrent }?.id ?: seasons.firstOrNull()?.id
 
     /** 한 시즌의 전적 목록(모드별 기록). 실패하면 null, 기록이 없으면 빈 목록. */
-    suspend fun stats(userNum: Long, seasonId: Int): List<UserStats>? {
-        val key = "$userNum/$seasonId"
+    suspend fun stats(userId: String, seasonId: Int): List<UserStats>? {
+        val key = "$userId/$seasonId"
         statsCache[key]?.let { return it }
         val r = throttled {
-            RetrofitInstance.searchUserStateApi.getUserStats(Constants.MAIN_APIKEY, userNum.toString(), seasonId.toString()).execute()
+            RetrofitInstance.searchUserStateApi.getUserStatsByUid(Constants.MAIN_APIKEY, userId, seasonId.toString()).execute()
         }
         if (r == null) return null
         if (BuildConfig.DEBUG) Log.d(TAG, "전적 요청 season=$seasonId → HTTP ${r.code()}")
@@ -148,8 +149,8 @@ object GameStats {
 
     /** 듀오 찾기 카드용: 현재 시즌의 기본 기록 한 줄 요약. */
     suspend fun summary(nickname: String): UserStats? {
-        val num = userNum(nickname) ?: return null
+        val id = userId(nickname) ?: return null
         val seasonId = currentSeasonId(seasons()) ?: return null
-        return stats(num, seasonId)?.let { pickDefault(it) }
+        return stats(id, seasonId)?.let { pickDefault(it) }
     }
 }

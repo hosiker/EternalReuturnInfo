@@ -40,10 +40,11 @@ interface ApiService {
 }
 
 interface UserStatsService {
-    @GET("v1/user/stats/{userNum}/{seasonId}")
-    fun getUserStats(
+    /** 새 방식: 닉네임 조회가 주는 userId 로 전적을 받는다. */
+    @GET("v1/user/stats/uid/{userId}/{seasonId}")
+    fun getUserStatsByUid(
         @Header("x-api-key") apiKey: String,
-        @Path("userNum") userNum: String,
+        @Path("userId") userId: String,
         @Path("seasonId") seasonId: String
     ): Call<UserStatsResponse>
 }

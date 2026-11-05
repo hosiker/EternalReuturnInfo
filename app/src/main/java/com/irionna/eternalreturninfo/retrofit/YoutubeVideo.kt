@@ -147,8 +147,10 @@ data class UserResponse(
 )
 @Keep
 data class User(
-    val userNum: Long,
-    val nickname: String
+    // 서버가 유저 식별을 userNum(숫자)에서 userId(문자열)로 바꿨다. 응답에 없는 필드는 null.
+    val userNum: Long? = null,
+    val userId: String? = null,
+    val nickname: String? = null
 )
 @Keep
 data class UserStatsResponse(
