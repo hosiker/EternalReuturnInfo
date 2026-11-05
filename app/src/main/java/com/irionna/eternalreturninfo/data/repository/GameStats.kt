@@ -147,10 +147,31 @@ object GameStats {
         list.filter { it.matchingMode == MODE_RANKED }.maxByOrNull { it.totalGames }
             ?: list.maxByOrNull { it.totalGames }
 
+    /**
+     * [fromSeasonId] 보다 이전 시즌 중 기록이 있는 가장 최근 시즌을 찾는다. (최대 [maxTries] 개 시즌만 조회)
+     * 조회가 실패하면 null. 기록 있는 시즌이 없어도 null.
+     */
+    suspend fun latestWithRecords(
+        userId: String,
+        seasons: List<SeasonInfo>,
+        fromSeasonId: Int,
+        maxTries: Int
+    ): Pair<SeasonInfo, List<UserStats>>? {
+        for (season in seasons.filter { it.id < fromSeasonId }.take(maxTries)) {
+            val list = stats(userId, season.id) ?: return null
+            if (list.isNotEmpty()) return season to list
+        }
+        return null
+    }
+
     /** 듀오 찾기 카드용: 현재 시즌의 기본 기록 한 줄 요약. */
     suspend fun summary(nickname: String): UserStats? {
         val id = userId(nickname) ?: return null
-        val seasonId = currentSeasonId(seasons()) ?: return null
-        return stats(id, seasonId)?.let { pickDefault(it) }
+        val all = seasons()
+        val seasonId = currentSeasonId(all) ?: return null
+        val current = stats(id, seasonId) ?: return null
+        if (current.isNotEmpty()) return pickDefault(current)
+        // 현재 시즌 기록이 없으면 가장 최근에 기록이 있는 시즌 (카드마다 호출하므로 3개 시즌까지만)
+        return latestWithRecords(id, all, seasonId, 3)?.second?.let { pickDefault(it) }
     }
 }

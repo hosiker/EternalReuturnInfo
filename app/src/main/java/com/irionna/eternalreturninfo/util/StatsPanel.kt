@@ -37,6 +37,7 @@ class StatsPanel(
     private var stats: List<UserStats> = emptyList()
     private var selMode = GameStats.MODE_RANKED
     private var selTeam = 0
+    private var notice: String? = null
 
     init {
         b.statsSeasonChip.setOnClickListener { if (seasons.isNotEmpty()) showSeasonSheet() }
@@ -76,8 +77,25 @@ class StatsPanel(
                 showMessage(activity.getString(if (denied) R.string.stats_denied else R.string.stats_unavailable))
                 return@launch
             }
-            stats = list
-            val default = GameStats.pickDefault(list)
+            var shown = list
+            var shownId = id
+            if (list.isEmpty() && firstLoad) {
+                // 현재 시즌 기록이 없으면 기록이 있는 가장 최근 시즌을 대신 보여준다
+                showMessage(activity.getString(R.string.stats_searching))
+                val found = GameStats.latestWithRecords(num, seasons, id, FALLBACK_TRIES)
+                if (seasonId != id) return@launch
+                if (found != null) {
+                    shownId = found.first.id
+                    shown = found.second
+                    seasonId = shownId
+                    updateChip()
+                    notice = activity.getString(R.string.stats_fallback_notice, found.first.name)
+                }
+            } else {
+                notice = null
+            }
+            stats = shown
+            val default = GameStats.pickDefault(shown)
             if (default != null) {
                 selMode = default.matchingMode
                 selTeam = default.matchingTeamMode
@@ -96,6 +114,7 @@ class StatsPanel(
 
     private fun showMessage(text: String) {
         b.statsEmpty.text = text
+        b.statsNotice.visibility = View.GONE
         b.statsEmpty.visibility = View.VISIBLE
         b.statsBody.visibility = View.GONE
         b.statsModeRow.visibility = View.GONE
@@ -143,6 +162,8 @@ class StatsPanel(
         b.statsModeRow.visibility = View.VISIBLE
         b.statsTeamRow.visibility = View.VISIBLE
         b.statsEmpty.visibility = View.GONE
+        b.statsNotice.visibility = if (notice != null) View.VISIBLE else View.GONE
+        b.statsNotice.text = notice
         b.statsBody.visibility = View.VISIBLE
         if (entry != null) bind(entry)
         onStatsChanged(entry)
@@ -178,7 +199,8 @@ class StatsPanel(
         b.statsRpBlock.visibility = if (ranked) View.VISIBLE else View.GONE
         b.statsRpSpacer.visibility = if (ranked) View.GONE else View.VISIBLE
         if (ranked) {
-            b.statsRp.text = "${s.mmr} RP"
+            b.statsTier.text = Tiers.nameOf(s.mmr, s.rank)
+            b.statsRp.text = String.format("%,d RP", s.mmr)
             b.statsRank.text = if (s.rank > 0) {
                 activity.getString(R.string.stats_rank_line, s.rank, pct(s.rankPercent))
             } else activity.getString(R.string.stats_no_rank)
@@ -244,6 +266,9 @@ class StatsPanel(
     }
 
     companion object {
+        /** 현재 시즌에 기록이 없을 때 거슬러 올라가며 확인하는 최대 시즌 수 (요청은 1초 간격이라 시간이 걸린다) */
+        private const val FALLBACK_TRIES = 8
+
         /** 로그인 직후에는 닉네임이 비어 있을 수 있어서, 준비될 때까지 최대 [timeoutMs] 기다린다. */
         suspend fun waitForNickname(timeoutMs: Long = 15000, read: () -> String?): String? {
             var waited = 0L
