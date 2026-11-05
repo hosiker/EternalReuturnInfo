@@ -39,4 +39,9 @@
         <item name="android:windowAnimationStyle">@android:style/Animation.InputMethod</item>
         <item name="android:backgroundDimEnabled">true</item>
     </style>
+
+    <style name="MainTabText" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">11sp</item>
+        <item name="textAllCaps">false</item>
+    </style>
 </resources>
