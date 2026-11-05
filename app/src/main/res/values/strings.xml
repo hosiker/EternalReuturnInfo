@@ -158,4 +158,5 @@
     <string name="stats_rank_line">%1$d위 · 상위 %2$s%%</string>
     <string name="stats_no_rank">순위 없음</string>
     <string name="myprofile_character_stats">실험체 통계 (선택한 모드)</string>
+    <string name="stats_denied">게임 서버가 전적 조회를 허용하지 않았어요.\nAPI 키 권한을 확인해야 해요.</string>
 </resources>

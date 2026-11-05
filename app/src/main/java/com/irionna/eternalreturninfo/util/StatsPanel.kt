@@ -72,7 +72,8 @@ class StatsPanel(
             val list = GameStats.stats(num, id)
             if (seasonId != id) return@launch // 그 사이 다른 시즌을 골랐다
             if (list == null) {
-                showMessage(activity.getString(R.string.stats_unavailable))
+                val denied = GameStats.lastStatsError.let { it == 401 || it == 403 }
+                showMessage(activity.getString(if (denied) R.string.stats_denied else R.string.stats_unavailable))
                 return@launch
             }
             stats = list

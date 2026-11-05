@@ -33,6 +33,10 @@ object GameStats {
     private const val MIN_INTERVAL_MS = 1000L
     private const val TAG = "ERStats"
 
+    /** 마지막 전적 조회가 실패한 이유 (응답 본문의 code, 없으면 HTTP 코드). 화면 안내 문구를 고르는 데 쓴다. */
+    var lastStatsError: Int? = null
+        private set
+
     private val gate = Mutex()
     private var lastCallAt = 0L
 
@@ -114,8 +118,17 @@ object GameStats {
         if (!r.isSuccessful) {
             // 기록이 없는 시즌은 404 로 온다. 이 경우는 "기록 없음"으로 본다.
             if (BuildConfig.DEBUG) Log.d(TAG, "전적 조회 HTTP ${r.code()} (season=$seasonId)")
+            lastStatsError = r.code()
             return if (r.code() == 404) emptyList<UserStats>().also { statsCache[key] = it } else null
         }
+        // 서버는 HTTP 200 이어도 본문 code 로 실패를 알린다 (200 성공, 404 기록 없음, 401/403 권한 없음 등)
+        val bodyCode = r.body()?.code
+        if (bodyCode != null && bodyCode != 200) {
+            if (bodyCode == 404) return emptyList<UserStats>().also { statsCache[key] = it }
+            lastStatsError = bodyCode
+            return null
+        }
+        lastStatsError = null
         val list = r.body()?.userStats.orEmpty()
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "응답 본문 code=${r.body()?.code} message=${r.body()?.message}")
