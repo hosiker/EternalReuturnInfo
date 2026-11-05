@@ -4,315 +4,235 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.activity.login.SignUpActivity"
-    android:background="@color/black">
+    android:background="@color/background_color"
+    tools:context=".presentation.activity.login.SignUpActivity">
 
-    <ImageView
-        android:id="@+id/signup_logo_img"
-        android:layout_width="100dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_white_logo" />
-
-    <View
-        android:id="@+id/signup_line_view"
+    <LinearLayout
+        android:id="@+id/signup_top_bar"
         android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="#717171"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signup_logo_img"></View>
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/signup_back_btn"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:contentDescription="뒤로"
+            android:padding="10dp"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="@string/signup_title"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signup_line_view"
-        app:layout_constraintVertical_bias="0.17">
+        app:layout_constraintTop_toBottomOf="@+id/signup_top_bar">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingBottom="32dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/signup_profile_img"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:layout_marginTop="70dp"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
                 android:src="@drawable/ic_baseimage"
-                app:civ_border_color="@color/brand_mint"
-                app:civ_border_width="2dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:civ_border_color="@color/brand_green"
+                app:civ_border_width="2dp" />
 
             <TextView
                 android:id="@+id/signup_profile_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="프로필 사진을 선택하세요"
-                android:textColor="@color/white"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/signup_profile_img" />
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:text="@string/signup_profile_caption"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
 
             <TextView
-                android:id="@+id/signup_ID_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="60dp"
-                android:text="아이디"
-                android:textColor="@color/white"
-                android:textSize="15dp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/signup_profile_tv" />
+                android:layout_marginTop="18dp"
+                android:text="@string/signup_section_account"
+                android:textColor="@color/brand_mint"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
+                <EditText
+                    android:id="@+id/signup_ID_et"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/shape_input_field"
+                    android:hint="@string/signup_hint_email"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:paddingHorizontal="16dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/text_secondary"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/signup_btn_ID_check"
+                    android:layout_width="84dp"
+                    android:layout_height="52dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/shape_btn_small_outline"
+                    android:stateListAnimator="@null"
+                    android:text="@string/signup_check_btn"
+                    android:textAllCaps="false"
+                    android:textColor="@color/brand_mint"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
             <TextView
                 android:id="@+id/signup_tv_IDcheck_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginBottom="10dp"
-                android:text="이메일이 존재하지 않습니다."
-                android:textColor="@color/highlight_color2"
-                android:textSize="14dp"
-                android:textStyle="bold"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toTopOf="@+id/signup_ID_et"
-                app:layout_constraintStart_toEndOf="@+id/signup_ID_tv" />
-
-            <EditText
-                android:id="@+id/signup_ID_et"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="12dp"
-                android:background="@drawable/shape_login_btn"
-                android:ems="16"
-                android:hint="이메일로 입력하세요."
-                android:inputType="textEmailAddress"
-                android:padding="15dp"
-                android:textColor="@color/white"
-                android:textColorHint="#919191"
-                android:textSize="17dp"
-                app:layout_constraintEnd_toStartOf="@+id/signup_btn_ID_check"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/signup_ID_tv" />
-
-            <Button
-                android:id="@+id/signup_btn_ID_check"
-                android:layout_width="80dp"
-                android:layout_height="0dp"
-                android:layout_marginEnd="32dp"
-                android:background="@drawable/shape_highlight_btn"
-                android:text="중복확인"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/signup_ID_et"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/signup_ID_et"
-                app:layout_constraintVertical_bias="1.0" />
-
-            <TextView
-                android:id="@+id/signup_PW_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="24dp"
-                android:text="비밀번호"
-                android:textColor="@color/white"
-                android:textSize="15dp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/signup_ID_et" />
-
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="6dp"
+                android:textSize="12sp"
+                android:visibility="gone" />
             <EditText
                 android:id="@+id/signup_PW_et"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="32dp"
-                android:background="@drawable/shape_login_btn"
-                android:ems="16"
-                android:padding="15dp"
-                android:hint="비밀번호는 6글자 이상 입력하세요."
-                android:textColorHint="#919191"
-                android:textSize="17dp"
-                android:textColor="@color/white"
+                android:background="@drawable/shape_input_field"
+                android:hint="@string/signup_hint_pw"
                 android:inputType="textPassword"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/signup_PW_tv" />
-
-            <TextView
-                android:id="@+id/signup_PWCheck_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="24dp"
-                android:text="비밀번호 확인"
+                android:maxLines="1"
+                android:paddingHorizontal="16dp"
                 android:textColor="@color/white"
-                android:textSize="15dp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/signup_PW_et" />
-
+                android:textColorHint="@color/text_secondary"
+                android:textSize="15sp" />
             <EditText
                 android:id="@+id/signup_PWCheck_et"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="32dp"
-                android:background="@drawable/shape_login_btn"
-                android:ems="16"
-                android:hint="동일한 비밀번호를 입력하세요."
+                android:background="@drawable/shape_input_field"
+                android:hint="@string/signup_hint_pw2"
                 android:inputType="textPassword"
-                android:padding="15dp"
+                android:maxLines="1"
+                android:paddingHorizontal="16dp"
                 android:textColor="@color/white"
-                android:textColorHint="#919191"
-                android:textSize="17dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/signup_PWCheck_tv" />
-
+                android:textColorHint="@color/text_secondary"
+                android:textSize="15sp" />
             <TextView
-                android:id="@+id/signup_NickName_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="24dp"
-                android:text="닉네임"
-                android:textColor="@color/white"
-                android:textSize="15dp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/signup_PWCheck_et" />
+                android:layout_marginTop="22dp"
+                android:text="@string/signup_section_profile"
+                android:textColor="@color/brand_mint"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
+                <EditText
+                    android:id="@+id/signup_NickName_et"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/shape_input_field"
+                    android:hint="@string/signup_hint_nick"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:paddingHorizontal="16dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/text_secondary"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/signup_btn_nickname_check"
+                    android:layout_width="84dp"
+                    android:layout_height="52dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/shape_btn_small_outline"
+                    android:stateListAnimator="@null"
+                    android:text="@string/signup_check_btn"
+                    android:textAllCaps="false"
+                    android:textColor="@color/brand_mint"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
             <TextView
                 android:id="@+id/signup_tv_check_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginBottom="10dp"
-                android:text="닉네임이 존재하지않습니다."
-                android:textColor="@color/highlight_color2"
-                android:textSize="14dp"
-                android:textStyle="bold"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toTopOf="@+id/signup_NickName_et"
-                app:layout_constraintStart_toEndOf="@+id/signup_NickName_tv" />
-
-            <EditText
-                android:id="@+id/signup_NickName_et"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="12dp"
-                android:background="@drawable/shape_login_btn"
-                android:ems="16"
-                android:hint="인게임 닉네임을 입력하세요"
-                android:padding="15dp"
-                android:textColor="@color/white"
-                android:textColorHint="#919191"
-                android:textSize="17dp"
-                app:layout_constraintEnd_toStartOf="@+id/signup_btn_nickname_check"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/signup_NickName_tv" />
-
-            <Button
-                android:id="@+id/signup_btn_nickname_check"
-                android:layout_width="80dp"
-                android:layout_height="0dp"
-                android:layout_marginEnd="32dp"
-                android:background="@drawable/shape_highlight_btn"
-                android:text="중복확인"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/signup_NickName_et"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/signup_NickName_et"
-                app:layout_constraintVertical_bias="1.0" />
-
-            <TextView
-                android:id="@+id/signup_character_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="24dp"
-                android:text="선호 실험체"
-                android:textColor="@color/white"
-                android:textSize="15dp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/signup_NickName_et" />
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="6dp"
+                android:textSize="12sp"
+                android:visibility="gone" />
 
             <Spinner
                 android:id="@+id/signup_character_sp"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="32dp"
-                android:background="@drawable/shape_login_btn"
-                android:ems="16"
-                android:gravity="start|center_vertical"
-                android:spinnerMode="dropdown"
-                android:textColor="@color/white"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/signup_character_tv" />
+                android:background="@null"
+                android:spinnerMode="dropdown" />
 
-            <CheckBox
-                android:id="@+id/signup_age_check"
-                android:layout_width="0dp"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="40dp"
-                android:layout_marginEnd="32dp"
-                android:buttonTint="@color/white"
-                android:text="@string/signup_age_check"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/signup_character_sp" />
+                android:layout_marginTop="22dp"
+                android:text="@string/signup_section_terms"
+                android:textColor="@color/brand_mint"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <include
+                android:id="@+id/signup_consent"
+                layout="@layout/consent_checks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" />
 
             <Button
                 android:id="@+id/signup_signup_btn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="32dp"
-                android:layout_marginBottom="32dp"
-                android:background="@drawable/shape_google_login_btn"
-                android:text="회원가입"
-                android:textColor="@color/brand_mint"
-                android:textSize="16dp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/signup_age_check" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/shape_btn_primary"
+                android:stateListAnimator="@null"
+                android:text="@string/signup_submit"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,13 +6,18 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import android.app.Dialog
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import com.irionna.eternalreturninfo.R
+import com.irionna.eternalreturninfo.databinding.ConsentChecksBinding
+import com.irionna.eternalreturninfo.databinding.TermsSheetBinding
 
 /**
  * 이용약관(커뮤니티 규칙) 동의.
- *  - 신규 가입: PrivacyConsentDialog 에서 개인정보 안내와 함께 동의를 받고, 가입이 끝나면 [markAccepted] 로 기록한다.
- *  - 기존 이용자: 약관 시행 전에 가입한 계정은 앱을 열 때 [showGate] 로 한 번 동의를 받는다.
+ *  - 신규 가입: 회원가입 화면 아래의 동의 항목(consent_checks)에서 받고, 가입이 끝나면 [markAccepted] 로 기록한다.
+ *  - 기존 이용자: 약관 시행 전에 가입한 계정은 앱을 열 때 [showGate] 의 동의 시트로 한 번 동의를 받는다.
  * 동의 기록은 서버로 보내지 않고 이 기기에만 계정(uid)별로 저장한다. 약관을 크게 고치면 [VERSION] 을 올려 다시 받는다.
  */
 object TermsConsent {
@@ -28,32 +33,59 @@ object TermsConsent {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putBoolean(key(uid), true).apply()
     }
 
-    /** 앱을 열 때: 아직 동의하지 않은 계정에게 동의 화면을 보여 준다. 동의하지 않으면 [onDeclined] 로 로그아웃시킨다. */
+    /** 앱을 열 때: 아직 동의하지 않은 계정에게 동의 시트를 보여 준다. 동의하지 않으면 [onDeclined] 로 로그아웃시킨다. */
     fun showGate(activity: Activity, onAccepted: () -> Unit, onDeclined: () -> Unit) {
-        val dialog = AlertDialog.Builder(activity)
-            .setTitle(R.string.terms_gate_title)
-            .setMessage(R.string.terms_gate_message)
-            .setCancelable(false)
-            .setPositiveButton(R.string.terms_gate_agree) { _, _ -> onAccepted() }
-            .setNegativeButton(R.string.terms_gate_decline) { _, _ -> onDeclined() }
-            .setNeutralButton(R.string.privacy_consent_view, null)
-            .create()
+        val sheet = TermsSheetBinding.inflate(LayoutInflater.from(activity))
+        val dialog = Dialog(activity, R.style.ConsentSheetDialog)
+        dialog.setContentView(sheet.root)
+        dialog.setCancelable(false)
+
+        sheet.sheetAgreeBtn.isEnabled = false
+        sheet.sheetAgreeBtn.alpha = 0.4f
+        bindConsentChecks(activity, sheet.sheetConsent) { all ->
+            sheet.sheetAgreeBtn.isEnabled = all
+            sheet.sheetAgreeBtn.alpha = if (all) 1f else 0.4f
+        }
+        sheet.sheetAgreeBtn.setOnClickListener {
+            dialog.dismiss()
+            onAccepted()
+        }
+        sheet.sheetDeclineBtn.setOnClickListener {
+            dialog.dismiss()
+            onDeclined()
+        }
+        dialog.window?.apply {
+            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            setGravity(Gravity.BOTTOM)
+        }
         dialog.show()
-        // 문서를 보고 돌아와도 동의 화면이 남아 있도록 리스너를 다시 단다.
-        dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener { showDocumentChooser(activity) }
     }
 
-    /** "이용약관 / 개인정보처리방침" 중 열 문서를 고르게 한다 (동의 화면은 그대로 남는다). */
-    fun showDocumentChooser(activity: Activity) {
-        val items = arrayOf(
-            activity.getString(R.string.terms_doc_terms),
-            activity.getString(R.string.terms_doc_privacy)
-        )
-        AlertDialog.Builder(activity)
-            .setItems(items) { _, which ->
-                openUrl(activity, if (which == 0) Constants.TERMS_URL else Constants.PRIVACY_POLICY_URL)
-            }
-            .show()
+    /**
+     * 동의 항목(모두 동의 + 필수 3개)을 연결한다. 필수 항목이 모두 체크되면 [onChanged] 에 true 를 알린다.
+     * "보기"는 해당 문서를 브라우저로 연다 (동의 화면은 그대로 남는다).
+     */
+    fun bindConsentChecks(activity: Activity, b: ConsentChecksBinding, onChanged: (Boolean) -> Unit) {
+        val items = listOf(b.consentTerms, b.consentPrivacy, b.consentAge)
+        var updating = false
+        fun refresh() {
+            val all = items.all { it.isChecked }
+            updating = true
+            b.consentAll.isChecked = all
+            updating = false
+            onChanged(all)
+        }
+        items.forEach { it.setOnCheckedChangeListener { _, _ -> if (!updating) refresh() } }
+        b.consentAll.setOnCheckedChangeListener { _, checked ->
+            if (updating) return@setOnCheckedChangeListener
+            updating = true
+            items.forEach { it.isChecked = checked }
+            updating = false
+            onChanged(checked)
+        }
+        b.consentTermsView.setOnClickListener { openUrl(activity, Constants.TERMS_URL) }
+        b.consentPrivacyView.setOnClickListener { openUrl(activity, Constants.PRIVACY_POLICY_URL) }
+        onChanged(false)
     }
 
     fun openUrl(activity: Activity, url: String) {
