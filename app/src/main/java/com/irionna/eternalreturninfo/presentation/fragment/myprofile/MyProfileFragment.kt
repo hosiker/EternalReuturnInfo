@@ -4,22 +4,18 @@ import android.content.Intent
 import com.google.firebase.database.FirebaseDatabase
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Spinner
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.irionna.eternalreturninfo.R
+import com.irionna.eternalreturninfo.util.CharacterPicker
 import com.irionna.eternalreturninfo.data.repository.BlockedUsers
 import com.irionna.eternalreturninfo.presentation.activity.block.BlockedUsersActivity
 import com.irionna.eternalreturninfo.databinding.MyprofileCharacterDialogBinding
@@ -136,6 +132,9 @@ class MyProfileFragment : Fragment() {
         // 프로필 이미지는 선호 실험체 이미지로 자동 정해지므로 사진을 고르는 동작은 없다.
     }
 
+    // 시트에서 미리 선택해 보여줄 현재 실험체 번호 (characterName 배열 위치, 0 = 선택 안 함)
+    private var currentCharacterIndex = 0
+
     // 마이페이지 생성
     fun Patch(uid: String) {
         val docRef = db.collection("EternalReturnInfo").document("$uid")
@@ -155,6 +154,8 @@ class MyProfileFragment : Fragment() {
                     binding.myprofileEmailTv.text = document["email"].toString()
                     binding.myprofileNicknameTv.text = document["nickName"].toString()
                     ProfileImage.load(binding.myprofileProfileImg, profileKey)
+                    currentCharacterIndex = resources.getStringArray(R.array.characterName)
+                        .indexOf(document.getString("character")).coerceAtLeast(0)
                     email = document["email"].toString()
                 }
             }
@@ -209,70 +210,23 @@ class MyProfileFragment : Fragment() {
                 // 0 : 프로필수정,   1 : 로그아웃,   2 : 회원탈퇴, 3 : 비밀번호 변경
                 0 -> {
                     refPowerMenu.dismiss()
-                    val dialogView =
-                        layoutInflater.inflate(R.layout.myprofile_character_dialog, null)
-                    val alertDialog = AlertDialog.Builder(requireActivity())
-                        .setView(dialogView)
-                        .create()
-
-                    val characterSpinner =
-                        dialogView.findViewById<Spinner>(R.id.myprofile_character_sp)
-                    val button = dialogView.findViewById<Button>(R.id.myprofile_select_btn)
-                    val deleteBtn = dialogView.findViewById<Button>(R.id.myprofile_delete_btn)
-                    val characterlist = resources.getStringArray(R.array.character)
-
-                    val adapter = ArrayAdapter<String>(
-                        requireContext(),
-                        R.layout.signup_spinner,
-                        R.id.spinner_tv,
-                        characterlist
-                    )
-
-                    var selectCharacter = characterlist[0]
-                    characterSpinner.adapter = adapter
-
-                    characterSpinner.onItemSelectedListener =
-                        object : AdapterView.OnItemSelectedListener {
-                            override fun onItemSelected(
-                                parent: AdapterView<*>?,
-                                view: View?,
-                                position: Int,
-                                id: Long
-                            ) {
-                                selectCharacter = characterlist[position]
-                            }
-
-                            override fun onNothingSelected(parent: AdapterView<*>?) {
-                            }
-                        }
-                    // 프로필 변경버튼
-                    button.setOnClickListener {
+                    // 얼굴을 보면서 실험체를 고르는 시트 (가입 화면과 같은 목록)
+                    val characterlist = resources.getStringArray(R.array.characterName)
+                    CharacterPicker.show(requireActivity(), characterlist, currentCharacterIndex) { picked ->
+                        val uid = auth?.uid ?: return@show
+                        val selectCharacter = characterlist[picked]
                         FirebaseFirestore.getInstance()
                             .collection("EternalReturnInfo")
-                            .document(auth!!.uid!!)
-                            .update(
-                                mapOf(
-                                    "character" to selectCharacter
-                                )
-                            )
-                        database.child("user").child(auth!!.uid!!).updateChildren(
-                            mapOf(
-                                "character" to selectCharacter
-                            )
+                            .document(uid)
+                            .update(mapOf("character" to selectCharacter))
+                        database.child("user").child(uid).updateChildren(
+                            mapOf("character" to selectCharacter)
                         )
-                        saveProfileKey(
-                            auth!!.uid!!,
-                            ProfileImage.keyForCharacter(selectCharacter, characterlist)
-                        )
-                        alertDialog.dismiss()
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            var uid = auth?.uid.toString()
-                            Patch(uid)
-                        }, 2000)
+                        val profileKey = ProfileImage.keyForCharacterIndex(picked)
+                        saveProfileKey(uid, profileKey)
+                        currentCharacterIndex = picked
+                        ProfileImage.load(binding.myprofileProfileImg, profileKey)
                     }
-
-                    alertDialog.show()
-
                 }
 
                 1 -> {
