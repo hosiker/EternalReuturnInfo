@@ -91,7 +91,7 @@
 
     <string name="find_duo_register"><u>듀오 찾기!</u></string>
     <string name="test">이메일과 비밀번호를 확인하세요.</string>
-    <string name="splash_connecting">Connecting to Lumia Island…</string>
+    <string name="splash_connecting">불러오는 중…</string>
 
     <!-- 차단 -->
     <string name="block_confirm_title">%1$s님을 차단할까요?</string>
