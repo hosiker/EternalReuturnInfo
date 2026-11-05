@@ -6,6 +6,7 @@ import com.irionna.eternalreturninfo.data.repository.BlockedUsers
 import android.content.Intent
 import android.os.Bundle
 import com.irionna.eternalreturninfo.presentation.activity.login.LoginActivity
+import com.irionna.eternalreturninfo.util.AutoLogin
 import com.irionna.eternalreturninfo.util.TermsConsent
 import com.irionna.eternalreturninfo.R
 import com.irionna.eternalreturninfo.databinding.MainActivityBinding
@@ -50,6 +51,7 @@ class MainActivity : AppCompatActivity() {
                 onDeclined = {
                     BlockedUsers.stop()
                     FirebaseAuth.getInstance().signOut()
+                    AutoLogin.clear(this)
                     startActivity(Intent(this, LoginActivity::class.java))
                     finish()
                 }

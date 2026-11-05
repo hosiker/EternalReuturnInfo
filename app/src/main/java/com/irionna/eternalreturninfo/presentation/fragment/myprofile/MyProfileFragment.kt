@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.irionna.eternalreturninfo.R
+import com.irionna.eternalreturninfo.util.AutoLogin
 import com.irionna.eternalreturninfo.util.CharacterPicker
 import com.irionna.eternalreturninfo.data.repository.BlockedUsers
 import com.irionna.eternalreturninfo.presentation.activity.block.BlockedUsersActivity
@@ -232,6 +233,7 @@ class MyProfileFragment : Fragment() {
                     refPowerMenu.dismiss()
                     BlockedUsers.stop()
                     FirebaseAuth.getInstance().signOut()
+                    AutoLogin.clear(requireContext())
                     var intent = Intent(activity, LoginActivity::class.java)
                     startActivity(intent)
                     requireActivity().finish()

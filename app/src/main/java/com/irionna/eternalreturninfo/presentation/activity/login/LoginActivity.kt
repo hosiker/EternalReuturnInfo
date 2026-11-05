@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import com.irionna.eternalreturninfo.R
 import com.irionna.eternalreturninfo.databinding.FindpwDialogBinding
 import com.irionna.eternalreturninfo.databinding.GoogleDialogBinding
+import com.irionna.eternalreturninfo.util.AutoLogin
 import com.irionna.eternalreturninfo.databinding.LoginActivityBinding
 import com.irionna.eternalreturninfo.retrofit.BoardSingletone
 import com.irionna.eternalreturninfo.presentation.activity.main.MainActivity
@@ -124,6 +125,8 @@ class LoginActivity : AppCompatActivity() {
                 if (it.isSuccessful) {
                     // 로그인 성공 후 별도 문서 읽기는 필요 없다. 사용자 정보는 각 화면에서 uid 로 읽는다.
                     BoardSingletone.Login()
+                    // "자동 로그인"을 체크했으면 30일 동안 로그인 화면을 건너뛴다
+                    AutoLogin.remember(this, binding.loginAutoCb.isChecked)
                     MotionToast.darkColorToast(
                         this, "", getString(R.string.login_success),
                         MotionToastStyle.SUCCESS,

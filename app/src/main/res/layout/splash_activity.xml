@@ -43,6 +43,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/splash_center_guide" />
 
+    <!-- 비공식 앱 안내 -->
+    <TextView
+        android:id="@+id/splash_disclaimer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:text="@string/disclaimer_unofficial"
+        android:textColor="#AEB4C4"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@id/splash_progress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <ProgressBar
         android:id="@+id/splash_progress"
         style="?android:attr/progressBarStyleSmall"
