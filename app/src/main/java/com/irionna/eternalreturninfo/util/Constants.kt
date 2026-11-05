@@ -5,7 +5,7 @@ import com.irionna.eternalreturninfo.BuildConfig
 class Constants {
     companion object {
         const val BASE_URL = "https://www.googleapis.com/youtube/v3/"
-        const val AUTH_KEY = BuildConfig.YOUTUBE_APIKEY // 호식
+        val AUTH_KEY: String get() = BuildConfig.YOUTUBE_APIKEY // const 로 두면 키를 바꿔도 이전 값이 남을 수 있다
         const val EXTRA_ER_MODEL = "extra_er_model"
         const val EXTRA_ER_POSITION = "extra_er_position"
         const val EXTRA_MESSAGE = "extra_message"
@@ -18,7 +18,7 @@ class Constants {
         const val TERMS_URL = "https://hosiker.github.io/EternalReuturnInfo/terms"
 
         const val MAIN_BASE_URL = "https://open-api.bser.io"
-        const val MAIN_APIKEY = BuildConfig.MAIN_APIKEY
+        val MAIN_APIKEY: String get() = BuildConfig.MAIN_APIKEY
 
         const val ETERNAL_RETURN_BASE_URL = "https://playeternalreturn.com"
     }

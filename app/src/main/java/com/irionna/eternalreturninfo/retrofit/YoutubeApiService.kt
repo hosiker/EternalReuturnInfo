@@ -17,7 +17,7 @@ interface YoutubeApiService {
         @Query("order")videoOrder: String,
         @Query("type")videoType: String = "video",
         @Query("maxResults")maxResults: Int,
-        @Query("channelId")channelId: String = "",
+        @Query("channelId")channelId: String? = null,
         @Query("part")part: String = "snippet",
     ): Response<YoutubeVideo>
 
@@ -29,7 +29,7 @@ interface YoutubeApiService {
         @Query("order") videoOrder: String,
         @Query("type") videoType: String = "video",
         @Query("maxResults") maxResults: Int,
-        @Query("channelId") channelId: String = "",
+        @Query("channelId") channelId: String? = null,
         @Query("part") part: String = "snippet",
     ): Response<YoutubeVideo>
 }

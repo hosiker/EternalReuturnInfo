@@ -10,11 +10,11 @@ data class YoutubeVideo(
     @SerializedName("etag")
     val etag: String,
     @SerializedName("nextPageToken")
-    val nextPageToken: String,
+    val nextPageToken: String? = null,
     @SerializedName("regionCode")
-    val regionCode: String,
+    val regionCode: String? = null,
     @SerializedName("pageInfo")
-    val pageInfo: PageInfo,
+    val pageInfo: PageInfo? = null,
     @SerializedName("items")
     val items: List<Items>?,
 )
@@ -38,31 +38,32 @@ data class Id(
     @SerializedName("kind")
     val kind: String,
     @SerializedName("videoId")
-    val videoId: String
+    val videoId: String? = null
 )
 @Keep
 data class Snippet(
+    // 검색 결과에는 없는 필드가 있어서 모두 nullable (categoryId 는 검색 응답에 없다)
     @SerializedName("categoryId")
-    val categoryId: String,
+    val categoryId: String? = null,
     @SerializedName("publishedAt")
-    val publishedAt: String,
+    val publishedAt: String? = null,
     @SerializedName("channelId")
-    val channelId: String,
+    val channelId: String? = null,
     @SerializedName("title")
-    val title: String,
+    val title: String? = null,
     @SerializedName("description")
-    val description: String,
+    val description: String? = null,
     @SerializedName("thumbnails")
-    val thumbnails: ThumbNail,
+    val thumbnails: ThumbNail? = null,
     @SerializedName("publishTime")
-    val publishTime: String,
+    val publishTime: String? = null,
     @SerializedName("channelTitle")
-    val channelTitle: String,
+    val channelTitle: String? = null,
 )
 @Keep
 data class ThumbNail(
     @SerializedName("medium")
-    val medium: Medium
+    val medium: Medium? = null
 )
 @Keep
 data class Medium(

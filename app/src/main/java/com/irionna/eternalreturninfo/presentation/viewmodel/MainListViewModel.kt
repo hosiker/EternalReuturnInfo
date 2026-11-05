@@ -1,5 +1,6 @@
 package com.irionna.eternalreturninfo.presentation.viewmodel
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.irionna.eternalreturninfo.data.model.Notice
 import com.irionna.eternalreturninfo.data.model.VideoModel
+import com.irionna.eternalreturninfo.data.repository.VideoCache
 import com.irionna.eternalreturninfo.retrofit.RetrofitInstance
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -54,46 +56,63 @@ class MainListViewModel() : ViewModel(){
             }
         }
 
-        viewModelScope.launch {
-            fetchItemResults()
-        }
 
 
     }
 
-    private suspend fun fetchItemResults() {
+    private var videosRequested = false
 
-        val resItems: ArrayList<VideoModel> = ArrayList()
+    /**
+     * 게임 방송 영상 목록. 이 기기에 저장된 목록이 6시간 이내면 그대로 쓰고, 아니면 YouTube 에서 새로 받는다.
+     * 새로 받기에 실패하면 오래된 저장본이라도 보여준다. 화면이 다시 만들어져도 한 번만 요청한다.
+     */
+    fun loadVideos(context: Context) {
+        if (videosRequested) return
+        videosRequested = true
+        val appContext = context.applicationContext
+        viewModelScope.launch {
+            val saved = VideoCache.load(appContext)
+            if (saved != null && saved.isFresh()) {
+                _videoList.postValue(saved.list.toMutableList())
+                return@launch
+            }
+            val fresh = fetchItemResults()
+            if (!fresh.isNullOrEmpty()) {
+                VideoCache.save(appContext, fresh)
+                _videoList.postValue(fresh.toMutableList())
+            } else {
+                _videoList.postValue((saved?.list ?: emptyList()).toMutableList())
+            }
+        }
+    }
 
-        try {
-            val query = "이터널리턴"
-
+    /** 새로 받은 영상 목록. 실패하면 null. */
+    private suspend fun fetchItemResults(): List<VideoModel>? {
+        return try {
             val response = RetrofitInstance.api.getYouTubeVideos(
-                query = query,
+                query = "이터널리턴",
                 maxResults = 10,
                 videoOrder = "relevance"
             )
-
-            resItems.clear()
-
-            if (response.isSuccessful) {
-                val youtubeVideo = response.body()!!
-
-                if(youtubeVideo != null){
-                    youtubeVideo?.items?.forEach { snippet ->
-                        val title = snippet.snippet.title
-                        val url = snippet.snippet.thumbnails.medium.url
-                        resItems.add(VideoModel(id= snippet.id.videoId, title = title, thumbnail = url,  url = "https://www.youtube.com/watch?v=${snippet.id}"))
-                    }
-                }
-
-            }else{
+            if (!response.isSuccessful) {
+                // 실패 이유(키 제한, 한도 초과, API 미사용 등)를 로그로 남긴다. 키는 포함되지 않는다.
+                Log.e("YouTube", "검색 실패 HTTP ${response.code()}: ${response.errorBody()?.string()?.take(400)}")
+                return null
             }
-
-            _videoList.postValue(resItems.toMutableList())
-
+            val items = response.body()?.items.orEmpty()
+            Log.d("YouTube", "검색 성공: 영상 ${items.size}개")
+            items.mapNotNull { item ->
+                val videoId = item.id.videoId ?: return@mapNotNull null
+                VideoModel(
+                    id = videoId,
+                    title = item.snippet.title,
+                    thumbnail = item.snippet.thumbnails?.medium?.url,
+                    url = "https://www.youtube.com/watch?v=$videoId"
+                )
+            }
         } catch (e: Exception) {
-            Log.e("#error check", "Error: ${e.message}")
+            Log.e("YouTube", "검색 오류: ${e.javaClass.simpleName} ${e.message}")
+            null
         }
     }
 
