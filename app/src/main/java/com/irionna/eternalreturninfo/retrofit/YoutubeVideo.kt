@@ -210,3 +210,27 @@ data class SeasonData(
     val seasonName: String?,
     val isCurrent: Int?
 )
+
+
+/** 채널 업로드 목록 응답 (GET playlistItems). 호출당 한도 1. */
+@Keep
+data class PlaylistItemsResponse(
+    @SerializedName("items")
+    val items: List<PlaylistItem>? = null
+)
+
+@Keep
+data class PlaylistItem(
+    @SerializedName("snippet")
+    val snippet: PlaylistSnippet? = null
+)
+
+@Keep
+data class PlaylistSnippet(
+    @SerializedName("title")
+    val title: String? = null,
+    @SerializedName("thumbnails")
+    val thumbnails: ThumbNail? = null,
+    @SerializedName("resourceId")
+    val resourceId: Id? = null
+)

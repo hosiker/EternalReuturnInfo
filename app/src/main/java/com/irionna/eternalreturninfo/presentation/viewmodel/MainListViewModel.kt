@@ -11,6 +11,7 @@ import com.irionna.eternalreturninfo.data.model.Notice
 import com.irionna.eternalreturninfo.data.model.VideoModel
 import com.irionna.eternalreturninfo.data.repository.VideoCache
 import com.irionna.eternalreturninfo.retrofit.RetrofitInstance
+import com.irionna.eternalreturninfo.util.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -86,32 +87,35 @@ class MainListViewModel() : ViewModel(){
         }
     }
 
-    /** 새로 받은 영상 목록. 실패하면 null. */
+    /** 새로 받은 영상 목록(공식 채널 최신 업로드). 실패하면 null. */
     private suspend fun fetchItemResults(): List<VideoModel>? {
         return try {
-            val response = RetrofitInstance.api.getYouTubeVideos(
-                query = "이터널리턴",
-                maxResults = 10,
-                videoOrder = "relevance"
+            val response = RetrofitInstance.api.getPlaylistVideos(
+                playlistId = Constants.OFFICIAL_UPLOADS_PLAYLIST,
+                maxResults = 10
             )
             if (!response.isSuccessful) {
                 // 실패 이유(키 제한, 한도 초과, API 미사용 등)를 로그로 남긴다. 키는 포함되지 않는다.
-                Log.e("YouTube", "검색 실패 HTTP ${response.code()}: ${response.errorBody()?.string()?.take(400)}")
+                Log.e("YouTube", "목록 실패 HTTP ${response.code()}: ${response.errorBody()?.string()?.take(400)}")
                 return null
             }
             val items = response.body()?.items.orEmpty()
-            Log.d("YouTube", "검색 성공: 영상 ${items.size}개")
+            Log.d("YouTube", "공식 채널 목록 성공: 영상 ${items.size}개")
             items.mapNotNull { item ->
-                val videoId = item.id.videoId ?: return@mapNotNull null
+                val sn = item.snippet ?: return@mapNotNull null
+                val videoId = sn.resourceId?.videoId ?: return@mapNotNull null
+                val title = sn.title
+                // 삭제됐거나 비공개로 바뀐 영상은 제목이 이렇게 온다
+                if (title == "Private video" || title == "Deleted video") return@mapNotNull null
                 VideoModel(
                     id = videoId,
-                    title = item.snippet.title,
-                    thumbnail = item.snippet.thumbnails?.medium?.url,
+                    title = title,
+                    thumbnail = sn.thumbnails?.medium?.url,
                     url = "https://www.youtube.com/watch?v=$videoId"
                 )
             }
         } catch (e: Exception) {
-            Log.e("YouTube", "검색 오류: ${e.javaClass.simpleName} ${e.message}")
+            Log.e("YouTube", "목록 오류: ${e.javaClass.simpleName} ${e.message}")
             null
         }
     }

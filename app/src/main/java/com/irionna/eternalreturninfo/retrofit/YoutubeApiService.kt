@@ -21,6 +21,15 @@ interface YoutubeApiService {
         @Query("part")part: String = "snippet",
     ): Response<YoutubeVideo>
 
+    /** 채널 업로드 목록의 최신 영상. 검색(호출당 100)과 달리 호출당 한도 1만 쓴다. */
+    @GET("playlistItems")
+    suspend fun getPlaylistVideos(
+        @Query("key") apiKey: String = AUTH_KEY,
+        @Query("playlistId") playlistId: String,
+        @Query("maxResults") maxResults: Int = 10,
+        @Query("part") part: String = "snippet",
+    ): Response<PlaylistItemsResponse>
+
     @GET("search")
     suspend fun getYouTubeMoreVideos(
         @Query("key") apiKey: String = AUTH_KEY,
