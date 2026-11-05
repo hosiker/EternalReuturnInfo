@@ -112,6 +112,9 @@ class BoardFragment : Fragment() {
         // Firebase.database.getReference("post")
         FBRef.postRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                // 응답이 늦게 도착했을 때 탭 이동 등으로 화면이 이미 분리되어 있으면 아무것도 하지 않는다.
+                // (분리된 프래그먼트에서 activityViewModels 를 쓰면 앱이 종료된다)
+                if (!isAdded) return
                 val unsortedBoardList = mutableListOf<BoardModel>()
                 for (data in snapshot.children) {
                     val board = data.getValue(BoardModel::class.java)

@@ -138,6 +138,8 @@ class MyProfileFragment : Fragment() {
 
         docRef.get()
             .addOnSuccessListener { document ->
+                // 응답이 늦게 도착했을 때 화면이 이미 사라졌다면 건드리지 않는다.
+                if (_binding == null || !isAdded) return@addOnSuccessListener
                 if (document != null) {
                     // 프로필 이미지는 실험체 이미지. 옛 형식(사진 주소)이면 선택한 실험체 기준으로 한 번 보정해 저장한다.
                     var profileKey = document.getString("profile")
