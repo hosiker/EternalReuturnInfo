@@ -77,6 +77,15 @@ class MainListViewModel() : ViewModel(){
                             val userState = userStateResponse.body()
 
                             if(userState != null){
+                                // 점검용: 서버가 시즌·모드별로 몇 개의 기록을 주는지 확인한다 (키는 남기지 않음)
+                                Log.d("ERStats", "seasonId(요청)=$seasonId, 기록 ${userState.userStats.size}개")
+                                userState.userStats.forEach { st ->
+                                    Log.d(
+                                        "ERStats",
+                                        "season=${st.seasonId} mode=${st.matchingMode} team=${st.matchingTeamMode} " +
+                                            "mmr=${st.mmr} rank=${st.rank} games=${st.totalGames} wins=${st.totalWins}"
+                                    )
+                                }
                                 val user = userState?.userStats?.get(0)
                                 _userRecordList.postValue(user)
                             }
