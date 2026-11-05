@@ -91,3 +91,12 @@ interface SeasonService {
     @GET("v2/data/Season")
     fun getSeasons(@Header("x-api-key") apiKey: String): Call<SeasonResponse>
 }
+
+
+interface FreeCharacterService {
+    @GET("v1/freeCharacters/{matchingMode}")
+    fun getFreeCharacters(
+        @Header("x-api-key") apiKey: String,
+        @Path("matchingMode") matchingMode: Int
+    ): Call<FreeCharactersResponse>
+}

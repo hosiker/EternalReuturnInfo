@@ -63,4 +63,8 @@ object RetrofitInstance {
         userRetrofit.create(SeasonService::class.java)
     }
 
+    val freeCharacterApi by lazy {
+        userRetrofit.create(FreeCharacterService::class.java)
+    }
+
 }

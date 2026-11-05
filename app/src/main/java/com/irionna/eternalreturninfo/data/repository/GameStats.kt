@@ -166,6 +166,22 @@ object GameStats {
         return null
     }
 
+    /**
+     * 이번에 무료인 실험체 번호 목록 (일반 게임 기준, 랭크는 로테이션이 없다). 실패하면 null.
+     * 요청 줄서기는 다른 전적 요청과 같이 쓴다.
+     */
+    suspend fun freeCharacters(): List<Int>? {
+        if (!keyReady()) return null
+        val r = throttled { RetrofitInstance.freeCharacterApi.getFreeCharacters(Constants.MAIN_APIKEY, MODE_NORMAL).execute() }
+        if (r?.isSuccessful != true) {
+            if (BuildConfig.DEBUG) Log.d(TAG, "무료 실험체 조회 실패: HTTP ${r?.code()}")
+            return null
+        }
+        val body = r.body()
+        if (body?.code != null && body.code != 200) return null
+        return body?.freeCharacters.orEmpty()
+    }
+
     /** 듀오 찾기 카드용: 현재 시즌의 기본 기록 한 줄 요약. */
     suspend fun summary(nickname: String): UserStats? {
         val id = userId(nickname) ?: return null
