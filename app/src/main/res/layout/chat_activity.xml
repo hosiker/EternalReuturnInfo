@@ -35,6 +35,15 @@
             android:layout_marginLeft="24dp"
             />
 
+        <ImageButton
+            android:id="@+id/chat_menu_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/ic_board_baseline_more_horiz_24_white"
+            android:contentDescription="@string/menu_blocked_list" />
+
 
     </androidx.appcompat.widget.Toolbar>
 

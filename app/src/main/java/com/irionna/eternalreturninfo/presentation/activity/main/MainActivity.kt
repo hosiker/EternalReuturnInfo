@@ -2,6 +2,7 @@ package com.irionna.eternalreturninfo.presentation.activity.main
 
 import androidx.appcompat.app.AppCompatActivity
 import com.irionna.eternalreturninfo.util.setContentViewEdgeToEdge
+import com.irionna.eternalreturninfo.data.repository.BlockedUsers
 import android.os.Bundle
 import com.irionna.eternalreturninfo.R
 import com.irionna.eternalreturninfo.databinding.MainActivityBinding
@@ -34,6 +35,7 @@ class MainActivity : AppCompatActivity() {
 
         binding = MainActivityBinding.inflate(layoutInflater)
         setContentViewEdgeToEdge(binding.root)
+        BlockedUsers.start()
         initView()
     }
 

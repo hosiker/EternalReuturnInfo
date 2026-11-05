@@ -2,6 +2,7 @@ package com.irionna.eternalreturninfo.presentation.activity.board
 
 import android.content.Context
 import com.irionna.eternalreturninfo.util.setContentViewEdgeToEdge
+import com.irionna.eternalreturninfo.data.repository.BlockedUsers
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -152,7 +153,7 @@ class BoardSearchActivity : AppCompatActivity() {
 
                     for (snapshot in dataSnapshot.children) {
                         val searchBoard = snapshot.getValue(BoardModel::class.java)
-                        if (searchBoard != null) {
+                        if (searchBoard != null && !BlockedUsers.isBlocked(searchBoard.author)) {
                             boardViewModel.addSearchBoard(searchBoard)
                         }
                     }

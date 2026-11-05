@@ -58,11 +58,13 @@ class BoardCommentRecyclerViewAdpater(
         fun onDeleteItemClick(commentItem: CommentModel, position:Int)
         fun onUpdateItemClick(commentItem: CommentModel, position:Int)
         fun onReportItemClick(commentItem: CommentModel, position:Int)
+        fun onBlockItemClick(commentItem: CommentModel, position: Int, authorName: String?)
     }
 
     private var onDeleteItemClickListener: OnItemClickListener? = null
     private var onUpdateItemClickListener: OnItemClickListener? = null
     private var onReportItemClickListener: OnItemClickListener? = null
+    private var onBlockItemClickListener: OnItemClickListener? = null
 
     private val refPowerMenu: PowerMenu by lazy {
         PowerMenu.Builder(context)
@@ -83,6 +85,7 @@ class BoardCommentRecyclerViewAdpater(
     private val refPowerMenuForReport: PowerMenu by lazy {
         PowerMenu.Builder(context)
             .addItem(PowerMenuItem("신고"))
+            .addItem(PowerMenuItem(context.getString(R.string.menu_block_user)))
             .setMenuRadius(20f) // sets the corner radius.
             .setTextSize(18)
             .setWidth(330)
@@ -100,6 +103,7 @@ class BoardCommentRecyclerViewAdpater(
         this.onDeleteItemClickListener = listener
         this.onUpdateItemClickListener = listener
         this.onReportItemClickListener = listener
+        this.onBlockItemClickListener = listener
     }
 
 
@@ -172,6 +176,11 @@ class BoardCommentRecyclerViewAdpater(
                                             0 -> {
                                                 refPowerMenuForReport.dismiss()
                                                 onReportItemClickListener?.onReportItemClick(item, adapterPosition)
+                                            }
+                                            // 1 : 차단
+                                            1 -> {
+                                                refPowerMenuForReport.dismiss()
+                                                onBlockItemClickListener?.onBlockItemClick(item, adapterPosition, author?.name)
                                             }
                                         }
                                     }

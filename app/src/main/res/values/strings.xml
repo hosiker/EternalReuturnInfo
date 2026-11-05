@@ -80,4 +80,25 @@
     <string name="find_duo_register"><u>듀오 찾기!</u></string>
     <string name="test">이메일과 비밀번호를 확인하세요.</string>
     <string name="splash_connecting">Connecting to Lumia Island…</string>
+
+    <!-- 차단 -->
+    <string name="block_confirm_title">%1$s님을 차단할까요?</string>
+    <string name="block_confirm_message">차단하면 이 사용자의 게시글, 댓글, 듀오 찾기 카드가 보이지 않고, 이 사용자는 나에게 채팅을 보낼 수 없습니다.\n\n차단은 프로필 > 설정 > 차단 목록에서 해제할 수 있습니다.</string>
+    <string name="block_confirm_ok">차단</string>
+    <string name="block_cancel">취소</string>
+    <string name="block_done">%1$s님을 차단했습니다.</string>
+    <string name="block_failed">차단하지 못했습니다. 잠시 후 다시 시도해 주세요.</string>
+    <string name="unblock_done">차단을 해제했습니다.</string>
+    <string name="unblock_failed">차단을 해제하지 못했습니다. 잠시 후 다시 시도해 주세요.</string>
+    <string name="menu_report">신고</string>
+    <string name="menu_block_author">작성자 차단</string>
+    <string name="menu_block_user">차단</string>
+    <string name="menu_unblock_user">차단 해제</string>
+    <string name="menu_blocked_list">차단 목록</string>
+    <string name="blocked_list_title">차단 목록</string>
+    <string name="blocked_list_empty">차단한 사용자가 없습니다.</string>
+    <string name="blocked_unknown_user">알 수 없는 사용자</string>
+    <string name="unblock">해제</string>
+    <string name="chat_blocked_user">차단한 사용자입니다.</string>
+    <string name="chat_send_failed">메시지를 보내지 못했습니다. 상대가 메시지를 받을 수 없는 상태일 수 있습니다.</string>
 </resources>

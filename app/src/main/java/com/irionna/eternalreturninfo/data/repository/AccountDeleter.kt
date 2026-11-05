@@ -50,6 +50,7 @@ class AccountDeleter(
         step("내 게시글 삭제") { deletePosts(uid) }
         step("내 댓글 삭제") { deleteComments(uid) }
         step("채팅방 사본 삭제") { deleteChatCopies(uid) }
+        step("차단 목록 삭제") { root.child("blocks").child(uid).removeValue().await() }
 
         step("탈퇴 표시 노드 쓰기") {
             root.child("user").child(uid).setValue(

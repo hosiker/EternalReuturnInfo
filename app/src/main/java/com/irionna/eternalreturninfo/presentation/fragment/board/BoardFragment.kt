@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.irionna.eternalreturninfo.databinding.BoardFragmentBinding
 import com.irionna.eternalreturninfo.data.model.BoardModel
+import com.irionna.eternalreturninfo.data.repository.BlockedUsers
 import com.irionna.eternalreturninfo.retrofit.FBRef
 import com.irionna.eternalreturninfo.presentation.activity.board.BoardAddActivity
 import com.irionna.eternalreturninfo.presentation.activity.board.BoardSearchActivity
@@ -55,6 +56,9 @@ class BoardFragment : Fragment() {
     }
 
     private fun initView() = with(binding) {
+
+        // 사용자를 차단하거나 해제하면 목록을 다시 불러와서 반영한다
+        BlockedUsers.blocked.observe(viewLifecycleOwner) { refresh() }
 
         val addBoardLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -112,7 +116,7 @@ class BoardFragment : Fragment() {
                 for (data in snapshot.children) {
                     val board = data.getValue(BoardModel::class.java)
 
-                    if (board != null && board!!.report.values.none { r -> r.uid == FBRef.auth.uid })  {
+                    if (board != null && board!!.report.values.none { r -> r.uid == FBRef.auth.uid } && !BlockedUsers.isBlocked(board.author))  {
                         unsortedBoardList.add(board)
                     }
                 }

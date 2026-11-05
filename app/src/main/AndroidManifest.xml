@@ -25,6 +25,9 @@
             android:value="false" />
 
         <activity
+            android:name=".presentation.activity.block.BlockedUsersActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.activity.main.WebView"
             android:exported="false" />
         <activity
