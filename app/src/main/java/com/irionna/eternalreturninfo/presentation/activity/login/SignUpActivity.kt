@@ -1,6 +1,7 @@
 package com.irionna.eternalreturninfo.presentation.activity.login
 
 import android.os.Bundle
+import com.irionna.eternalreturninfo.util.TermsConsent
 import com.irionna.eternalreturninfo.util.setContentViewEdgeToEdge
 import com.google.firebase.database.FirebaseDatabase
 import android.util.Log
@@ -200,6 +201,8 @@ class SignUpActivity : AppCompatActivity() {
                     }
                     BoardSingletone.Login()
                     toast("", "계정 생성 완료", MotionToastStyle.SUCCESS)
+                    // 가입 전에 약관과 개인정보 안내에 동의했으므로 이 기기에 동의를 기록한다 (앱을 열 때 다시 묻지 않게)
+                    TermsConsent.markAccepted(this, uid)
                     // 이 노드는 로그인한 모든 사용자가 읽을 수 있으므로 이메일 같은 개인정보는 저장하지 않는다.
                     database.child("user").child(uid)
                         .setValue(

@@ -3,7 +3,10 @@ package com.irionna.eternalreturninfo.presentation.activity.main
 import androidx.appcompat.app.AppCompatActivity
 import com.irionna.eternalreturninfo.util.setContentViewEdgeToEdge
 import com.irionna.eternalreturninfo.data.repository.BlockedUsers
+import android.content.Intent
 import android.os.Bundle
+import com.irionna.eternalreturninfo.presentation.activity.login.LoginActivity
+import com.irionna.eternalreturninfo.util.TermsConsent
 import com.irionna.eternalreturninfo.R
 import com.irionna.eternalreturninfo.databinding.MainActivityBinding
 import com.irionna.eternalreturninfo.presentation.adapter.main.MainViewPagerAdapter
@@ -37,6 +40,21 @@ class MainActivity : AppCompatActivity() {
         setContentViewEdgeToEdge(binding.root)
         BlockedUsers.start()
         initView()
+
+        // 약관 시행 전에 가입한 계정은 한 번 동의해야 계속 쓸 수 있다
+        val myUid = auth?.uid
+        if (!TermsConsent.isAccepted(this, myUid)) {
+            TermsConsent.showGate(
+                this,
+                onAccepted = { myUid?.let { TermsConsent.markAccepted(this, it) } },
+                onDeclined = {
+                    BlockedUsers.stop()
+                    FirebaseAuth.getInstance().signOut()
+                    startActivity(Intent(this, LoginActivity::class.java))
+                    finish()
+                }
+            )
+        }
     }
 
     private fun initView() = with(binding) {
