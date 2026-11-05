@@ -83,7 +83,7 @@ class StatsPanel(
             val list = GameStats.stats(num, id)
             if (seasonId != id || token != loadToken) return@launch // 그 사이 다른 시즌·닉네임을 골랐다
             if (list == null) {
-                val denied = GameStats.lastStatsError.let { it == 401 || it == 403 }
+                val denied = GameStats.statsError(num, id).let { it == 401 || it == 403 }
                 showMessage(activity.getString(if (denied) R.string.stats_denied else R.string.stats_unavailable))
                 return@launch
             }
@@ -188,6 +188,7 @@ class StatsPanel(
                 gravity = Gravity.CENTER
                 textSize = 13f
                 setPadding(0, (8 * dp).toInt(), 0, (8 * dp).toInt())
+                minHeight = (44 * dp).toInt()
                 layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
                 if (value == selected) {
                     setBackgroundResource(R.drawable.shape_seg_on)

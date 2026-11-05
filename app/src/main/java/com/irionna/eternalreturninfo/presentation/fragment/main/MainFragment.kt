@@ -1,5 +1,6 @@
 package com.irionna.eternalreturninfo.presentation.fragment.main
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.Context
 import android.net.Uri
@@ -93,6 +94,7 @@ class MainFragment : Fragment() {
 
         initStatsSearch()
         initVideoTabs()
+        initRefresh()
     }
 
     /** 전적 검색: 입력한 게임 닉네임의 전적을 시즌·모드별로 보여준다 (내 전적은 프로필 화면에서). */
@@ -112,6 +114,8 @@ class MainFragment : Fragment() {
             binding.mainSearchGuide.visibility = View.GONE
             binding.mainStatsPanel.root.visibility = View.VISIBLE
             panel.load { q }
+            // 결과 카드가 화면 안에 보이도록 스크롤한다
+            binding.mainScroll.post { _binding?.mainScroll?.smoothScrollTo(0, binding.mainStatsContainer.top) }
         }
 
         binding.mainSearchBtn.setOnClickListener { search() }
@@ -140,11 +144,19 @@ class MainFragment : Fragment() {
 
         videoListAdapter.setOnItemClickListener(object : VideoListAdapter.OnItemClickListener{
             override fun onItemClick(item: VideoModel, position: Int) {
-                Log.d("item.id", item.id.toString())
                 val videoUrl = "https://www.youtube.com/watch?v=${item.id}"
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(videoUrl))
                 intent.setPackage("com.google.android.youtube")
-                startActivity(intent)
+                try {
+                    startActivity(intent)
+                } catch (e: ActivityNotFoundException) {
+                    // YouTube 앱이 없으면 브라우저 등 다른 앱으로 연다
+                    try {
+                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(videoUrl)))
+                    } catch (e2: ActivityNotFoundException) {
+                        Toast.makeText(requireContext(), getString(R.string.privacy_policy_open_failed, videoUrl), Toast.LENGTH_LONG).show()
+                    }
+                }
             }
 
         })
@@ -166,6 +178,7 @@ class MainFragment : Fragment() {
     private fun showVideos() {
         val list = if (showStreamer) streamerVideos[streamerSort].orEmpty() else officialVideos
         videoListAdapter.submitList(list.toList())
+        binding.mainVideoEmpty.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
         styleVideoTab(binding.mainSegOfficial, !showStreamer)
         styleVideoTab(binding.mainSegStreamer, showStreamer)
         binding.mainSortSeg.visibility = if (showStreamer) View.VISIBLE else View.GONE
@@ -182,6 +195,18 @@ class MainFragment : Fragment() {
             tab.background = null
             tab.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary))
             tab.setTypeface(null, Typeface.NORMAL)
+        }
+    }
+
+    /** 아래로 당겨서 새로고침. 로딩 표시는 잠깐만 보여준다. */
+    private fun initRefresh() {
+        binding.mainRefresh.setColorSchemeResources(R.color.brand_green)
+        binding.mainRefresh.setProgressBackgroundColorSchemeResource(R.color.surface)
+        binding.mainRefresh.setOnRefreshListener {
+            mainViewModel.refreshHome(requireContext())
+            binding.mainRefresh.postDelayed({
+                _binding?.mainRefresh?.isRefreshing = false
+            }, 1200)
         }
     }
 
@@ -209,6 +234,11 @@ class MainFragment : Fragment() {
     private fun initModel() = with(mainViewModel){
         noticeList.observe(viewLifecycleOwner){
             noticeListAdapter.submitList(it)
+        }
+
+        // 공지를 못 받았으면 배너 자리에 안내 문구
+        noticeFailed.observe(viewLifecycleOwner){ failed ->
+            binding.mainBannerEmpty.visibility = if (failed) View.VISIBLE else View.GONE
         }
 
         videoList.observe(viewLifecycleOwner){
