@@ -3,6 +3,7 @@ package com.irionna.eternalreturninfo.presentation.activity.board
 import com.irionna.eternalreturninfo.util.ProfileImage
 import com.irionna.eternalreturninfo.util.setContentViewEdgeToEdge
 import com.irionna.eternalreturninfo.util.BlockDialog
+import com.irionna.eternalreturninfo.util.UserReportDialog
 import com.irionna.eternalreturninfo.data.repository.BlockedUsers
 import android.content.Intent
 import android.graphics.Color
@@ -333,6 +334,7 @@ class BoardPostActivity : AppCompatActivity() {
     private fun showAuthorOptionsMenu(anchor: View, authorUid: String?, authorName: String?) {
         val menu = PowerMenu.Builder(this)
             .addItem(PowerMenuItem(getString(R.string.menu_report)))
+            .addItem(PowerMenuItem(getString(R.string.menu_report_author)))
             .addItem(PowerMenuItem(getString(R.string.menu_block_author)))
             .setMenuRadius(20f)
             .setTextSize(18)
@@ -349,6 +351,7 @@ class BoardPostActivity : AppCompatActivity() {
                 menu.dismiss()
                 when (position) {
                     0 -> showReportBoardDialog()
+                    1 -> UserReportDialog.show(this@BoardPostActivity, authorUid, "post", id)
                     else -> BlockDialog.show(this@BoardPostActivity, authorUid, authorName) { finishAsRemoved() }
                 }
             }

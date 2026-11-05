@@ -3,6 +3,7 @@ package com.irionna.eternalreturninfo.presentation.activity.chat
 import android.content.Context
 import com.irionna.eternalreturninfo.util.setContentViewEdgeToEdge
 import com.irionna.eternalreturninfo.util.BlockDialog
+import com.irionna.eternalreturninfo.util.UserReportDialog
 import com.irionna.eternalreturninfo.data.repository.BlockedUsers
 import android.view.Gravity
 import android.view.View
@@ -142,6 +143,7 @@ class ChatActivity : AppCompatActivity() {
         val targetUid = data?.uid ?: return
         val blocked = BlockedUsers.isBlocked(targetUid)
         val menu = PowerMenu.Builder(this)
+            .addItem(PowerMenuItem(getString(R.string.menu_report_user)))
             .addItem(PowerMenuItem(getString(if (blocked) R.string.menu_unblock_user else R.string.menu_block_user)))
             .setMenuRadius(20f)
             .setTextSize(18)
@@ -156,7 +158,10 @@ class ChatActivity : AppCompatActivity() {
         menu.setOnMenuItemClickListener(object : OnMenuItemClickListener<PowerMenuItem> {
             override fun onItemClick(position: Int, item: PowerMenuItem) {
                 menu.dismiss()
-                if (blocked) {
+                if (position == 0) {
+                    // 방 이름: 상대 uid + 내 uid (내 사본 방). 신고한 대화를 찾는 데 쓴다.
+                    UserReportDialog.show(this@ChatActivity, targetUid, "chat", targetUid + auth.uid)
+                } else if (blocked) {
                     BlockedUsers.unblock(targetUid) { ok ->
                         Toast.makeText(
                             this@ChatActivity,
