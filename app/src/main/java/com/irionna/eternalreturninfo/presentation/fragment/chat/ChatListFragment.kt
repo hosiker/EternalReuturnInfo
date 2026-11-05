@@ -1,6 +1,7 @@
 package com.irionna.eternalreturninfo.presentation.fragment.chat
 
 import com.irionna.eternalreturninfo.util.ProfileImage
+import com.irionna.eternalreturninfo.data.repository.BlockedUsers
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -54,7 +55,14 @@ class ChatListFragment : Fragment() {
         initViewModel()
     }
 
+    // 차단한 사용자와의 대화방은 목록에서 숨긴다
+    private fun submitChatList() {
+        val visible = viewModel.list.value.orEmpty().filterNot { BlockedUsers.isBlocked(it.uid) }
+        chatListAdapter.submitList(visible)
+    }
+
     private fun initView() = with(binding) {
+        BlockedUsers.blocked.observe(viewLifecycleOwner) { submitChatList() }
         chatListRecyclerview.adapter = chatListAdapter
         chatListRecyclerview.layoutManager = LinearLayoutManager(context)
         chatListRecyclerview.itemAnimator = null
@@ -64,7 +72,7 @@ class ChatListFragment : Fragment() {
         loadProfilePicture()
 
         list.observe(viewLifecycleOwner) {
-            chatListAdapter.submitList(it)
+            submitChatList()
         }
 
         profilePictureUrl.observe(viewLifecycleOwner) {

@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.irionna.eternalreturninfo.data.repository.BlockedUsers
 
 class FindDuoFragment : Fragment() {
     companion object {
@@ -105,10 +106,22 @@ class FindDuoFragment : Fragment() {
     }
 
     private fun initView() = with(binding) {
+        BlockedUsers.blocked.observe(viewLifecycleOwner) { renderDuoUsers() }
         findduoPopupWindow = FindduoPopupWindow(requireContext())
         findduoRegisterBtn.setOnClickListener { findduoPopupWindow.showPopup(binding.root) }
         adapter.notifyDataSetChanged()
         loadAllUserDataFromFirebase()
+    }
+
+    // 서버에서 받은 듀오 목록 전체 (차단한 사용자는 화면에 그릴 때 뺀다)
+    private var allDuoUsers: List<ERModel> = emptyList()
+
+    private fun renderDuoUsers() {
+        val visible = allDuoUsers.filterNot { BlockedUsers.isBlocked(it.uid) }
+        adapter.items.clear()
+        adapter.items.addAll(visible)
+        adapter.notifyDataSetChanged()
+        _binding?.findduoTotalNumber?.text = visible.size.toString()
     }
 
     private fun loadAllUserDataFromFirebase() {
@@ -134,14 +147,8 @@ class FindDuoFragment : Fragment() {
                         }
 
                         filteredUsersList.reverse()
-
-                        adapter.items.clear()
-                        adapter.items.addAll(filteredUsersList)
-                        adapter.notifyDataSetChanged()
-
-                        val filteredUserCount = filteredUsersList.size
-                        binding.findduoTotalNumber.text =
-                            filteredUserCount.toString()
+                        allDuoUsers = filteredUsersList
+                        renderDuoUsers()
                     } else {
                         Log.d(TAG, "No user data found")
                     }

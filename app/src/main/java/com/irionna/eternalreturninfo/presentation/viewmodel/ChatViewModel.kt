@@ -32,6 +32,10 @@ class ChatViewModel(
     private val _scroll: MutableLiveData<String> = MutableLiveData()
     val scroll: LiveData<String> get() = _scroll
 
+    // 메시지를 보내지 못했을 때(예: 상대가 나를 차단함) 화면에 알리기 위한 신호
+    private val _sendFailed: MutableLiveData<String> = MutableLiveData()
+    val sendFailed: LiveData<String> get() = _sendFailed
+
     private val idGenerate = AtomicLong(1L)
     private lateinit var database: DatabaseReference
     private lateinit var refDb: DatabaseReference
@@ -79,6 +83,8 @@ class ChatViewModel(
                     .setValue(messageObject).addOnSuccessListener {
                         database.child("chats").child(receiverRoom).child("messages").push()
                             .setValue(messageObject)
+                    }.addOnFailureListener {
+                        _sendFailed.value = "failed"
                     }
 
                 // 메시지 전송 후 EditText 공백 처리

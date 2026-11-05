@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.irionna.eternalreturninfo.data.model.BoardModel
+import com.irionna.eternalreturninfo.data.repository.BlockedUsers
 import com.irionna.eternalreturninfo.data.model.CommentModel
 import com.irionna.eternalreturninfo.retrofit.FBRef
 import com.google.firebase.database.DataSnapshot
@@ -39,7 +40,7 @@ class BoardListViewModel() : ViewModel(){
                     // 게시판 처음 들어왔을 때, 내가 신고한 게시판을 제외한, 게시판만 띄우기
                     Log.d("choco", "${board.toString()}")
 
-                    if (board != null && board!!.report.values.none { r -> r.uid == FBRef.auth.uid }) {
+                    if (board != null && board!!.report.values.none { r -> r.uid == FBRef.auth.uid } && !BlockedUsers.isBlocked(board.author)) {
                         unsortedBoardList.add(board)
                     }
                 }

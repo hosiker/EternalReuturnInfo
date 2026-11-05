@@ -2,6 +2,8 @@ package com.irionna.eternalreturninfo.presentation.activity.board
 
 import com.irionna.eternalreturninfo.util.ProfileImage
 import com.irionna.eternalreturninfo.util.setContentViewEdgeToEdge
+import com.irionna.eternalreturninfo.util.BlockDialog
+import com.irionna.eternalreturninfo.data.repository.BlockedUsers
 import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
@@ -56,6 +58,9 @@ class BoardPostActivity : AppCompatActivity() {
     private var set: MutableSet<CommentModel> = mutableSetOf()
 
     private var dataload = false
+
+    // 서버에서 받은 댓글 전체 (신고한 댓글, 차단한 사용자의 댓글은 화면에 그릴 때 뺀다)
+    private var allComments: List<CommentModel> = emptyList()
 
     private val refPowerMenu: PowerMenu by lazy {
         PowerMenu.Builder(this@BoardPostActivity)
@@ -174,20 +179,8 @@ class BoardPostActivity : AppCompatActivity() {
                                             customDialog.show()
                                         }
 
-                                        boardReportMenu.setOnClickListener{
-                                            val reportBoardDialog = ReportBoardDialog(
-                                                this@BoardPostActivity,
-                                                object : DialogListener {
-                                                    override fun onOKButtonClicked() {
-                                                        val reportMap = ReportModel(FBRef.auth.uid!!, System.currentTimeMillis())
-                                                        FBRef.postRef.child(id).child("report").push().setValue(reportMap)
-                                                        intent.putExtra("updateBoard", board?.copy(category = "report"))
-                                                        setResult(RESULT_OK, intent)
-                                                        finish()
-                                                    }
-                                                }
-                                            )
-                                            reportBoardDialog.show()
+                                        boardReportMenu.setOnClickListener { anchor ->
+                                            showAuthorOptionsMenu(anchor, user?.uid, user?.name)
                                         }
                                     }
                                 }
@@ -215,12 +208,8 @@ class BoardPostActivity : AppCompatActivity() {
 
                         if (sortedComment != null) {
 
-                            val filter = sortedComment.filterNot{
-                                it.report.values.any { r -> r.uid == FBRef.auth.uid }
-                            }
-
-
-                            boardViewModel.initComment(filter.toMutableList())
+                            allComments = sortedComment
+                            renderComments()
 
                         }
 
@@ -295,6 +284,10 @@ class BoardPostActivity : AppCompatActivity() {
                 reportCommentDialog.show()
 
             }
+
+            override fun onBlockItemClick(commentItem: CommentModel, position: Int, authorName: String?) {
+                BlockDialog.show(this@BoardPostActivity, commentItem.author, authorName)
+            }
         })
 
         boardPostBtnSave.setOnClickListener {
@@ -322,10 +315,65 @@ class BoardPostActivity : AppCompatActivity() {
     }
 
     private fun initModel() = with(boardViewModel) {
+        BlockedUsers.blocked.observe(this@BoardPostActivity) { renderComments() }
         commentList.observe(this@BoardPostActivity) { commentList ->
             listAdapter.submitList(commentList)
             binding.boardPostBtnComment.text = commentList.size.toString()
         }
+    }
+
+    private fun renderComments() {
+        val visible = allComments.filterNot {
+            it.report.values.any { r -> r.uid == FBRef.auth.uid } || BlockedUsers.isBlocked(it.author)
+        }
+        boardViewModel.initComment(visible.toMutableList())
+    }
+
+    // 내 글이 아닌 글에서 신고 버튼을 누르면: 신고 / 작성자 차단
+    private fun showAuthorOptionsMenu(anchor: View, authorUid: String?, authorName: String?) {
+        val menu = PowerMenu.Builder(this)
+            .addItem(PowerMenuItem(getString(R.string.menu_report)))
+            .addItem(PowerMenuItem(getString(R.string.menu_block_author)))
+            .setMenuRadius(20f)
+            .setTextSize(18)
+            .setWidth(330)
+            .setTextGravity(Gravity.CENTER)
+            .setTextColor(ContextCompat.getColor(this, R.color.white))
+            .setMenuColor(ContextCompat.getColor(this, R.color.darkgray))
+            .setSelectedMenuColor(ContextCompat.getColor(this, R.color.black))
+            .setCircularEffect(CircularEffect.BODY)
+            .setAnimation(MenuAnimation.SHOWUP_TOP_RIGHT)
+            .build()
+        menu.setOnMenuItemClickListener(object : OnMenuItemClickListener<PowerMenuItem> {
+            override fun onItemClick(position: Int, item: PowerMenuItem) {
+                menu.dismiss()
+                when (position) {
+                    0 -> showReportBoardDialog()
+                    else -> BlockDialog.show(this@BoardPostActivity, authorUid, authorName) { finishAsRemoved() }
+                }
+            }
+        })
+        menu.showAsDropDown(anchor)
+    }
+
+    private fun showReportBoardDialog() {
+        ReportBoardDialog(
+            this@BoardPostActivity,
+            object : DialogListener {
+                override fun onOKButtonClicked() {
+                    val reportMap = ReportModel(FBRef.auth.uid!!, System.currentTimeMillis())
+                    FBRef.postRef.child(id).child("report").push().setValue(reportMap)
+                    finishAsRemoved()
+                }
+            }
+        ).show()
+    }
+
+    // 신고하거나 작성자를 차단한 글은 목록에서 빼도록 알리고 닫는다
+    private fun finishAsRemoved() {
+        intent.putExtra("updateBoard", board?.copy(category = "report"))
+        setResult(RESULT_OK, intent)
+        finish()
     }
 
     fun formatTimeOrDate(postTime: Long): String {

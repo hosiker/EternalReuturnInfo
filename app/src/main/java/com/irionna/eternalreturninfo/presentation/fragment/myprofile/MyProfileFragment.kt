@@ -20,6 +20,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.irionna.eternalreturninfo.R
+import com.irionna.eternalreturninfo.data.repository.BlockedUsers
+import com.irionna.eternalreturninfo.presentation.activity.block.BlockedUsersActivity
 import com.irionna.eternalreturninfo.databinding.MyprofileCharacterDialogBinding
 import com.irionna.eternalreturninfo.databinding.MyprofileFragmentBinding
 import com.irionna.eternalreturninfo.retrofit.BoardSingletone
@@ -66,6 +68,7 @@ class MyProfileFragment : Fragment() {
             .addItem(PowerMenuItem("로그아웃"))
             .addItem(PowerMenuItem("회원 탈퇴"))
             .addItem(PowerMenuItem("비밀번호 변경"))
+            .addItem(PowerMenuItem(getString(R.string.menu_blocked_list)))
             .setMenuRadius(20f) // sets the corner radius.
             .setTextSize(18)
             .setWidth(500)
@@ -178,6 +181,7 @@ class MyProfileFragment : Fragment() {
         val appContext = host.applicationContext
         CoroutineScope(Dispatchers.Main).launch {
             try {
+                BlockedUsers.stop()
                 AccountDeleter().delete(appContext.getString(R.string.withdrawn_user_name))
                 host.startActivity(Intent(host, LoginActivity::class.java))
                 host.finish()
@@ -273,6 +277,7 @@ class MyProfileFragment : Fragment() {
 
                 1 -> {
                     refPowerMenu.dismiss()
+                    BlockedUsers.stop()
                     FirebaseAuth.getInstance().signOut()
                     var intent = Intent(activity, LoginActivity::class.java)
                     startActivity(intent)
@@ -297,6 +302,11 @@ class MyProfileFragment : Fragment() {
                         deleteDialog.dismiss()
                     }
                     deleteDialog.show()
+                }
+
+                4 -> {
+                    refPowerMenu.dismiss()
+                    startActivity(Intent(requireContext(), BlockedUsersActivity::class.java))
                 }
 
                 else -> {
