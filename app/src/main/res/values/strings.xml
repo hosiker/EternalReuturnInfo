@@ -145,7 +145,7 @@
     <string name="stats_season_title">시즌 선택</string>
     <string name="stats_season_current">현재</string>
     <string name="stats_loading">전적을 불러오는 중…</string>
-    <string name="stats_unavailable">전적을 불러오지 못했어요.\n닉네임이 게임과 같은지, 잠시 후 다시 시도해 보세요.</string>
+    <string name="stats_unavailable">전적을 불러오지 못했어요.\n게임 닉네임이 맞는지 확인하고 다시 시도해 보세요.</string>
     <string name="stats_no_record">이 시즌에는 기록이 없어요.</string>
     <string name="stats_mode_ranked">랭크</string>
     <string name="stats_mode_normal">일반</string>
@@ -161,4 +161,8 @@
     <string name="stats_denied">게임 서버가 전적 조회를 허용하지 않았어요.\nAPI 키 권한을 확인해야 해요.</string>
     <string name="stats_searching">이전 시즌 기록을 찾는 중…</string>
     <string name="stats_fallback_notice">현재 시즌 기록이 없어 %1$s 기록을 보여줘요.</string>
+    <string name="main_search_hint">게임 닉네임으로 전적 검색</string>
+    <string name="main_search_btn">검색</string>
+    <string name="main_search_guide">다른 이용자의 닉네임을 입력하면\n시즌·모드별 전적을 볼 수 있어요.</string>
+    <string name="main_search_empty">닉네임을 입력하세요</string>
 </resources>
