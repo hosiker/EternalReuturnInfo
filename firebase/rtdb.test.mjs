@@ -104,6 +104,56 @@ await t('작성자 색인으로 내 글을 조회한다', async () => {
   await assertSucceeds(get(query(ref(db(A), 'post'), orderByChild('author'), equalTo(A))));
 });
 
+// 차단 (blocks)
+const E = 'E'.repeat(28), F = 'F'.repeat(28), G = 'G'.repeat(28);
+await env.withSecurityRulesDisabled(async (ctx) => {
+  const d = ctx.database();
+  await set(ref(d, 'chats/' + F + E + '/messages/m1'), { message: 'hi', readOrNot: false });
+  await set(ref(d, 'chats/' + E + F + '/messages/m1'), { message: 'hi', readOrNot: false });
+});
+await t('본인 차단 목록에 차단한 사람을 넣는다', () => assertSucceeds(set(ref(db(E), 'blocks/' + E + '/' + G), true)));
+await t('본인 차단 목록을 읽는다', () => assertSucceeds(get(ref(db(E), 'blocks/' + E))));
+await t('남의 차단 목록은 못 읽는다', () => assertFails(get(ref(db(F), 'blocks/' + E))));
+await t('남의 차단 목록에는 못 쓴다', () => assertFails(set(ref(db(F), 'blocks/' + E + '/' + F), true)));
+await t('차단 목록 전체(blocks)는 못 읽는다', () => assertFails(get(ref(db(E), 'blocks'))));
+await t('비로그인은 차단 목록을 못 읽는다', () => assertFails(get(ref(db(null), 'blocks/' + E))));
+await t('자기 자신은 차단하지 못한다', () => assertFails(set(ref(db(E), 'blocks/' + E + '/' + E), true)));
+await t('차단 값은 true 만 된다 (false)', () => assertFails(set(ref(db(E), 'blocks/' + E + '/' + F), false)));
+await t('차단 값은 true 만 된다 (문자열)', () => assertFails(set(ref(db(E), 'blocks/' + E + '/' + F), 'yes')));
+await t('차단을 해제한다(값 삭제)', () => assertSucceeds(remove(ref(db(E), 'blocks/' + E + '/' + G))));
+await t('내 차단 목록 전체를 지운다(회원탈퇴 정리)', async () => {
+  await assertSucceeds(set(ref(db(E), 'blocks/' + E + '/' + G), true));
+  await assertSucceeds(remove(ref(db(E), 'blocks/' + E)));
+});
+
+// 차단과 채팅
+await t('차단 전에는 서로 메시지를 보낸다 (E -> F, 양쪽 방)', async () => {
+  await assertSucceeds(push(ref(db(E), 'chats/' + F + E + '/messages'), { message: 'x' }));
+  await assertSucceeds(push(ref(db(E), 'chats/' + E + F + '/messages'), { message: 'x' }));
+});
+await assertSucceeds(set(ref(db(F), 'blocks/' + F + '/' + E), true));   // F 가 E 를 차단
+await t('차단당한 사람(E)은 상대(F)에게 못 보낸다 (내 사본 방)', () => assertFails(push(ref(db(E), 'chats/' + F + E + '/messages'), { message: 'x' })));
+await t('차단당한 사람(E)은 상대(F)에게 못 보낸다 (상대 사본 방)', () => assertFails(push(ref(db(E), 'chats/' + E + F + '/messages'), { message: 'x' })));
+await t('차단한 사람(F)도 차단한 상대(E)에게는 보내지 않는다', async () => {
+  await assertFails(push(ref(db(F), 'chats/' + E + F + '/messages'), { message: 'x' }));
+  await assertFails(push(ref(db(F), 'chats/' + F + E + '/messages'), { message: 'x' }));
+});
+await t('차단당해도 이전 대화는 읽는다', () => assertSucceeds(get(ref(db(E), 'chats/' + F + E))));
+await t('차단당해도 내 사본 방은 지운다', async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => set(ref(ctx.database(), 'chats/' + F + E + '/messages/m9'), { message: 'tmp' }));
+  await assertSucceeds(remove(ref(db(E), 'chats/' + F + E)));
+});
+await t('차단 중에는 읽음 표시 갱신도 막힌다 (알려진 부작용, 대화 내용은 안전)', () => assertFails(update(ref(db(E), 'chats/' + E + F + '/messages/m1'), { readOrNot: true })));
+await t('제3자(G)와의 대화는 영향이 없다', async () => {
+  await assertSucceeds(push(ref(db(E), 'chats/' + G + E + '/messages'), { message: 'x' }));
+  await assertSucceeds(push(ref(db(E), 'chats/' + E + G + '/messages'), { message: 'x' }));
+});
+await t('차단을 풀면 다시 보낼 수 있다', async () => {
+  await assertSucceeds(remove(ref(db(F), 'blocks/' + F + '/' + E)));
+  await assertSucceeds(push(ref(db(E), 'chats/' + F + E + '/messages'), { message: 'x' }));
+  await assertSucceeds(push(ref(db(E), 'chats/' + E + F + '/messages'), { message: 'x' }));
+});
+
 console.log(`\n${pass} passed, ${fail} failed`);
 await env.cleanup();
 process.exit(fail ? 1 : 0);
