@@ -65,7 +65,7 @@
         android:layout_marginEnd="32dp"
         android:background="@drawable/shape_login_btn"
         android:text="비밀번호 찾기"
-        android:textColor="#00E2FF"
+        android:textColor="@color/brand_mint"
         android:textSize="16dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
