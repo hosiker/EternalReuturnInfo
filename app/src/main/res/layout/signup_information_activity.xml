@@ -52,30 +52,10 @@
             android:paddingHorizontal="24dp"
             android:paddingBottom="32dp">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/signup_profile_img"
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/ic_baseimage"
-                app:civ_border_color="@color/brand_green"
-                app:civ_border_width="2dp" />
-
-            <TextView
-                android:id="@+id/signup_profile_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"
-                android:text="@string/signup_profile_caption"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/signup_section_account"
                 android:textColor="@color/brand_mint"
                 android:textSize="12sp"
@@ -214,6 +194,7 @@
                     android:id="@+id/signup_character_thumb"
                     android:layout_width="34dp"
                     android:layout_height="34dp"
+                    android:layout_marginEnd="12dp"
                     android:scaleType="centerCrop"
                     app:civ_circle_background_color="@color/surface_stroke" />
 
@@ -221,7 +202,6 @@
                     android:id="@+id/signup_character_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
                     android:layout_weight="1"
                     android:textColor="@color/white"
                     android:textSize="15sp" />

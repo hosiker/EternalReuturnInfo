@@ -132,7 +132,6 @@
     <string name="signup_section_account">계정 정보</string>
     <string name="signup_section_profile">게임 프로필</string>
     <string name="signup_section_terms">약관 동의</string>
-    <string name="signup_profile_caption">선호 실험체에 따라 프로필 이미지가 정해져요</string>
     <string name="signup_hint_email">이메일</string>
     <string name="signup_hint_pw">비밀번호 (6자 이상)</string>
     <string name="signup_hint_pw2">비밀번호 확인</string>
