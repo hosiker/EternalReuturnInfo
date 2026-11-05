@@ -159,4 +159,6 @@
     <string name="stats_no_rank">순위 없음</string>
     <string name="myprofile_character_stats">실험체 통계 (선택한 모드)</string>
     <string name="stats_denied">게임 서버가 전적 조회를 허용하지 않았어요.\nAPI 키 권한을 확인해야 해요.</string>
+    <string name="stats_searching">이전 시즌 기록을 찾는 중…</string>
+    <string name="stats_fallback_notice">현재 시즌 기록이 없어 %1$s 기록을 보여줘요.</string>
 </resources>
