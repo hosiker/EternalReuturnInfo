@@ -12,6 +12,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.irionna.eternalreturninfo.databinding.MainFragmentBinding
+import androidx.lifecycle.lifecycleScope
+import com.irionna.eternalreturninfo.retrofit.BoardSingletone
+import com.irionna.eternalreturninfo.util.StatsPanel
 import com.irionna.eternalreturninfo.data.model.Notice
 import com.irionna.eternalreturninfo.data.model.VideoModel
 import com.irionna.eternalreturninfo.presentation.activity.main.WebView
@@ -77,6 +80,11 @@ class MainFragment : Fragment() {
 
         initView()
         initModel()
+
+        // 전적 카드: 시즌·모드 선택 가능 (프로필·듀오 카드와 같은 GameStats 사용)
+        StatsPanel(binding.constraintLayout6, requireActivity(), viewLifecycleOwner.lifecycleScope).load {
+            StatsPanel.waitForNickname { BoardSingletone.LoginUser().name }
+        }
     }
 
 
@@ -124,33 +132,6 @@ class MainFragment : Fragment() {
             videoListAdapter.submitList(it)
         }
 
-        userRecordList.observe(viewLifecycleOwner){ user ->
-
-            fun percent(number: Float?): Float? {
-                return number?.times(100)
-            }
-
-            binding.mainTvRp.text = (user?.mmr ?: 0).toString() + " PR"
-            binding.mainTvRank.text =
-                "${(user?.rank ?: 0)}위 (상위 ${(user?.rankPercent?.times(100) ?: 0)}%)"
-            binding.mainTvTotalWin.text = (user?.totalWins ?: 0).toString()
-            binding.mainTvTop1.text = (percent(user?.top1) ?: 0).toString()
-            binding.mainTvTotalGames.text = (user?.totalGames ?: 0).toString()
-            binding.mainTvAverageKill.text = (user?.averageKills ?: 0).toString()
-            binding.mainTvTop2.text = (percent(user?.top2) ?: 0).toString()
-            binding.mainTvAverageRank.text = (user?.averageRank ?: 0).toString()
-            binding.mainTvAverageAssiants.text = (user?.averageAssistants ?: 0).toString()
-            binding.mainTvTop3.text = (percent(user?.top3) ?: 0).toString()
-
-            binding.mainPbTotalWin.setProgress(100)
-            binding.mainPbTotalGames.setProgress(100)
-            binding.mainPbTop1.setProgress(percent(user?.top1)?.toInt() ?: 0)
-            binding.mainPbTop2.setProgress(percent(user?.top2)?.toInt() ?: 0)
-            binding.mainPbTop3.setProgress(percent(user?.top3)?.toInt() ?: 0)
-            binding.mainPbAverageKill.setProgress(user?.averageKills?.toInt() ?: 0)
-            binding.mainPbAverageAssiants.setProgress(user?.averageAssistants?.toInt() ?: 0)
-            binding.mainPbAverageRank.setProgress(user?.averageRank?.toInt() ?: 0)
-        }
 
     }
 
