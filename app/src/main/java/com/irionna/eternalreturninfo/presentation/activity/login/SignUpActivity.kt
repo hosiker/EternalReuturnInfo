@@ -96,11 +96,12 @@ class SignUpActivity : AppCompatActivity() {
                 }
             }
 
-        // 만 14세 이상 확인에 체크하기 전에는 가입 버튼을 흐리게 보여준다.
+        binding.signupBackBtn.setOnClickListener { finish() }
+
+        // 필수 동의를 모두 체크하기 전에는 가입 버튼을 흐리게 보여준다.
         // 버튼은 눌리게 두어서, 체크하지 않고 누르면 이유를 안내한다.
-        binding.signupSignupBtn.alpha = if (binding.signupAgeCheck.isChecked) 1f else 0.4f
-        binding.signupAgeCheck.setOnCheckedChangeListener { _, checked ->
-            binding.signupSignupBtn.alpha = if (checked) 1f else 0.4f
+        TermsConsent.bindConsentChecks(this, binding.signupConsent) { all ->
+            binding.signupSignupBtn.alpha = if (all) 1f else 0.4f
         }
 
         binding.signupSignupBtn.setOnClickListener {
@@ -161,8 +162,9 @@ class SignUpActivity : AppCompatActivity() {
             return
         }
 
-        if (!binding.signupAgeCheck.isChecked) {
-            toast("CHECK", "만 14세 이상 확인에 체크해주세요.", MotionToastStyle.WARNING)
+        val c = binding.signupConsent
+        if (!(c.consentTerms.isChecked && c.consentPrivacy.isChecked && c.consentAge.isChecked)) {
+            toast("CHECK", "필수 약관에 모두 동의해주세요.", MotionToastStyle.WARNING)
             return
         }
 
@@ -201,7 +203,7 @@ class SignUpActivity : AppCompatActivity() {
                     }
                     BoardSingletone.Login()
                     toast("", "계정 생성 완료", MotionToastStyle.SUCCESS)
-                    // 가입 전에 약관과 개인정보 안내에 동의했으므로 이 기기에 동의를 기록한다 (앱을 열 때 다시 묻지 않게)
+                    // 가입 화면에서 약관과 개인정보 수집·이용에 동의했으므로 이 기기에 동의를 기록한다 (앱을 열 때 다시 묻지 않게)
                     TermsConsent.markAccepted(this, uid)
                     // 이 노드는 로그인한 모든 사용자가 읽을 수 있으므로 이메일 같은 개인정보는 저장하지 않는다.
                     database.child("user").child(uid)

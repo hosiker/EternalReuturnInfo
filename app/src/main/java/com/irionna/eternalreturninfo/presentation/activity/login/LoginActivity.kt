@@ -1,6 +1,5 @@
 package com.irionna.eternalreturninfo.presentation.activity.login
 
-import com.irionna.eternalreturninfo.util.PrivacyConsentDialog
 import com.irionna.eternalreturninfo.util.setContentViewEdgeToEdge
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -112,10 +111,8 @@ class LoginActivity : AppCompatActivity() {
 
         //회원가입 버튼
         binding.loginSignupBtn.setOnClickListener {
-            // 개인정보 수집·이용 안내에 동의해야 가입 화면으로 넘어간다.
-            PrivacyConsentDialog.show(this) {
-                startActivity(Intent(this, SignUpActivity::class.java))
-            }
+            // 약관·개인정보 동의는 가입 화면 아래쪽에서 받는다.
+            startActivity(Intent(this, SignUpActivity::class.java))
         }
 
     }
