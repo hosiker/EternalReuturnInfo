@@ -178,6 +178,10 @@ await t('올린 신고를 고치거나 지우지 못한다', async () => {
   await assertFails(remove(ref(db(C), 'userReports/' + r.key)));
 });
 
+// 운영자 처리 기록 (moderationLog): 앱에서는 읽지도 쓰지도 못한다 (관리 도구만 접근)
+await t('처리 기록(moderationLog)은 앱에서 읽지 못한다', () => assertFails(get(ref(db(C), 'moderationLog'))));
+await t('처리 기록(moderationLog)은 앱에서 쓰지 못한다', () => assertFails(push(ref(db(C), 'moderationLog'), { ref: 'x', action: 'none', note: 'x', at: 1 })));
+
 console.log(`\n${pass} passed, ${fail} failed`);
 await env.cleanup();
 process.exit(fail ? 1 : 0);
