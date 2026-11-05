@@ -3,6 +3,9 @@ package com.irionna.eternalreturninfo.presentation.fragment.main
 import android.content.Intent
 import android.content.Context
 import android.net.Uri
+import androidx.core.content.ContextCompat
+import android.widget.TextView
+import android.graphics.Typeface
 import com.irionna.eternalreturninfo.R
 import android.widget.Toast
 import android.view.inputmethod.InputMethodManager
@@ -28,6 +31,8 @@ import com.irionna.eternalreturninfo.presentation.viewmodel.MainListViewModel
 
 class MainFragment : Fragment() {
     companion object {
+        private const val SORT_DATE = "date"
+        private const val SORT_VIEWS = "viewCount"
         fun newInstance() = MainFragment()
     }
 
@@ -87,6 +92,7 @@ class MainFragment : Fragment() {
         mainViewModel.loadVideos(requireContext())
 
         initStatsSearch()
+        initVideoTabs()
     }
 
     /** 전적 검색: 입력한 게임 닉네임의 전적을 시즌·모드별로 보여준다 (내 전적은 프로필 화면에서). */
@@ -151,13 +157,68 @@ class MainFragment : Fragment() {
 
     }
 
+    // 게임 방송: 공식 채널 / 스트리머 탭 (스트리머는 최신순·조회순 검색 결과)
+    private var officialVideos: List<VideoModel> = emptyList()
+    private val streamerVideos = HashMap<String, List<VideoModel>>()
+    private var showStreamer = false
+    private var streamerSort = SORT_DATE
+
+    private fun showVideos() {
+        val list = if (showStreamer) streamerVideos[streamerSort].orEmpty() else officialVideos
+        videoListAdapter.submitList(list.toList())
+        styleVideoTab(binding.mainSegOfficial, !showStreamer)
+        styleVideoTab(binding.mainSegStreamer, showStreamer)
+        binding.mainSortSeg.visibility = if (showStreamer) View.VISIBLE else View.GONE
+        styleVideoTab(binding.mainSortLatest, streamerSort == SORT_DATE)
+        styleVideoTab(binding.mainSortViews, streamerSort == SORT_VIEWS)
+    }
+
+    private fun styleVideoTab(tab: TextView, selected: Boolean) {
+        if (selected) {
+            tab.setBackgroundResource(R.drawable.shape_seg_on)
+            tab.setTextColor(ContextCompat.getColor(requireContext(), R.color.brand_mint))
+            tab.setTypeface(null, Typeface.BOLD)
+        } else {
+            tab.background = null
+            tab.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary))
+            tab.setTypeface(null, Typeface.NORMAL)
+        }
+    }
+
+    private fun initVideoTabs() {
+        binding.mainSegOfficial.setOnClickListener {
+            showStreamer = false
+            showVideos()
+        }
+        binding.mainSegStreamer.setOnClickListener {
+            showStreamer = true
+            mainViewModel.loadStreamerVideos(requireContext(), streamerSort) // 처음 열 때만 실제로 불러온다
+            showVideos()
+        }
+        binding.mainSortLatest.setOnClickListener { selectSort(SORT_DATE) }
+        binding.mainSortViews.setOnClickListener { selectSort(SORT_VIEWS) }
+        showVideos()
+    }
+
+    private fun selectSort(sort: String) {
+        streamerSort = sort
+        mainViewModel.loadStreamerVideos(requireContext(), sort)
+        showVideos()
+    }
+
     private fun initModel() = with(mainViewModel){
         noticeList.observe(viewLifecycleOwner){
             noticeListAdapter.submitList(it)
         }
 
         videoList.observe(viewLifecycleOwner){
-            videoListAdapter.submitList(it)
+            officialVideos = it
+            showVideos()
+        }
+
+        streamerList.observe(viewLifecycleOwner){ (sort, list) ->
+            streamerVideos[sort] = list
+            showVideos()
         }
 
 

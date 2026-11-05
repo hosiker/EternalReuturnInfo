@@ -210,3 +210,61 @@ data class SeasonData(
     val seasonName: String?,
     val isCurrent: Int?
 )
+
+
+/** 채널 업로드 목록 응답 (GET playlistItems). 호출당 한도 1. */
+@Keep
+data class PlaylistItemsResponse(
+    @SerializedName("items")
+    val items: List<PlaylistItem>? = null
+)
+
+@Keep
+data class PlaylistItem(
+    @SerializedName("snippet")
+    val snippet: PlaylistSnippet? = null,
+    @SerializedName("contentDetails")
+    val contentDetails: PlaylistContentDetails? = null
+)
+
+@Keep
+data class PlaylistContentDetails(
+    @SerializedName("videoPublishedAt")
+    val videoPublishedAt: String? = null
+)
+
+@Keep
+data class PlaylistSnippet(
+    @SerializedName("title")
+    val title: String? = null,
+    @SerializedName("thumbnails")
+    val thumbnails: ThumbNail? = null,
+    @SerializedName("resourceId")
+    val resourceId: Id? = null
+)
+
+
+/** 영상 정보 응답 (GET videos). 검색 결과에 없는 태그를 얻는 데 쓴다. 호출당 한도 1 (영상 50개까지). */
+@Keep
+data class VideoDetailsResponse(
+    @SerializedName("items")
+    val items: List<VideoDetail>? = null
+)
+
+@Keep
+data class VideoDetail(
+    @SerializedName("id")
+    val id: String? = null,
+    @SerializedName("snippet")
+    val snippet: VideoDetailSnippet? = null
+)
+
+@Keep
+data class VideoDetailSnippet(
+    @SerializedName("title")
+    val title: String? = null,
+    @SerializedName("tags")
+    val tags: List<String>? = null,
+    @SerializedName("thumbnails")
+    val thumbnails: ThumbNail? = null
+)

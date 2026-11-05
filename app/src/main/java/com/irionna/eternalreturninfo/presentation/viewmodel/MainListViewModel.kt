@@ -11,11 +11,18 @@ import com.irionna.eternalreturninfo.data.model.Notice
 import com.irionna.eternalreturninfo.data.model.VideoModel
 import com.irionna.eternalreturninfo.data.repository.VideoCache
 import com.irionna.eternalreturninfo.retrofit.RetrofitInstance
+import com.irionna.eternalreturninfo.util.Constants
+import com.irionna.eternalreturninfo.util.VideoFilter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class MainListViewModel() : ViewModel(){
+
+    private companion object {
+        const val MAX_STREAMER_VIDEOS = 20
+    }
+
 
     private val _noticeList = MutableLiveData<MutableList<Notice>>()
     val noticeList: LiveData<MutableList<Notice>>
@@ -24,6 +31,11 @@ class MainListViewModel() : ViewModel(){
     private val _videoList = MutableLiveData<MutableList<VideoModel>>()
     val videoList: LiveData<MutableList<VideoModel>>
         get() = _videoList
+
+    /** 스트리머 탭 결과: (정렬 종류, 영상 목록) */
+    private val _streamerList = MutableLiveData<Pair<String, List<VideoModel>>>()
+    val streamerList: LiveData<Pair<String, List<VideoModel>>>
+        get() = _streamerList
 
 
 
@@ -71,14 +83,14 @@ class MainListViewModel() : ViewModel(){
         videosRequested = true
         val appContext = context.applicationContext
         viewModelScope.launch {
-            val saved = VideoCache.load(appContext)
+            val saved = VideoCache.load(appContext, VideoCache.KIND_OFFICIAL)
             if (saved != null && saved.isFresh()) {
                 _videoList.postValue(saved.list.toMutableList())
                 return@launch
             }
             val fresh = fetchItemResults()
             if (!fresh.isNullOrEmpty()) {
-                VideoCache.save(appContext, fresh)
+                VideoCache.save(appContext, VideoCache.KIND_OFFICIAL, fresh)
                 _videoList.postValue(fresh.toMutableList())
             } else {
                 _videoList.postValue((saved?.list ?: emptyList()).toMutableList())
@@ -86,32 +98,103 @@ class MainListViewModel() : ViewModel(){
         }
     }
 
-    /** 새로 받은 영상 목록. 실패하면 null. */
+    private val streamersRequested = mutableSetOf<String>()
+
+    /**
+     * 스트리머 탭: YouTube 검색 결과 중 이터널 리턴 관련 영상만 보여준다. [sort] = "date"(최신순) 또는 "viewCount"(조회순, 최근 30일).
+     * 정렬마다 6시간 저장하고, 처음 열 때 한 번만 불러온다. 검색은 호출당 한도 100 이라 새로 받기는 정렬당 6시간에 한 번뿐이다.
+     */
+    fun loadStreamerVideos(context: Context, sort: String) {
+        if (!streamersRequested.add(sort)) return
+        val appContext = context.applicationContext
+        val kind = "streamer_$sort"
+        viewModelScope.launch {
+            val saved = VideoCache.load(appContext, kind)
+            if (saved != null && saved.isFresh()) {
+                _streamerList.postValue(sort to saved.list)
+                return@launch
+            }
+            val fresh = fetchStreamerVideos(sort)
+            if (!fresh.isNullOrEmpty()) {
+                VideoCache.save(appContext, kind, fresh)
+                _streamerList.postValue(sort to fresh)
+            } else {
+                _streamerList.postValue(sort to (saved?.list ?: emptyList()))
+            }
+        }
+    }
+
+    /** 검색 → 영상 정보(태그) 조회 → 키워드로 거르기. 검색·조회가 실패하면 null. */
+    private suspend fun fetchStreamerVideos(sort: String): List<VideoModel>? {
+        return try {
+            // 조회순은 오래된 인기 영상만 나오지 않도록 최근 30일로 제한한다
+            val after = if (sort == "viewCount") {
+                val fmt = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", java.util.Locale.US)
+                fmt.timeZone = java.util.TimeZone.getTimeZone("UTC")
+                fmt.format(java.util.Date(System.currentTimeMillis() - 30L * 24 * 60 * 60 * 1000))
+            } else null
+            val search = RetrofitInstance.api.searchVideos(query = VideoFilter.SEARCH_QUERY, order = sort, publishedAfter = after)
+            if (!search.isSuccessful) {
+                Log.e("YouTube", "스트리머 검색 실패 HTTP ${search.code()}: ${search.errorBody()?.string()?.take(300)}")
+                return null
+            }
+            val ids = search.body()?.items.orEmpty().mapNotNull { it.id.videoId }
+            if (ids.isEmpty()) return emptyList()
+
+            val details = RetrofitInstance.api.getVideoDetails(ids = ids.joinToString(","))
+            if (!details.isSuccessful) {
+                Log.e("YouTube", "영상 정보 실패 HTTP ${details.code()}: ${details.errorBody()?.string()?.take(300)}")
+                return null
+            }
+            val byId = details.body()?.items.orEmpty().filter { it.id != null }.associateBy { it.id!! }
+            val result = ids.mapNotNull { id ->
+                val d = byId[id] ?: return@mapNotNull null
+                val sn = d.snippet ?: return@mapNotNull null
+                if (!VideoFilter.matches(sn.title, sn.tags)) return@mapNotNull null
+                VideoModel(
+                    id = id,
+                    title = sn.title,
+                    thumbnail = sn.thumbnails?.medium?.url,
+                    url = "https://www.youtube.com/watch?v=$id"
+                )
+            }.take(MAX_STREAMER_VIDEOS)
+            Log.d("YouTube", "스트리머($sort) 검색 ${ids.size}개 중 ${result.size}개 통과")
+            result
+        } catch (e: Exception) {
+            Log.e("YouTube", "스트리머 목록 오류: ${e.javaClass.simpleName} ${e.message}")
+            null
+        }
+    }
+
+    /** 새로 받은 영상 목록(공식 채널 최신 업로드). 실패하면 null. */
     private suspend fun fetchItemResults(): List<VideoModel>? {
         return try {
-            val response = RetrofitInstance.api.getYouTubeVideos(
-                query = "이터널리턴",
-                maxResults = 10,
-                videoOrder = "relevance"
+            val response = RetrofitInstance.api.getPlaylistVideos(
+                playlistId = Constants.OFFICIAL_UPLOADS_PLAYLIST,
+                maxResults = 10
             )
             if (!response.isSuccessful) {
                 // 실패 이유(키 제한, 한도 초과, API 미사용 등)를 로그로 남긴다. 키는 포함되지 않는다.
-                Log.e("YouTube", "검색 실패 HTTP ${response.code()}: ${response.errorBody()?.string()?.take(400)}")
+                Log.e("YouTube", "목록 실패 HTTP ${response.code()}: ${response.errorBody()?.string()?.take(400)}")
                 return null
             }
             val items = response.body()?.items.orEmpty()
-            Log.d("YouTube", "검색 성공: 영상 ${items.size}개")
+            Log.d("YouTube", "공식 채널 목록 성공: 영상 ${items.size}개")
             items.mapNotNull { item ->
-                val videoId = item.id.videoId ?: return@mapNotNull null
+                val sn = item.snippet ?: return@mapNotNull null
+                val videoId = sn.resourceId?.videoId ?: return@mapNotNull null
+                val title = sn.title
+                // 삭제됐거나 비공개로 바뀐 영상은 제목이 이렇게 온다
+                if (title == "Private video" || title == "Deleted video") return@mapNotNull null
                 VideoModel(
                     id = videoId,
-                    title = item.snippet.title,
-                    thumbnail = item.snippet.thumbnails?.medium?.url,
+                    title = title,
+                    thumbnail = sn.thumbnails?.medium?.url,
                     url = "https://www.youtube.com/watch?v=$videoId"
                 )
             }
         } catch (e: Exception) {
-            Log.e("YouTube", "검색 오류: ${e.javaClass.simpleName} ${e.message}")
+            Log.e("YouTube", "목록 오류: ${e.javaClass.simpleName} ${e.message}")
             null
         }
     }

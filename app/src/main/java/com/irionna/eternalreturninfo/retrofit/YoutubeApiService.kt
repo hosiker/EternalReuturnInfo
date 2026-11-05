@@ -21,6 +21,36 @@ interface YoutubeApiService {
         @Query("part")part: String = "snippet",
     ): Response<YoutubeVideo>
 
+    /** 영상 검색 (호출당 한도 100). order = date(최신순) 또는 viewCount(조회순). */
+    @GET("search")
+    suspend fun searchVideos(
+        @Query("key") apiKey: String = AUTH_KEY,
+        @Query("q") query: String,
+        @Query("order") order: String,
+        @Query("maxResults") maxResults: Int = 50,
+        @Query("publishedAfter") publishedAfter: String? = null,
+        @Query("relevanceLanguage") relevanceLanguage: String = "ko",
+        @Query("type") type: String = "video",
+        @Query("part") part: String = "snippet",
+    ): Response<YoutubeVideo>
+
+    /** 영상 정보(제목·태그·썸네일). ids 는 쉼표로 이은 영상 번호(최대 50개). 호출당 한도 1. */
+    @GET("videos")
+    suspend fun getVideoDetails(
+        @Query("key") apiKey: String = AUTH_KEY,
+        @Query("id") ids: String,
+        @Query("part") part: String = "snippet",
+    ): Response<VideoDetailsResponse>
+
+    /** 채널 업로드 목록의 최신 영상. 검색(호출당 100)과 달리 호출당 한도 1만 쓴다. */
+    @GET("playlistItems")
+    suspend fun getPlaylistVideos(
+        @Query("key") apiKey: String = AUTH_KEY,
+        @Query("playlistId") playlistId: String,
+        @Query("maxResults") maxResults: Int = 10,
+        @Query("part") part: String = "snippet,contentDetails",
+    ): Response<PlaylistItemsResponse>
+
     @GET("search")
     suspend fun getYouTubeMoreVideos(
         @Query("key") apiKey: String = AUTH_KEY,

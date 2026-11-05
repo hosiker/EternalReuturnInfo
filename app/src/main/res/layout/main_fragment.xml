@@ -165,6 +165,69 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/main_stats_container" />
 
+            <LinearLayout
+                android:id="@+id/main_video_seg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/shape_seg_bg"
+                android:orientation="horizontal"
+                android:padding="3dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text6">
+
+                <TextView
+                    android:id="@+id/main_seg_official"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="8dp"
+                    android:text="@string/main_video_official"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/main_seg_streamer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="8dp"
+                    android:text="@string/main_video_streamer"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/main_sort_seg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/shape_seg_bg"
+                android:orientation="horizontal"
+                android:padding="3dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/main_video_seg"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/main_video_seg">
+
+                <TextView
+                    android:id="@+id/main_sort_latest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="8dp"
+                    android:text="@string/main_sort_latest"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/main_sort_views"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="8dp"
+                    android:text="@string/main_sort_views"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/main_rv_youtube"
                 android:layout_width="match_parent"
@@ -177,7 +240,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text6" />
+                app:layout_constraintTop_toBottomOf="@+id/main_video_seg" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

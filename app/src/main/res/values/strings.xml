@@ -165,4 +165,8 @@
     <string name="main_search_btn">검색</string>
     <string name="main_search_guide">다른 이용자의 닉네임을 입력하면\n시즌·모드별 전적을 볼 수 있어요.</string>
     <string name="main_search_empty">닉네임을 입력하세요</string>
+    <string name="main_video_official">공식</string>
+    <string name="main_video_streamer">스트리머</string>
+    <string name="main_sort_latest">최신순</string>
+    <string name="main_sort_views">조회순</string>
 </resources>

@@ -4,6 +4,14 @@ import com.irionna.eternalreturninfo.BuildConfig
 
 class Constants {
     companion object {
+        // 홈 "게임 방송"에 보여줄 공식 채널 ("이터널 리턴", YouTube 검색으로 확인).
+        // 채널 번호가 UC 로 시작하면 업로드 목록 번호는 UU + 나머지 글자이다.
+        const val OFFICIAL_CHANNEL_ID = "UCEOaB76vS9RfiAwEzxB8QGw"
+        /** 채널 번호(UC…)에서 업로드 목록 번호(UU…)를 만든다. */
+        fun uploadsPlaylistOf(channelId: String): String = "UU" + channelId.substring(2)
+
+        val OFFICIAL_UPLOADS_PLAYLIST: String get() = "UU" + OFFICIAL_CHANNEL_ID.substring(2)
+
         const val BASE_URL = "https://www.googleapis.com/youtube/v3/"
         val AUTH_KEY: String get() = BuildConfig.YOUTUBE_APIKEY // const 로 두면 키를 바꿔도 이전 값이 남을 수 있다
         const val EXTRA_ER_MODEL = "extra_er_model"
