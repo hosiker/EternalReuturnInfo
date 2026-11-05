@@ -84,6 +84,7 @@ class MainFragment : Fragment() {
 
         initView()
         initModel()
+        mainViewModel.loadVideos(requireContext())
 
         initStatsSearch()
     }
