@@ -14,8 +14,8 @@ import com.irionna.eternalreturninfo.retrofit.RetrofitInstance
 import com.irionna.eternalreturninfo.util.Constants
 import com.irionna.eternalreturninfo.util.VideoFilter
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainListViewModel() : ViewModel(){
 
@@ -39,37 +39,48 @@ class MainListViewModel() : ViewModel(){
 
 
 
+    /** 공지를 받지 못했을 때 true (배너 자리에 안내 문구를 보여준다) */
+    private val _noticeFailed = MutableLiveData<Boolean>()
+    val noticeFailed: LiveData<Boolean>
+        get() = _noticeFailed
+
     init {
-        GlobalScope.launch(Dispatchers.IO) {
-            try {
-                val call = RetrofitInstance.eternalApi.getNews("locale=ko_KR")
-                val response = call.execute()
+        loadNotices()
+    }
 
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-
-                    if (responseBody != null) {
-                        val articles = responseBody.articles
-
-                        val list = mutableListOf<Notice>()
-                        articles.mapNotNull { list.add(Notice(it.thumbnail_url, it.i18ns["ko_KR"]?.title, it.i18ns["ko_KR"]?.summary, it.i18ns["ko_KR"]?.created_at_for_humans, it.url))}
-
-                        _noticeList.postValue(list)
-
-                    }
-                } else {
-                    Log.d("공지 api 응답 오류", response.message())
-                }
-
-
-
-            }catch (e: Exception) {
-                e.printStackTrace()
+    /** 공식 사이트 공지 배너를 새로 받는다. 화면 수명이 아니라 ViewModel 수명에 묶여서, ViewModel 이 사라지면 같이 취소된다. */
+    fun loadNotices() {
+        viewModelScope.launch {
+            val list = withContext(Dispatchers.IO) { fetchNotices() }
+            if (list != null) {
+                _noticeList.postValue(list.toMutableList())
+                _noticeFailed.postValue(list.isEmpty())
+            } else {
+                _noticeFailed.postValue(true)
             }
         }
+    }
 
+    private fun fetchNotices(): List<Notice>? = try {
+        val response = RetrofitInstance.eternalApi.getNews("locale=ko_KR").execute()
+        if (response.isSuccessful) {
+            response.body()?.articles?.map {
+                Notice(it.thumbnail_url, it.i18ns["ko_KR"]?.title, it.i18ns["ko_KR"]?.summary, it.i18ns["ko_KR"]?.created_at_for_humans, it.url)
+            }
+        } else {
+            Log.d("공지 api 응답 오류", response.message())
+            null
+        }
+    } catch (e: Exception) {
+        Log.d("공지", "공지 오류: ${e.javaClass.simpleName}")
+        null
+    }
 
-
+    /** 아래로 당겨서 새로고침: 공지와 공식 영상을 다시 받는다. 스트리머 검색은 한도 때문에 6시간 저장을 그대로 따른다. */
+    fun refreshHome(context: Context) {
+        loadNotices()
+        videosRequested = false
+        loadVideos(context, force = true)
     }
 
     private var videosRequested = false
@@ -78,13 +89,13 @@ class MainListViewModel() : ViewModel(){
      * 게임 방송 영상 목록. 이 기기에 저장된 목록이 6시간 이내면 그대로 쓰고, 아니면 YouTube 에서 새로 받는다.
      * 새로 받기에 실패하면 오래된 저장본이라도 보여준다. 화면이 다시 만들어져도 한 번만 요청한다.
      */
-    fun loadVideos(context: Context) {
+    fun loadVideos(context: Context, force: Boolean = false) {
         if (videosRequested) return
         videosRequested = true
         val appContext = context.applicationContext
         viewModelScope.launch {
             val saved = VideoCache.load(appContext, VideoCache.KIND_OFFICIAL)
-            if (saved != null && saved.isFresh()) {
+            if (!force && saved != null && saved.isFresh()) {
                 _videoList.postValue(saved.list.toMutableList())
                 return@launch
             }

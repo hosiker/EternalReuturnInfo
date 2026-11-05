@@ -57,6 +57,7 @@ class NoticeBannerListAdapter :
             with(binding) {
 
                 bannerImg.load(noticeItem.thumnail)
+                bannerImg.contentDescription = noticeItem.title
 
                 itemView.setOnClickListener {
                     onItemClickListener?.onItemClick(noticeItem, adapterPosition)

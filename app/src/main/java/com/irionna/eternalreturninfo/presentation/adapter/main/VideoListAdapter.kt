@@ -58,6 +58,8 @@ class VideoListAdapter :
 
                 mainRvYoutubeThumnail.load(item.thumbnail)
                 mainRvYoutubeTitle.text = item.title.toString()
+                mainRvYoutubeThumnail.contentDescription =
+                    root.context.getString(com.irionna.eternalreturninfo.R.string.main_video_thumb_desc, item.title.orEmpty())
 
                 itemView.setOnClickListener {
                     onItemClickListener?.onItemClick(item, adapterPosition)
