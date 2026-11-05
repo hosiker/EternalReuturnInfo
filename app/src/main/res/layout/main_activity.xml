@@ -26,14 +26,15 @@
         app:tabSelectedTextColor="@color/brand_mint"
         app:tabTextAppearance="@style/MainTabText"
         app:tabIndicator="@drawable/tab_indicator_brand"
-        app:tabIndicatorFullWidth="false"
-        app:tabIndicatorHeight="3dp"
+        app:tabIndicatorFullWidth="true"
+        app:tabIndicatorColor="@color/tab_pill"
+        app:tabIndicatorAnimationMode="elastic"
         app:tabRippleColor="@android:color/transparent"
         app:tabIconTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view_pager"
-        app:tabIndicatorGravity="top" />
+        app:tabIndicatorGravity="stretch" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

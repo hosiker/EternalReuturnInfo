@@ -3,7 +3,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="main_tab_main_title">메인</string>
     <string name="main_tab_walkthrough_title">공략</string>
-    <string name="main_tab_search_duo">듀오</string>
+    <string name="main_tab_search_duo">듀오 찾기</string>
     <string name="main_tab_my_profile">프로필</string>
     <string name="main_tab_board_title">게시판</string>
     <string name="main_tab_chat_title">채팅</string>
