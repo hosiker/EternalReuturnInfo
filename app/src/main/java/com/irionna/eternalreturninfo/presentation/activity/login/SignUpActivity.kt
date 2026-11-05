@@ -7,8 +7,6 @@ import com.google.firebase.database.FirebaseDatabase
 import android.util.Log
 import android.util.Patterns
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -18,6 +16,7 @@ import com.irionna.eternalreturninfo.data.model.ERModel
 import com.irionna.eternalreturninfo.data.model.SignUpData
 import com.irionna.eternalreturninfo.retrofit.BoardSingletone
 import com.irionna.eternalreturninfo.retrofit.RetrofitInstance
+import com.irionna.eternalreturninfo.util.CharacterPicker
 import com.irionna.eternalreturninfo.util.Constants
 import com.irionna.eternalreturninfo.util.NicknameKey
 import com.irionna.eternalreturninfo.util.ProfileImage
@@ -68,33 +67,23 @@ class SignUpActivity : AppCompatActivity() {
             NickNameCheck(binding.signupNickNameEt.text.toString())
         }
 
-        // 실험체 스피너
+        // 실험체 선택: 얼굴을 보면서 고르는 하단 시트
         val characterlist = resources.getStringArray(R.array.characterName)
-        val adapter =
-            ArrayAdapter<String>(this, R.layout.signup_spinner, R.id.spinner_tv, characterlist)
-        var selectCharacter = characterlist[0]
-        binding.signupCharacterSp.adapter = adapter
-        // 프로필 이미지는 선택한 실험체 이미지로 자동 정해진다.
-        ProfileImage.load(binding.signupProfileImg, ProfileImage.keyForCharacter(selectCharacter, characterlist))
-
-        binding.signupCharacterSp.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    selectCharacter = characterlist[position]
-                    ProfileImage.load(
-                        binding.signupProfileImg,
-                        ProfileImage.keyForCharacter(selectCharacter, characterlist)
-                    )
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                }
+        var selectedIndex = 0
+        fun showSelectedCharacter() {
+            binding.signupCharacterName.text =
+                if (selectedIndex == 0) getString(R.string.character_picker_none) else characterlist[selectedIndex]
+            CharacterPicker.loadFace(binding.signupCharacterThumb, selectedIndex)
+            // 프로필 이미지는 선택한 실험체 이미지로 자동 정해진다.
+            ProfileImage.load(binding.signupProfileImg, ProfileImage.keyForCharacterIndex(selectedIndex))
+        }
+        showSelectedCharacter()
+        binding.signupCharacterBtn.setOnClickListener {
+            CharacterPicker.show(this, characterlist, selectedIndex) { picked ->
+                selectedIndex = picked
+                showSelectedCharacter()
             }
+        }
 
         binding.signupBackBtn.setOnClickListener { finish() }
 
@@ -110,7 +99,7 @@ class SignUpActivity : AppCompatActivity() {
                 binding.signupPWEt.text.toString(),
                 binding.signupPWCheckEt.text.toString(),
                 signupNickname,
-                selectCharacter,
+                characterlist[selectedIndex],
             )
         }
     }

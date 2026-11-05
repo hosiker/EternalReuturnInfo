@@ -1,19 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 로그인 배경: 위쪽에서 아래로 옅어지는 초록 빛 (원형 번짐 없음) -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <shape android:shape="rectangle">
-            <solid android:color="@color/black" />
-        </shape>
-    </item>
-    <item>
-        <shape android:shape="rectangle">
-            <gradient
-                android:angle="90"
-                android:startColor="#00000000"
-                android:centerColor="#00000000"
-                android:endColor="#2214A068"
-                android:centerX="0.5" />
-        </shape>
-    </item>
-</layer-list>
+<!-- 로그인 배경: 다른 화면과 같은 단색 (그라데이션 없음) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/background_color" />
+</shape>
