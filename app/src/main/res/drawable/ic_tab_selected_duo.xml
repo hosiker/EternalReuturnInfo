@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 탭 아이콘: 선 아이콘 + 초록 점 포인트 (로고와 같은 점) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path android:pathData="M5.5,8.5 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0" android:strokeColor="@color/brand_mint" android:strokeWidth="1.9" android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:pathData="M3,19 c0,-3 2.4,-5 5.5,-5 s5.5,2 5.5,5" android:strokeColor="@color/brand_mint" android:strokeWidth="1.9" android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:pathData="M14.7,9.5 a2.3,2.3 0 1,0 4.6,0 a2.3,2.3 0 1,0 -4.6,0" android:fillColor="@color/brand_green" />
+    <path android:pathData="M16,14.2 c2.9,-0.3 5,1.5 5,4.3" android:strokeColor="@color/brand_mint" android:strokeWidth="1.9" android:strokeLineCap="round" android:strokeLineJoin="round" />
+</vector>
