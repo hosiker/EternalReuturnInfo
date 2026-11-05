@@ -154,6 +154,30 @@ await t('차단을 풀면 다시 보낼 수 있다', async () => {
   await assertSucceeds(push(ref(db(E), 'chats/' + E + F + '/messages'), { message: 'x' }));
 });
 
+// 이용자 신고 (userReports)
+const rep = (o = {}) => ({ reporter: C, target: D, reason: 'harassment', date: 1700000000000, source: 'chat', ...o });
+await t('본인 이름으로 이용자 신고를 올린다', () => assertSucceeds(push(ref(db(C), 'userReports'), rep())));
+await t('게시글 출처와 맥락(context)을 함께 올린다', () => assertSucceeds(push(ref(db(C), 'userReports'), rep({ source: 'post', context: 'p1' }))));
+await t('남의 이름(reporter)으로는 신고하지 못한다', () => assertFails(push(ref(db(C), 'userReports'), rep({ reporter: A }))));
+await t('자기 자신은 신고하지 못한다', () => assertFails(push(ref(db(C), 'userReports'), rep({ target: C }))));
+await t('정해지지 않은 사유는 못 쓴다', () => assertFails(push(ref(db(C), 'userReports'), rep({ reason: 'whatever' }))));
+await t('정해지지 않은 출처는 못 쓴다', () => assertFails(push(ref(db(C), 'userReports'), rep({ source: 'dm' }))));
+await t('필수 항목이 빠지면 못 쓴다 (date)', async () => { const r = rep(); delete r.date; await assertFails(push(ref(db(C), 'userReports'), r)); });
+await t('모르는 항목을 끼워 넣지 못한다', () => assertFails(push(ref(db(C), 'userReports'), rep({ extra: 'x' }))));
+await t('맥락이 너무 길면 못 쓴다', () => assertFails(push(ref(db(C), 'userReports'), rep({ context: 'x'.repeat(201) }))));
+await t('비로그인은 신고하지 못한다', () => assertFails(push(ref(db(null), 'userReports'), rep())));
+await t('신고 목록은 신고자도 읽지 못한다', () => assertFails(get(ref(db(C), 'userReports'))));
+await t('남이 올린 신고도 읽지 못한다', async () => {
+  let key;
+  await env.withSecurityRulesDisabled(async (ctx) => { const r = push(ref(ctx.database(), 'userReports'), rep()); key = (await r).key; });
+  await assertFails(get(ref(db(D), 'userReports/' + key)));
+});
+await t('올린 신고를 고치거나 지우지 못한다', async () => {
+  const r = await push(ref(db(C), 'userReports'), rep());
+  await assertFails(set(ref(db(C), 'userReports/' + r.key + '/reason'), 'spam'));
+  await assertFails(remove(ref(db(C), 'userReports/' + r.key)));
+});
+
 console.log(`\n${pass} passed, ${fail} failed`);
 await env.cleanup();
 process.exit(fail ? 1 : 0);
