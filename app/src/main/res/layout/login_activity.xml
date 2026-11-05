@@ -33,8 +33,10 @@
 
             <ImageView
                 android:id="@+id/login_logo_img"
-                android:layout_width="240dp"
-                android:layout_height="72dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:maxWidth="300dp"
                 android:contentDescription="@string/app_name"
                 android:src="@drawable/ic_white_logo" />
 
