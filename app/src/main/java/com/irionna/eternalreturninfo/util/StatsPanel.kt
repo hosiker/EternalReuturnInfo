@@ -38,6 +38,9 @@ class StatsPanel(
     private var selMode = GameStats.MODE_RANKED
     private var selTeam = 0
     private var notice: String? = null
+
+    /** 닉네임으로 게임 유저를 찾았을 때 알린다 (최근 경기 목록 같은 다른 부품이 같은 유저로 이어서 불러오게). */
+    var onUserResolved: ((String) -> Unit)? = null
     private var loadToken = 0
 
     init {
@@ -62,6 +65,7 @@ class StatsPanel(
                 return@launch
             }
             userId = num
+            onUserResolved?.invoke(num)
             seasons = GameStats.seasons()
             if (token != loadToken) return@launch
             val current = GameStats.currentSeasonId(seasons)

@@ -178,4 +178,22 @@
     <string name="main_chip_remove_desc">%1$s 검색 기록 삭제</string>
     <string name="main_free_title">무료 실험체</string>
     <string name="main_free_sub">일반 게임 기준</string>
+    <string name="rg_section_title">최근 경기</string>
+    <string name="rg_loading">경기 기록을 불러오는 중…</string>
+    <string name="rg_empty">최근 경기 기록이 없어요.</string>
+    <string name="rg_failed">경기 기록을 불러오지 못했어요.</string>
+    <string name="rg_more">더 보기</string>
+    <string name="rg_win_desc">우승</string>
+    <string name="rg_filter_all">전체</string>
+    <string name="rg_filter_ranked">랭크</string>
+    <string name="rg_filter_normal">일반</string>
+    <string name="rg_sub_count">최근 %1$d경기</string>
+    <string name="rg_kda">킬 %1$d · 어시 %2$d</string>
+    <string name="rg_detail">%1$s · 딜량 %2$s · %3$d분</string>
+    <string name="rg_detail_no_damage">%1$s · %2$d분</string>
+    <string name="rg_time_now">방금 전</string>
+    <string name="rg_time_min">%1$d분 전</string>
+    <string name="rg_time_hour">%1$d시간 전</string>
+    <string name="rg_time_day">%1$d일 전</string>
+    <string name="rg_time_date">%1$s</string>
 </resources>

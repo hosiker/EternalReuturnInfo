@@ -100,3 +100,13 @@ interface FreeCharacterService {
         @Path("matchingMode") matchingMode: Int
     ): Call<FreeCharactersResponse>
 }
+
+
+interface UserGamesService {
+    @GET("v1/user/games/uid/{userId}")
+    fun getUserGames(
+        @Header("x-api-key") apiKey: String,
+        @Path("userId") userId: String,
+        @Query("next") next: Long? = null
+    ): Call<UserGamesResponse>
+}

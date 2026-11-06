@@ -5,6 +5,7 @@ import android.util.Log
 import com.irionna.eternalreturninfo.BuildConfig
 import com.irionna.eternalreturninfo.retrofit.BoardSingletone
 import com.irionna.eternalreturninfo.retrofit.RetrofitInstance
+import com.irionna.eternalreturninfo.retrofit.UserGame
 import com.irionna.eternalreturninfo.retrofit.UserStats
 import com.irionna.eternalreturninfo.util.Constants
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +23,9 @@ import java.io.IOException
  *  - 모든 함수는 실패하면 null/빈 목록을 돌려준다. 호출하는 쪽에서 안내 문구를 보여준다.
  */
 object GameStats {
+
+    /** 경기 기록 한 쪽. [next] 가 있으면 이어서 더 받을 수 있다. */
+    class GamesPage(val games: List<UserGame>, val next: Long?)
 
     data class SeasonInfo(val id: Int, val name: String, val isCurrent: Boolean)
 
@@ -164,6 +168,28 @@ object GameStats {
             if (list.isNotEmpty()) return season to list
         }
         return null
+    }
+
+    private val gamesCache = HashMap<String, GamesPage>()
+
+    /** 최근 경기 기록 한 쪽 (최신순). [next] 는 이전 쪽의 next. 실패하면 null. 앱이 켜져 있는 동안 같은 쪽은 다시 받지 않는다. */
+    suspend fun games(userId: String, next: Long? = null): GamesPage? {
+        if (!keyReady()) return null
+        val key = "$userId/${next ?: 0}"
+        gamesCache[key]?.let { return it }
+        val r = throttled { RetrofitInstance.userGamesApi.getUserGames(Constants.MAIN_APIKEY, userId, next).execute() }
+        if (r?.isSuccessful != true) {
+            if (BuildConfig.DEBUG) Log.d(TAG, "경기 기록 조회 실패: HTTP ${r?.code()}")
+            return null
+        }
+        val body = r.body()
+        if (body?.code != null && body.code != 200) {
+            return if (body.code == 404) GamesPage(emptyList(), null).also { gamesCache[key] = it } else null
+        }
+        val page = GamesPage(body?.userGames.orEmpty(), body?.next)
+        if (BuildConfig.DEBUG) Log.d(TAG, "경기 기록 ${page.games.size}개, next=${page.next}")
+        gamesCache[key] = page
+        return page
     }
 
     /**

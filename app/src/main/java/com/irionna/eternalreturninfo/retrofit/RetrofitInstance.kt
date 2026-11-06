@@ -67,4 +67,8 @@ object RetrofitInstance {
         userRetrofit.create(FreeCharacterService::class.java)
     }
 
+    val userGamesApi by lazy {
+        userRetrofit.create(UserGamesService::class.java)
+    }
+
 }

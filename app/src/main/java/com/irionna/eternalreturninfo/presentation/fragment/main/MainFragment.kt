@@ -13,6 +13,7 @@ import com.irionna.eternalreturninfo.retrofit.BoardSingletone
 import com.irionna.eternalreturninfo.util.CharacterPicker
 import com.irionna.eternalreturninfo.util.Characters
 import com.irionna.eternalreturninfo.util.InitialAvatar
+import com.irionna.eternalreturninfo.util.RecentGamesSection
 import com.irionna.eternalreturninfo.util.RecentSearches
 import android.widget.LinearLayout
 import android.view.inputmethod.InputMethodManager
@@ -116,6 +117,10 @@ class MainFragment : Fragment() {
             }
         }
         searchPanel = panel
+        // 전적 카드가 유저를 찾으면 같은 유저의 최근 3경기를 이어서 불러온다
+        val recent = RecentGamesSection(binding.mainRecentGames, requireActivity(), viewLifecycleOwner.lifecycleScope, detailed = false, limit = 3)
+        recentSection = recent
+        panel.onUserResolved = { recent.load(it) }
 
         binding.mainSearchBtn.setOnClickListener { search(binding.mainSearchEt.text.toString()) }
         binding.mainSearchEt.setOnEditorActionListener { _, actionId, _ ->
@@ -130,6 +135,7 @@ class MainFragment : Fragment() {
     }
 
     private var searchPanel: StatsPanel? = null
+    private var recentSection: RecentGamesSection? = null
 
     private fun search(input: String) {
         val q = input.trim()
@@ -144,6 +150,8 @@ class MainFragment : Fragment() {
         binding.mainSearchEt.clearFocus()
         binding.mainSearchGuide.visibility = View.GONE
         binding.mainStatsPanel.root.visibility = View.VISIBLE
+        binding.mainRecentGames.root.visibility = View.VISIBLE
+        recentSection?.reset()
         searchPanel?.load { q }
         // 결과 카드가 화면 안에 보이도록 스크롤한다
         binding.mainScroll.post { _binding?.mainScroll?.smoothScrollTo(0, binding.mainStatsContainer.top) }
