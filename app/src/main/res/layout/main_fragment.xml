@@ -236,6 +236,15 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
                     android:visibility="gone" />
+
+                <!-- 검색한 유저의 최근 경기 (간단히) -->
+                <include
+                    android:id="@+id/main_recent_games"
+                    layout="@layout/recent_games_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="22dp"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <TextView

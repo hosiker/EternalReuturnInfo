@@ -29,6 +29,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
+            <!-- 최근 경기 (자세히): 필터와 더 보기 -->
+            <include
+                android:id="@+id/myprofile_recent"
+                layout="@layout/recent_games_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp" />
+
             <TextView
                 android:id="@+id/myprofile_character_tv"
                 android:layout_width="wrap_content"

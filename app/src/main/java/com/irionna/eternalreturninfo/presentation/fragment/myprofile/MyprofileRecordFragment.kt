@@ -11,6 +11,7 @@ import com.irionna.eternalreturninfo.databinding.MyprofileRecordFragmentBinding
 import com.irionna.eternalreturninfo.retrofit.BoardSingletone
 import androidx.lifecycle.lifecycleScope
 import com.irionna.eternalreturninfo.presentation.adapter.myprofile.MyprofileListAdapter
+import com.irionna.eternalreturninfo.util.RecentGamesSection
 import com.irionna.eternalreturninfo.util.StatsPanel
 
 class MyprofileRecordFragment : Fragment() {
@@ -48,14 +49,18 @@ class MyprofileRecordFragment : Fragment() {
         binding.myprofileCharacterRv.adapter = adapter
 
         // 전적 카드에서 시즌·모드를 바꾸면 아래 실험체 목록도 그 기록으로 바뀐다
-        StatsPanel(
+        val panel = StatsPanel(
             binding.myprofileStats,
             requireActivity(),
             viewLifecycleOwner.lifecycleScope
         ) { stats ->
             val list = stats?.characterStats.orEmpty().sortedByDescending { it.usages }.take(10)
             adapter.update(list)
-        }.load {
+        }
+        // 같은 유저의 최근 경기를 자세히 보여준다 (필터, 더 보기)
+        val recent = RecentGamesSection(binding.myprofileRecent, requireActivity(), viewLifecycleOwner.lifecycleScope, detailed = true)
+        panel.onUserResolved = { recent.load(it) }
+        panel.load {
             StatsPanel.waitForNickname { BoardSingletone.LoginUser().name }
         }
     }

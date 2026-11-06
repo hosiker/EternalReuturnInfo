@@ -278,3 +278,43 @@ data class FreeCharactersResponse(
     @SerializedName("freeCharacters")
     val freeCharacters: List<Int>? = null
 )
+
+
+/** 경기 기록 응답 (GET v1/user/games/uid/{userId}). 최근 경기가 먼저, next 가 있으면 더 불러올 수 있다. 모든 필드는 없을 수 있다. */
+@Keep
+data class UserGamesResponse(
+    @SerializedName("code")
+    val code: Int? = null,
+    @SerializedName("message")
+    val message: String? = null,
+    @SerializedName("userGames")
+    val userGames: List<UserGame>? = null,
+    @SerializedName("next")
+    val next: Long? = null
+)
+
+@Keep
+data class UserGame(
+    @SerializedName("gameId")
+    val gameId: Long? = null,
+    @SerializedName("seasonId")
+    val seasonId: Int? = null,
+    @SerializedName("matchingMode")
+    val matchingMode: Int? = null,
+    @SerializedName("matchingTeamMode")
+    val matchingTeamMode: Int? = null,
+    @SerializedName("characterNum")
+    val characterNum: Int? = null,
+    @SerializedName("gameRank")
+    val gameRank: Int? = null,
+    @SerializedName("playerKill")
+    val playerKill: Int? = null,
+    @SerializedName("playerAssistant")
+    val playerAssistant: Int? = null,
+    @SerializedName("damageToPlayer")
+    val damageToPlayer: Int? = null,
+    @SerializedName("startDtm")
+    val startDtm: String? = null,
+    @SerializedName("duration")
+    val duration: Int? = null
+)

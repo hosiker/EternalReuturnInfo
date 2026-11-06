@@ -9,6 +9,8 @@
     <color name="surface_stroke">#2A2D38</color>
     <color name="text_secondary">#9AA0AE</color>
     <color name="tab_pill">#2E2DB67E</color>
+    <color name="rank_2_bg">#552DB67E</color>
+    <color name="rank_n_bg">#1D2029</color>
     <color name="brand_mint">#ACF0D0</color>
     <!-- 기존 이름 유지: blue = 밝은 포인트(글자·테두리), highlight_color = 채움 포인트 -->
     <color name="blue">@color/brand_mint</color>
