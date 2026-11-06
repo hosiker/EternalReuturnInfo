@@ -62,7 +62,8 @@ class MainActivity : AppCompatActivity() {
     private fun initView() = with(binding) {
         viewPager.adapter = viewPagerAdapter
 
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+        // 탭을 누르면 중간 화면들을 지나가며 미끄러지지 않고 바로 그 화면으로 이동한다 (smoothScroll = false)
+        TabLayoutMediator(tabLayout, viewPager, true, false) { tab, position ->
             tab.setText(viewPagerAdapter.getTitle(position))
             tab.setIcon(tabIcon[position])
         }.attach()
