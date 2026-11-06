@@ -225,8 +225,7 @@ class StatsPanel(
         b.statsPbWin.progress = (s.top1 * 100).toInt().coerceIn(0, 100)
         b.statsPbTop3.progress = (s.top3 * 100).toInt().coerceIn(0, 100)
 
-        // 가장 많이 한 실험체 3명 (캐릭터 코드 = 실험체 목록 번호)
-        val names = activity.resources.getStringArray(R.array.characterName)
+        // 가장 많이 한 실험체 3명. 서버가 주는 번호는 게임 번호라서 Characters 로 앱 목록 위치로 바꿔 쓴다.
         val top = s.characterStats.orEmpty().sortedByDescending { it.usages }.take(3)
         val views = listOf(
             Triple(b.statsC1, b.statsC1Img, Pair(b.statsC1Name, b.statsC1Count)),
@@ -239,8 +238,10 @@ class StatsPanel(
                 box.visibility = View.INVISIBLE
             } else {
                 box.visibility = View.VISIBLE
-                CharacterPicker.loadFace(img, c.characterCode)
-                texts.first.text = names.getOrNull(c.characterCode) ?: "#${c.characterCode}"
+                val name = Characters.nameOf(activity, c.characterCode)
+                val appIndex = Characters.appIndexOf(c.characterCode)
+                if (appIndex != null) CharacterPicker.loadFace(img, appIndex) else img.setImageDrawable(InitialAvatar(activity, name))
+                texts.first.text = name
                 texts.second.text = activity.getString(R.string.stats_games_unit, c.usages.toInt())
             }
         }

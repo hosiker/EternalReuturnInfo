@@ -178,5 +178,4 @@
     <string name="main_chip_remove_desc">%1$s 검색 기록 삭제</string>
     <string name="main_free_title">무료 실험체</string>
     <string name="main_free_sub">일반 게임 기준</string>
-    <string name="main_free_new_toast">앱에 아직 이미지가 없는 신규 실험체 %1$d명이 더 있어요.</string>
 </resources>

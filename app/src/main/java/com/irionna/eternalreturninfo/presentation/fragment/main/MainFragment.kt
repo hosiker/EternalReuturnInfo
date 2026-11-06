@@ -11,6 +11,8 @@ import com.irionna.eternalreturninfo.R
 import android.widget.Toast
 import com.irionna.eternalreturninfo.retrofit.BoardSingletone
 import com.irionna.eternalreturninfo.util.CharacterPicker
+import com.irionna.eternalreturninfo.util.Characters
+import com.irionna.eternalreturninfo.util.InitialAvatar
 import com.irionna.eternalreturninfo.util.RecentSearches
 import android.widget.LinearLayout
 import android.view.inputmethod.InputMethodManager
@@ -214,22 +216,19 @@ class MainFragment : Fragment() {
     }
 
     /**
-     * 무료 실험체 줄. 앱이 이름·얼굴 이미지를 아는 실험체는 얼굴로 보여주고,
-     * 모르는 신규 실험체는 "+N" 칩 하나로 개수만 알려 준다. 목록이 비면 줄을 숨긴다.
+     * 무료 실험체 줄. 서버가 주는 번호는 게임 번호라서 [Characters] 로 앱 목록 위치로 바꿔 얼굴을 보여준다.
+     * 앱에 얼굴 이미지가 없는 신규 실험체는 이름 첫 글자 아바타 + 이름으로 보여준다. 목록이 비면 줄을 숨긴다.
      */
     private fun showFreeCharacters(codes: List<Int>) {
         val b = _binding ?: return
         val ctx = requireContext()
         val dp = resources.displayMetrics.density
-        val names = resources.getStringArray(R.array.characterName)
         val row = b.mainFreeRow
         row.removeAllViews()
 
-        fun known(code: Int) =
-            code in 1 until names.size && resources.getIdentifier("face_$code", "drawable", ctx.packageName) != 0
-
-        val (shown, unknown) = codes.sorted().partition { known(it) }
-        shown.forEach { code ->
+        codes.distinct().sorted().forEach { code ->
+            val name = Characters.nameOf(ctx, code)
+            val appIndex = Characters.appIndexOf(code)
             val item = LinearLayout(ctx).apply {
                 orientation = LinearLayout.VERTICAL
                 gravity = android.view.Gravity.CENTER_HORIZONTAL
@@ -239,11 +238,11 @@ class MainFragment : Fragment() {
                 layoutParams = LinearLayout.LayoutParams((56 * dp).toInt(), (56 * dp).toInt())
                 scaleType = android.widget.ImageView.ScaleType.CENTER_CROP
                 circleBackgroundColor = ContextCompat.getColor(ctx, R.color.surface_stroke)
-                contentDescription = names[code]
+                contentDescription = name
             }
-            CharacterPicker.loadFace(img, code)
+            if (appIndex != null) CharacterPicker.loadFace(img, appIndex) else img.setImageDrawable(InitialAvatar(ctx, name))
             val label = TextView(ctx).apply {
-                text = names[code]
+                text = name
                 textSize = 11f
                 gravity = android.view.Gravity.CENTER
                 maxLines = 1
@@ -254,19 +253,6 @@ class MainFragment : Fragment() {
             item.addView(img)
             item.addView(label)
             row.addView(item)
-        }
-        if (unknown.isNotEmpty()) {
-            val more = TextView(ctx).apply {
-                text = "+${unknown.size}"
-                textSize = 14f
-                gravity = android.view.Gravity.CENTER
-                setTextColor(ContextCompat.getColor(ctx, R.color.brand_mint))
-                setBackgroundResource(R.drawable.shape_chip)
-                layoutParams = LinearLayout.LayoutParams((56 * dp).toInt(), (56 * dp).toInt()).apply { marginStart = (4 * dp).toInt(); marginEnd = (4 * dp).toInt() }
-                contentDescription = getString(R.string.main_free_new_toast, unknown.size)
-                setOnClickListener { Toast.makeText(ctx, getString(R.string.main_free_new_toast, unknown.size), Toast.LENGTH_SHORT).show() }
-            }
-            row.addView(more)
         }
         b.mainFreeContainer.visibility = if (row.childCount > 0) View.VISIBLE else View.GONE
     }

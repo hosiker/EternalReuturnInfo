@@ -8,6 +8,8 @@ import com.irionna.eternalreturninfo.R
 import com.irionna.eternalreturninfo.databinding.MyprofileItemRecyclerviewBinding
 import com.irionna.eternalreturninfo.retrofit.CharacterStats
 import com.irionna.eternalreturninfo.util.CharacterPicker
+import com.irionna.eternalreturninfo.util.Characters
+import com.irionna.eternalreturninfo.util.InitialAvatar
 
 class MyprofileListAdapter(val dataList:MutableList<CharacterStats>, val characterList:Array<String>) :RecyclerView.Adapter<MyprofileListAdapter.Holder>()  {
 
@@ -34,11 +36,14 @@ class MyprofileListAdapter(val dataList:MutableList<CharacterStats>, val charact
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val item = dataList[position]
-        // 얼굴 이미지(face_N). 없는 번호는 기본 이미지
-        CharacterPicker.loadFace(holder.image, item.characterCode)
+        // 서버가 준 게임 번호를 앱 목록 위치로 바꿔 얼굴 이미지(face_N)를 보여준다. 앱에 이미지가 없는 신규 실험체는 첫 글자 아바타
+        val ctx = holder.image.context
+        val name = Characters.nameOf(ctx, item.characterCode)
+        val appIndex = Characters.appIndexOf(item.characterCode)
+        if (appIndex != null) CharacterPicker.loadFace(holder.image, appIndex) else holder.image.setImageDrawable(InitialAvatar(ctx, name))
 
         holder.usages.text = dataList[position].usages.toString()+"게임"
-        holder.character.text = characterList.getOrNull(item.characterCode) ?: "#${item.characterCode}"
+        holder.character.text = name
         holder.top3.text = dataList[position].top3.toString()
         holder.avRank.text = "#"+dataList[position].averageRank.toString()
         holder.maxKill.text = dataList[position].maxKillings.toString()+"킬"
