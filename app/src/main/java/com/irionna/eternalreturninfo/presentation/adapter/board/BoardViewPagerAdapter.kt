@@ -14,23 +14,20 @@ import com.irionna.eternalreturninfo.presentation.fragment.board.BoardTotalFragm
 class BoardViewPagerAdapter (fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
 
         private val fragments = listOf(
-            MainTabs(BoardTotalFragment.newInstance(), R.string.board_total),
-            MainTabs(BoardNoticeFragment.newInstance(), R.string.board_notice),
-            MainTabs(BoardAskFragment.newInstance(), R.string.board_ask),
-            MainTabs(BoardTipsFragment.newInstance(), R.string.board_tips),
-            MainTabs(BoardDailyFragment.newInstance(), R.string.board_daily)
+            MainTabs({ BoardTotalFragment.newInstance() }, R.string.board_total),
+            MainTabs({ BoardNoticeFragment.newInstance() }, R.string.board_notice),
+            MainTabs({ BoardAskFragment.newInstance() }, R.string.board_ask),
+            MainTabs({ BoardTipsFragment.newInstance() }, R.string.board_tips),
+            MainTabs({ BoardDailyFragment.newInstance() }, R.string.board_daily)
         )
 
-        fun getFragment(position: Int): Fragment {
-            return fragments[position].fragment
-        }
 
         fun getTitle(position: Int): Int {
             return fragments[position].titleRes
         }
 
         override fun createFragment(position: Int): Fragment {
-            return fragments[position].fragment
+            return fragments[position].create()
         }
         override fun getItemCount(): Int {
             return fragments.size
