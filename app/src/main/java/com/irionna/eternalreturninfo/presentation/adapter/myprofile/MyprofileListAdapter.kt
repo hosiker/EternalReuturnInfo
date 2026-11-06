@@ -40,7 +40,7 @@ class MyprofileListAdapter(val dataList:MutableList<CharacterStats>, val charact
         val ctx = holder.image.context
         val name = Characters.nameOf(ctx, item.characterCode)
         val appIndex = Characters.appIndexOf(item.characterCode)
-        if (appIndex != null) CharacterPicker.loadFace(holder.image, appIndex) else holder.image.setImageDrawable(InitialAvatar(ctx, name))
+        if (appIndex != null) CharacterPicker.loadFace(holder.image, appIndex) else holder.image.setImageDrawable(InitialAvatar.drawable(ctx, name))
 
         holder.usages.text = dataList[position].usages.toString()+"게임"
         holder.character.text = name
