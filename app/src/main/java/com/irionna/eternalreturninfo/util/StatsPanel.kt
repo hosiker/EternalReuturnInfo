@@ -240,7 +240,7 @@ class StatsPanel(
                 box.visibility = View.VISIBLE
                 val name = Characters.nameOf(activity, c.characterCode)
                 val appIndex = Characters.appIndexOf(c.characterCode)
-                if (appIndex != null) CharacterPicker.loadFace(img, appIndex) else img.setImageDrawable(InitialAvatar(activity, name))
+                if (appIndex != null) CharacterPicker.loadFace(img, appIndex) else img.setImageDrawable(InitialAvatar.drawable(activity, name))
                 texts.first.text = name
                 texts.second.text = activity.getString(R.string.stats_games_unit, c.usages.toInt())
             }

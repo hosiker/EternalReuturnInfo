@@ -240,7 +240,7 @@ class MainFragment : Fragment() {
                 circleBackgroundColor = ContextCompat.getColor(ctx, R.color.surface_stroke)
                 contentDescription = name
             }
-            if (appIndex != null) CharacterPicker.loadFace(img, appIndex) else img.setImageDrawable(InitialAvatar(ctx, name))
+            if (appIndex != null) CharacterPicker.loadFace(img, appIndex) else img.setImageDrawable(InitialAvatar.drawable(ctx, name))
             val label = TextView(ctx).apply {
                 text = name
                 textSize = 11f
