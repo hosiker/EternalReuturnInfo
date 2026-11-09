@@ -137,15 +137,24 @@
                 android:textIsSelectable="true"
                 android:textSize="15sp" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/surface_stroke" />
+
             <TextView
                 android:id="@+id/board_post_tv_stat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/shape_post_stat_bar"
                 android:paddingTop="12dp"
                 android:paddingBottom="12dp"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/surface_stroke" />
 
             <TextView
                 android:id="@+id/board_post_comment_empty"
