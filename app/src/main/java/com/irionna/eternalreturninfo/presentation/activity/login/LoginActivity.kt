@@ -25,7 +25,6 @@ import www.sanju.motiontoast.MotionToastStyle
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: LoginActivityBinding
-    private lateinit var binding_: FindpwDialogBinding
     private lateinit var googlebinding: GoogleDialogBinding
     private var auth: FirebaseAuth? = null
     var firestore: FirebaseFirestore? = null
@@ -38,7 +37,6 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
         binding = LoginActivityBinding.inflate(layoutInflater)
-        binding_ = FindpwDialogBinding.inflate(layoutInflater)
         googlebinding = GoogleDialogBinding.inflate(layoutInflater)
         setContentViewEdgeToEdge(binding.root)
 
