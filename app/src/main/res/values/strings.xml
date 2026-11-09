@@ -285,4 +285,15 @@
     <string name="post_comment_delete_confirm">이 댓글을 삭제할까요?</string>
     <string name="post_send">댓글 등록</string>
     <string name="post_comment_failed">댓글을 저장하지 못했어요. 잠시 후 다시 시도해 주세요.</string>
+    <string name="write_title_new">글쓰기</string>
+    <string name="write_title_edit">글 수정</string>
+    <string name="write_register">등록</string>
+    <string name="write_save">저장</string>
+    <string name="write_category">분류</string>
+    <string name="write_title_hint">제목을 입력하세요</string>
+    <string name="write_content_hint">내용을 입력하세요</string>
+    <string name="write_tip">욕설·비방·개인정보는 올리지 마세요. 이용약관에 따라 신고되면 숨겨질 수 있어요.</string>
+    <string name="write_discard_confirm">작성 중인 내용이 사라져요. 나갈까요?</string>
+    <string name="write_discard_ok">나가기</string>
+    <string name="write_failed">저장하지 못했어요. 잠시 후 다시 시도해 주세요.</string>
 </resources>
