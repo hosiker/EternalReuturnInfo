@@ -153,6 +153,7 @@ class BoardSearchActivity : AppCompatActivity() {
                 if (isFinishing || isDestroyed) return
                 val posts = snapshot.children.mapNotNull {
                     runCatching { it.getValue(BoardModel::class.java) }.getOrNull()
+                        ?.let { b -> if (it.key != null && b.id != it.key) b.copy(id = it.key!!) else b }
                 }
                 cache = posts
                 cacheAt = System.currentTimeMillis()

@@ -126,9 +126,15 @@ class BoardFragment : Fragment() {
     }
 
     private fun openPost(boardItem: BoardModel) {
+        Log.i("BoardOpen", "카드 눌림 id='${boardItem.id}' title='${boardItem.title}'")
+        if (boardItem.id.isEmpty()) {
+            android.widget.Toast.makeText(requireContext(), R.string.post_open_failed, android.widget.Toast.LENGTH_SHORT).show()
+            return
+        }
         // 열기 전에 글이 아직 있는지 한 번 확인한다 (조회수는 글 화면이 열릴 때 올린다)
         FBRef.postRef.child(boardItem.id).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                Log.i("BoardOpen", "존재 확인 결과 exists=${dataSnapshot.exists()} isAdded=$isAdded")
                 if (!isAdded) return
                 if (!dataSnapshot.exists()) {
                     startActivity(Intent(requireContext(), BoardDeletedActivity::class.java))
@@ -140,7 +146,8 @@ class BoardFragment : Fragment() {
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                Log.d("error", "firebase data loading failed")
+                Log.w("BoardOpen", "글 확인 실패: ${databaseError.message}")
+                if (isAdded) android.widget.Toast.makeText(requireContext(), R.string.post_open_failed, android.widget.Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -191,7 +198,7 @@ class BoardFragment : Fragment() {
                 if (!isAdded) return
                 val list = mutableListOf<BoardModel>()
                 for (data in snapshot.children) {
-                    val board = data.getValue(BoardModel::class.java)
+                    val board = data.getValue(BoardModel::class.java)?.let { b -> if (data.key != null && b.id != data.key) b.copy(id = data.key!!) else b }
                     // 내가 신고한 글과 차단한 사용자의 글은 보이지 않게 한다
                     if (board != null && board.report.values.none { r -> r.uid == FBRef.auth.uid } && !BlockedUsers.isBlocked(board.author)) {
                         list.add(board)
