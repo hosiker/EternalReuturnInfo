@@ -79,7 +79,7 @@ class BoardSearchActivity : AppCompatActivity() {
 
     // ───────── 검색 전: 최근 검색어 ─────────
 
-    private fun showRecent() = with(binding) {
+    private fun showRecent(): Unit = with(binding) {
         lastQuery = ""
         listAdapter.submitList(emptyList())
         listAdapter.setHighlight("")
@@ -168,7 +168,7 @@ class BoardSearchActivity : AppCompatActivity() {
         })
     }
 
-    private fun showResult(query: String, posts: List<BoardModel>) = with(binding) {
+    private fun showResult(query: String, posts: List<BoardModel>): Unit = with(binding) {
         val me = FBRef.auth.uid
         val found = posts
             .filter {
