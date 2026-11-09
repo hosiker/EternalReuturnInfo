@@ -246,4 +246,12 @@
     <string name="board_empty">아직 글이 없어요.\n첫 글을 써 보세요.</string>
     <string name="board_withdrawn_user">탈퇴한 회원</string>
     <string name="board_search_desc">게시판 검색</string>
+    <string name="chat_day_today">오늘</string>
+    <string name="chat_day_yesterday">어제</string>
+    <string name="chat_back_desc">뒤로</string>
+    <string name="chat_list_title">채팅</string>
+    <string name="chat_list_empty">아직 대화가 없어요.\n듀오 찾기에서 마음에 드는 상대에게\n채팅을 신청해 보세요.</string>
+    <string name="chat_list_go_duo">듀오 찾기로 가기</string>
+    <string name="chat_list_loading">대화를 불러오는 중…</string>
+    <string name="chat_list_unread_many">%1$d+</string>
 </resources>
