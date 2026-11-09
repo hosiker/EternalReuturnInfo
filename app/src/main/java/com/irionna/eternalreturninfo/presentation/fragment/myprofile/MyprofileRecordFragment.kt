@@ -56,6 +56,10 @@ class MyprofileRecordFragment : Fragment() {
         ) { stats ->
             val list = stats?.characterStats.orEmpty().sortedByDescending { it.usages }.take(10)
             adapter.update(list)
+            // 기록이 없으면 제목과 목록을 함께 숨긴다 (빈 제목만 남지 않게)
+            val visible = if (list.isEmpty()) View.GONE else View.VISIBLE
+            _binding?.myprofileCharacterTv?.visibility = visible
+            _binding?.myprofileCharacterRv?.visibility = visible
         }
         // 같은 유저의 최근 경기를 자세히 보여준다 (필터, 더 보기)
         val recent = RecentGamesSection(binding.myprofileRecent, requireActivity(), viewLifecycleOwner.lifecycleScope, detailed = true)
