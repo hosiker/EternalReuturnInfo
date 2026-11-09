@@ -1,170 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/black">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
+        android:background="@color/black"
+        app:elevation="0dp">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
+        <!-- 헤더: 스크롤하면 위로 사라지고 아래 탭만 남는다 -->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="410dp"
-            android:background="@color/black"
-            app:collapsedTitleTextColor="@color/white"
-            app:expandedTitleTextColor="@color/white"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:contentScrim="@color/black">
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/black">
-
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:background="@color/black"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <ImageView
-                        android:layout_width="100dp"
-                        android:layout_height="30dp"
-                        android:layout_marginLeft="24dp"
-                        android:background="@drawable/ic_white_logo" />
-
-                </androidx.appcompat.widget.Toolbar>
-
-                <View
-                    android:id="@+id/myprofile_line_view"
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:background="#717171"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
-
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="32dp"
+                android:paddingBottom="20dp">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/myprofile_profile_img"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_marginTop="48dp"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
                     android:src="@drawable/ic_character"
                     app:civ_border_color="@color/brand_mint"
-                    app:civ_border_width="2dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.498"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="38dp"
-                    android:layout_height="38dp"
-                    android:layout_marginBottom="2dp"
-                    android:src="@drawable/baseline_photo_camera_24"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="@+id/myprofile_profile_img"
-                    app:layout_constraintEnd_toEndOf="@+id/myprofile_profile_img" />
+                    app:civ_border_width="2dp" />
 
                 <TextView
                     android:id="@+id/myprofile_nickname_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="이터널리턴 닉네임"
+                    android:layout_marginTop="14dp"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="@+id/myprofile_profile_img"
-                    app:layout_constraintStart_toStartOf="@+id/myprofile_profile_img"
-                    app:layout_constraintTop_toBottomOf="@+id/myprofile_profile_img" />
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/myprofile_Email_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="ikx1030@gmail.com"
-                    android:textColor="@color/light_gray"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toEndOf="@+id/myprofile_nickname_tv"
-                    app:layout_constraintStart_toStartOf="@+id/myprofile_nickname_tv"
-                    app:layout_constraintTop_toBottomOf="@+id/myprofile_nickname_tv" />
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+            </LinearLayout>
 
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            <androidx.appcompat.widget.Toolbar
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                app:titleTextColor="@color/white"
-                app:layout_collapseMode="pin">
-
-                <ImageButton
-                    android:id="@+id/myprofile_btn_setting"
-                    android:layout_marginRight="24dp"
-                    android:layout_gravity="right|center_horizontal"
-                    android:layout_width="23dp"
-                    android:layout_height="23dp"
-                    android:scaleType="fitCenter"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_setting"/>
-
-                <TextView
-                    android:id="@+id/myprofile_tv_username"
-                    android:visibility="invisible"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:text="nickname"
-                    android:layout_marginLeft="24dp"/>
-
-            </androidx.appcompat.widget.Toolbar>
-
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            <ImageButton
+                android:id="@+id/myprofile_btn_setting"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="top|end"
+                android:layout_margin="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/settings_title"
+                android:padding="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_setting" />
+        </FrameLayout>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/myprofile_tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabIndicatorHeight="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tabBackground="@drawable/tab_myprofile_selector"
-            app:tabTextColor="@color/white" />
+            android:background="@color/black"
+            app:tabIndicator="@drawable/tab_indicator_brand"
+            app:tabIndicatorColor="@color/tab_pill"
+            app:tabIndicatorFullWidth="true"
+            app:tabIndicatorGravity="stretch"
+            app:tabRippleColor="@android:color/transparent"
+            app:tabSelectedTextColor="@color/brand_mint"
+            app:tabTextAppearance="@style/MainTabText"
+            app:tabTextColor="@color/text_secondary" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/myprofile_viewpager2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/myprofile_tabLayout" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/myprofile_viewpager2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

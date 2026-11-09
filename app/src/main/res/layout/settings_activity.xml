@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <ImageButton
+            android:id="@+id/settings_back_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_board_arrow"
+            android:contentDescription="@string/block_cancel" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/settings_title"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="24dp">
+
+            <TextView style="@style/SettingsHeader" android:text="@string/settings_group_account" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_settings_group"
+                android:orientation="vertical">
+                <TextView android:id="@+id/settings_character" style="@style/SettingsRow" android:text="@string/settings_character" />
+                <TextView android:id="@+id/settings_password" style="@style/SettingsRow" android:text="@string/settings_password" />
+                <TextView android:id="@+id/settings_logout" style="@style/SettingsRow" android:text="@string/settings_logout" />
+            </LinearLayout>
+
+            <TextView style="@style/SettingsHeader" android:text="@string/settings_group_safety" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_settings_group"
+                android:orientation="vertical">
+                <TextView android:id="@+id/settings_blocked" style="@style/SettingsRow" android:text="@string/menu_blocked_list" />
+            </LinearLayout>
+
+            <TextView style="@style/SettingsHeader" android:text="@string/settings_group_info" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_settings_group"
+                android:orientation="vertical">
+                <TextView android:id="@+id/settings_terms" style="@style/SettingsRow" android:text="@string/settings_terms" />
+                <TextView android:id="@+id/settings_privacy" style="@style/SettingsRow" android:text="@string/settings_privacy" />
+                <TextView android:id="@+id/settings_delete_guide" style="@style/SettingsRow" android:text="@string/settings_delete_guide" />
+                <TextView android:id="@+id/settings_contact" style="@style/SettingsRow" android:text="@string/settings_contact" />
+                <TextView android:id="@+id/settings_version" style="@style/SettingsRow" android:clickable="false" android:text="@string/settings_version" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/shape_settings_group"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/settings_withdraw"
+                    style="@style/SettingsRow"
+                    android:text="@string/settings_withdraw"
+                    android:textColor="#FF6B6B" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:text="@string/settings_unofficial"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
