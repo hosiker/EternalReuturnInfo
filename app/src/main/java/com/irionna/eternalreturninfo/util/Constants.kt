@@ -25,6 +25,10 @@ class Constants {
         // 이용약관(커뮤니티 규칙) 공개 주소 (docs/terms.md)
         const val TERMS_URL = "https://hosiker.github.io/EternalReuturnInfo/terms"
 
+        // 계정 삭제 안내 (docs/account-deletion.md)
+        const val ACCOUNT_DELETION_URL = "https://hosiker.github.io/EternalReuturnInfo/account-deletion"
+        const val CONTACT_EMAIL = "erinfomanager@gmail.com"
+
         const val MAIN_BASE_URL = "https://open-api.bser.io"
         val MAIN_APIKEY: String get() = BuildConfig.MAIN_APIKEY
 

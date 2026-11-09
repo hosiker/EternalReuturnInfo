@@ -254,4 +254,23 @@
     <string name="chat_list_go_duo">듀오 찾기로 가기</string>
     <string name="chat_list_loading">대화를 불러오는 중…</string>
     <string name="chat_list_unread_many">%1$d+</string>
+    <string name="settings_title">설정</string>
+    <string name="settings_group_account">계정</string>
+    <string name="settings_group_safety">안전</string>
+    <string name="settings_group_info">정보</string>
+    <string name="settings_character">대표 실험체 변경</string>
+    <string name="settings_password">비밀번호 변경</string>
+    <string name="settings_logout">로그아웃</string>
+    <string name="settings_terms">이용약관</string>
+    <string name="settings_privacy">개인정보처리방침</string>
+    <string name="settings_delete_guide">계정 삭제 안내</string>
+    <string name="settings_contact">문의하기</string>
+    <string name="settings_version">앱 버전</string>
+    <string name="settings_withdraw">회원 탈퇴</string>
+    <string name="settings_unofficial">ER info는 이터널 리턴의 비공식 팬 앱이며, 게임사(Nimble Neuron)와 관련이 없습니다.</string>
+    <string name="pw_too_short">비밀번호는 6자 이상이어야 합니다.</string>
+    <string name="pw_mismatch">동일한 비밀번호를 입력하세요.</string>
+    <string name="pw_changed">비밀번호를 변경했습니다.</string>
+    <string name="pw_need_relogin">보안을 위해 다시 로그인한 뒤 변경해 주세요.</string>
+    <string name="pw_change_failed">비밀번호를 변경하지 못했습니다. 잠시 후 다시 시도해 주세요.</string>
 </resources>

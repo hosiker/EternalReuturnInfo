@@ -15,10 +15,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.irionna.eternalreturninfo.R
+import com.irionna.eternalreturninfo.presentation.activity.settings.SettingsActivity
 import com.irionna.eternalreturninfo.util.AutoLogin
 import com.irionna.eternalreturninfo.util.CharacterPicker
 import com.irionna.eternalreturninfo.data.repository.BlockedUsers
-import com.irionna.eternalreturninfo.presentation.activity.block.BlockedUsersActivity
 import com.irionna.eternalreturninfo.databinding.MyprofileFragmentBinding
 import com.irionna.eternalreturninfo.retrofit.BoardSingletone
 import com.irionna.eternalreturninfo.presentation.activity.login.LoginActivity
@@ -28,22 +28,13 @@ import com.irionna.eternalreturninfo.util.ProfileImage
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.CoroutineScope
-import com.irionna.eternalreturninfo.data.repository.AccountDeleter
 import com.irionna.eternalreturninfo.presentation.activity.main.MainActivity
 import com.irionna.eternalreturninfo.presentation.adapter.myprofile.MyProfileViewPagerAdapter
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.skydoves.powermenu.CircularEffect
-import com.skydoves.powermenu.MenuAnimation
-import com.skydoves.powermenu.OnMenuItemClickListener
-import com.skydoves.powermenu.PowerMenu
-import com.skydoves.powermenu.PowerMenuItem
-import www.sanju.motiontoast.MotionToast
-import www.sanju.motiontoast.MotionToastStyle
 
 class MyProfileFragment : Fragment() {
     private val binding get() = _binding!!
@@ -55,26 +46,6 @@ class MyProfileFragment : Fragment() {
 
     companion object {
         fun newInstance() = MyProfileFragment()
-    }
-
-    private val refPowerMenu: PowerMenu by lazy {
-        PowerMenu.Builder(requireContext())
-            .addItem(PowerMenuItem("프로필 수정"))
-            .addItem(PowerMenuItem("로그아웃"))
-            .addItem(PowerMenuItem("회원 탈퇴"))
-            .addItem(PowerMenuItem("비밀번호 변경"))
-            .addItem(PowerMenuItem(getString(R.string.menu_blocked_list)))
-            .setMenuRadius(20f) // sets the corner radius.
-            .setTextSize(18)
-            .setWidth(500)
-            .setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-            .setMenuColor(ContextCompat.getColor(requireContext(), R.color.darkgray))
-            .setSelectedMenuColor(ContextCompat.getColor(requireContext(), R.color.black))
-            .setOnMenuItemClickListener(onMenuItemClickListener)
-            .setLifecycleOwner(viewLifecycleOwner)
-            .setCircularEffect(CircularEffect.BODY)
-            .setAnimation(MenuAnimation.SHOWUP_TOP_RIGHT)
-            .build()
     }
 
     override fun onCreateView(
@@ -98,31 +69,16 @@ class MyProfileFragment : Fragment() {
 
         TabLayoutMediator(
             binding.myprofileTabLayout,
-            binding.myprofileViewpager2
+            binding.myprofileViewpager2,
+            true,
+            false
         ) { tab, position ->
             tab.setText(adapter.getTitle(position))
         }.attach()
 
-        binding.appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-            val maxScroll = appBarLayout.totalScrollRange
-            val percentage = Math.abs(verticalOffset).toFloat() / maxScroll.toFloat()
-
-            if (percentage == 1.0f) {
-                binding.myprofileTvUsername.visibility = View.VISIBLE
-                binding.myprofileBtnSetting.visibility = View.INVISIBLE
-                binding.myprofileTvUsername.text = BoardSingletone.LoginUser().name
-            } else if (percentage == 0.0f) {
-                binding.myprofileBtnSetting.visibility = View.VISIBLE
-                binding.myprofileTvUsername.visibility = View.INVISIBLE
-            } else {
-                binding.myprofileBtnSetting.visibility = View.INVISIBLE
-                binding.myprofileTvUsername.visibility = View.INVISIBLE
-            }
-
-        })
-
+        binding.myprofileViewpager2.isUserInputEnabled = false
         binding.myprofileBtnSetting.setOnClickListener {
-            refPowerMenu.showAsDropDown(it)
+            startActivity(Intent(requireContext(), SettingsActivity::class.java))
         }
     }
 
@@ -175,141 +131,4 @@ class MyProfileFragment : Fragment() {
             .update("profile", profileKey)
         database.child("user").child(uid).updateChildren(mapOf("profilePicture" to profileKey))
     }
-
-    /** 회원탈퇴: 실제 삭제는 AccountDeleter 가 한다. 화면이 닫혀도 끝까지 진행되도록 별도 스코프에서 실행한다. */
-    private fun deleteAccountData() {
-        val host = activity ?: return
-        val appContext = host.applicationContext
-        CoroutineScope(Dispatchers.Main).launch {
-            try {
-                BlockedUsers.stop()
-                AccountDeleter().delete(appContext.getString(R.string.withdrawn_user_name))
-                host.startActivity(Intent(host, LoginActivity::class.java))
-                host.finish()
-            } catch (e: AccountDeleter.NeedsRecentLoginException) {
-                Toast.makeText(appContext, "보안을 위해 다시 로그인한 뒤 탈퇴해 주세요.", Toast.LENGTH_LONG).show()
-            } catch (e: AccountDeleter.StepFailedException) {
-                Log.w("계정삭제", "탈퇴 처리 실패: ${e.step}", e)
-                Toast.makeText(appContext, "탈퇴 처리에 실패했습니다. (${e.step}) 잠시 후 다시 시도해주세요.", Toast.LENGTH_LONG).show()
-            } catch (e: Exception) {
-                Log.w("계정삭제", "탈퇴 처리 실패", e)
-                Toast.makeText(appContext, "탈퇴 처리에 실패했습니다. 잠시 후 다시 시도해주세요.", Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
-    fun PwChange(pw: String, pwCheck: String) {
-        val user: FirebaseUser? = auth?.currentUser
-        user?.updatePassword(pw)
-    }
-
-    // 팝업메뉴 onClick 리스너
-    private val onMenuItemClickListener = object : OnMenuItemClickListener<PowerMenuItem> {
-        override fun onItemClick(position: Int, item: PowerMenuItem) {
-            when (position) {
-                // 0 : 프로필수정,   1 : 로그아웃,   2 : 회원탈퇴, 3 : 비밀번호 변경
-                0 -> {
-                    refPowerMenu.dismiss()
-                    // 얼굴을 보면서 실험체를 고르는 시트 (가입 화면과 같은 목록)
-                    val characterlist = resources.getStringArray(R.array.characterName)
-                    CharacterPicker.show(requireActivity(), characterlist, currentCharacterIndex) { picked ->
-                        val uid = auth?.uid ?: return@show
-                        val selectCharacter = characterlist[picked]
-                        FirebaseFirestore.getInstance()
-                            .collection("EternalReturnInfo")
-                            .document(uid)
-                            .update(mapOf("character" to selectCharacter))
-                        database.child("user").child(uid).updateChildren(
-                            mapOf("character" to selectCharacter)
-                        )
-                        val profileKey = ProfileImage.keyForCharacterIndex(picked)
-                        saveProfileKey(uid, profileKey)
-                        currentCharacterIndex = picked
-                        ProfileImage.load(binding.myprofileProfileImg, profileKey)
-                    }
-                }
-
-                1 -> {
-                    refPowerMenu.dismiss()
-                    BlockedUsers.stop()
-                    FirebaseAuth.getInstance().signOut()
-                    AutoLogin.clear(requireContext())
-                    var intent = Intent(activity, LoginActivity::class.java)
-                    startActivity(intent)
-                    requireActivity().finish()
-                }
-
-                2 -> {
-                    refPowerMenu.dismiss()
-                    val deleteDialogView = layoutInflater.inflate(R.layout.delete_dialog, null)
-                    val deleteDialog = AlertDialog.Builder(requireActivity())
-                        .setView(deleteDialogView)
-                        .create()
-
-                    var yesBtn = deleteDialogView.findViewById<Button>(R.id.delete_yes_btn)
-                    var noBtn = deleteDialogView.findViewById<Button>(R.id.delete_no_btn)
-
-                    yesBtn.setOnClickListener {
-                        deleteDialog.dismiss()
-                        deleteAccountData()
-                    }
-                    noBtn.setOnClickListener {
-                        deleteDialog.dismiss()
-                    }
-                    deleteDialog.show()
-                }
-
-                4 -> {
-                    refPowerMenu.dismiss()
-                    startActivity(Intent(requireContext(), BlockedUsersActivity::class.java))
-                }
-
-                else -> {
-                    val pwChangeDialogView =
-                        layoutInflater.inflate(R.layout.myprofile_pwchange_dialog, null)
-                    val pwChangeDialog = AlertDialog.Builder(requireActivity())
-                        .setView(pwChangeDialogView)
-                        .create()
-
-                    val changeBtn =
-                        pwChangeDialogView.findViewById<Button>(R.id.myprofile_pwChange_btn)
-                    val firstPw =
-                        pwChangeDialogView.findViewById<EditText>(R.id.myprofile_pwChange_et)
-                    val secondPw =
-                        pwChangeDialogView.findViewById<EditText>(R.id.myprofile_pwChange2_et)
-
-                    changeBtn.setOnClickListener {
-
-                        val pw = firstPw.text.toString()
-                        val pwCheck = secondPw.text.toString()
-                        if (pw.isNotEmpty() && pwCheck.isNotEmpty()) {
-                            if (pw == pwCheck) {
-                                PwChange(pw, pwCheck)
-                                pwChangeDialog.dismiss()
-                            } else {
-                                MotionToast.darkColorToast(
-                                    requireActivity(), "CHECK", "동일한 비밀번호를 입력하세요",
-                                    MotionToastStyle.WARNING,
-                                    MotionToast.GRAVITY_BOTTOM,
-                                    MotionToast.SHORT_DURATION,
-                                    font = null
-                                )
-                            }
-                        } else {
-                            MotionToast.darkColorToast(
-                                requireActivity(), "CHECK", "비밀번호를 입력하세요",
-                                MotionToastStyle.WARNING,
-                                MotionToast.GRAVITY_BOTTOM,
-                                MotionToast.SHORT_DURATION,
-                                font = null
-                            )
-                        }
-
-                    }
-                    pwChangeDialog.show()
-                }
-            }
-        }
-    }
 }
-
