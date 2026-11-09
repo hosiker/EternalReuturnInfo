@@ -325,4 +325,6 @@
     <string name="dlg_findpw_ok">보내기</string>
     <string name="dlg_findpw_hint">이메일</string>
     <string name="post_open_failed">글을 열지 못했어요. 잠시 후 다시 시도해 주세요.</string>
+    <string name="stats_avg_rank_short">평균 순위</string>
+    <string name="stats_max_kill_short">최대 킬</string>
 </resources>
