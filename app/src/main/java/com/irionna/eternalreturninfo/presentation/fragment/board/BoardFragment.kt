@@ -39,6 +39,7 @@ class BoardFragment : Fragment() {
     companion object {
         fun newInstance() = BoardFragment()
         private const val NOTICE = "공지"
+        private const val REFRESH_INTERVAL_MS = 30_000L
     }
 
     private var _binding: BoardFragmentBinding? = null
@@ -46,6 +47,8 @@ class BoardFragment : Fragment() {
 
     private val boardViewModel: BoardListViewModel by activityViewModels()
     private val listAdapter by lazy { BoardRecyclerViewAdapter() }
+
+    private var lastRefreshAt = 0L
 
     /** 선택한 카테고리 (null = 전체) */
     private var category: String? = null
@@ -82,6 +85,12 @@ class BoardFragment : Fragment() {
         initView()
     }
 
+    override fun onResume() {
+        super.onResume()
+        // 탭에 다시 들어오거나 다른 화면에서 돌아오면, 마지막으로 받은 지 30초가 지났을 때만 새로 받는다
+        if (System.currentTimeMillis() - lastRefreshAt > REFRESH_INTERVAL_MS) refresh()
+    }
+
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
@@ -92,33 +101,12 @@ class BoardFragment : Fragment() {
         boardRv.adapter = listAdapter
         boardRv.itemAnimator = null
 
-        // [진단용·임시] 손가락 움직임이 어디서 끊기는지 확인한다 (원인을 찾으면 지운다)
-        boardRv.addOnItemTouchListener(object : androidx.recyclerview.widget.RecyclerView.SimpleOnItemTouchListener() {
-            private var moves = 0
-            override fun onInterceptTouchEvent(rv: androidx.recyclerview.widget.RecyclerView, e: android.view.MotionEvent): Boolean {
-                when (e.actionMasked) {
-                    android.view.MotionEvent.ACTION_DOWN -> {
-                        moves = 0
-                        Log.i("BoardOpen", "DOWN 카드=${rv.findChildViewUnder(e.x, e.y) != null} scrollState=${rv.scrollState}")
-                    }
-                    android.view.MotionEvent.ACTION_MOVE -> if (moves++ == 0) Log.i("BoardOpen", "MOVE (첫 번째)")
-                    android.view.MotionEvent.ACTION_UP -> Log.i("BoardOpen", "UP moves=$moves")
-                    android.view.MotionEvent.ACTION_CANCEL -> Log.i("BoardOpen", "CANCEL moves=$moves")
-                }
-                return false
-            }
-        })
-
         // 사용자를 차단하거나 해제하면 목록을 다시 불러와서 반영한다 (처음 보일 때도 한 번 불러온다)
         BlockedUsers.blocked.observe(viewLifecycleOwner) { refresh() }
         boardViewModel.boardList.observe(viewLifecycleOwner) { render(it) }
 
         listAdapter.setOnItemClickListener(object : BoardRecyclerViewAdapter.OnItemClickListener {
-            override fun onItemClick(boardItem: BoardModel) {
-                // [진단용·임시] 눌림이 전달되는지 화면에서 바로 보이게 한다
-                android.widget.Toast.makeText(requireContext(), "카드 눌림", android.widget.Toast.LENGTH_SHORT).show()
-                openPost(boardItem)
-            }
+            override fun onItemClick(boardItem: BoardModel) = openPost(boardItem)
         })
 
         boardFab.setOnClickListener {
@@ -126,12 +114,6 @@ class BoardFragment : Fragment() {
         }
         boardIbProfile.setOnClickListener {
             startActivity(Intent(requireContext(), BoardSearchActivity::class.java))
-        }
-        // [진단용·임시] 당겨서 새로고침이 터치를 가로채는지 확인하려고 잠시 끈다
-        boardSwipeRefreshLayout.isEnabled = false
-        boardSwipeRefreshLayout.setOnRefreshListener {
-            refresh()
-            boardSwipeRefreshLayout.isRefreshing = false
         }
         refreshChips()
     }
@@ -149,7 +131,6 @@ class BoardFragment : Fragment() {
     }
 
     private fun openPost(boardItem: BoardModel) {
-        Log.i("BoardOpen", "카드 눌림 id='${boardItem.id}' title='${boardItem.title}'")
         if (boardItem.id.isEmpty()) {
             android.widget.Toast.makeText(requireContext(), R.string.post_open_failed, android.widget.Toast.LENGTH_SHORT).show()
             return
@@ -157,7 +138,6 @@ class BoardFragment : Fragment() {
         // 열기 전에 글이 아직 있는지 한 번 확인한다 (조회수는 글 화면이 열릴 때 올린다)
         FBRef.postRef.child(boardItem.id).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                Log.i("BoardOpen", "존재 확인 결과 exists=${dataSnapshot.exists()} isAdded=$isAdded")
                 if (!isAdded) return
                 if (!dataSnapshot.exists()) {
                     startActivity(Intent(requireContext(), BoardDeletedActivity::class.java))
@@ -215,6 +195,7 @@ class BoardFragment : Fragment() {
     // ---- 서버에서 글 목록 받기 ----
 
     fun refresh() {
+        lastRefreshAt = System.currentTimeMillis()
         FBRef.postRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 // 응답이 늦게 도착했을 때 탭 이동 등으로 화면이 이미 분리되어 있으면 아무것도 하지 않는다.
