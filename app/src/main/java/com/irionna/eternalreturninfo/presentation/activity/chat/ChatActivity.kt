@@ -29,6 +29,7 @@ import com.irionna.eternalreturninfo.presentation.adapter.chat.ChatAdapter
 import com.irionna.eternalreturninfo.presentation.viewmodel.ChatViewModel
 import com.irionna.eternalreturninfo.presentation.viewmodel.ChatViewModelFactory
 import com.irionna.eternalreturninfo.util.Constants.Companion.EXTRA_ER_MODEL
+import com.irionna.eternalreturninfo.util.ProfileImage
 import com.google.firebase.auth.FirebaseAuth
 
 class ChatActivity : AppCompatActivity() {
@@ -66,6 +67,7 @@ class ChatActivity : AppCompatActivity() {
 
     private val chatAdapter by lazy {
         ChatAdapter(
+            partnerProfile = data?.profilePicture,
             onClickItem = { position ->
                 val imm =
                     this.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -88,8 +90,9 @@ class ChatActivity : AppCompatActivity() {
         chatRecycler.adapter = chatAdapter
         chatRecycler.layoutManager = LinearLayoutManager(this@ChatActivity)
 
-        // 툴바에 채팅상대 이름 출력하기
+        // 위쪽 줄에 채팅상대 얼굴과 이름 출력하기
         chatToolbarTitle.text = data?.name
+        ProfileImage.load(chatToolbarFace, data?.profilePicture)
 
         // 상대가 탈퇴한 경우: 대화 기록은 볼 수 있지만 더 보낼 수 없다.
         if (data?.withdrawn == true) {
@@ -186,6 +189,8 @@ class ChatActivity : AppCompatActivity() {
         list.observe(this@ChatActivity){
             chatAdapter.submitList(it)
         }
+        // 상대가 아직 읽지 않은 내 메시지에 "1" 표시
+        unreadIds.observe(this@ChatActivity) { chatAdapter.setUnread(it) }
         message.observe(this@ChatActivity){
             binding.chatMsgEt.setText(it)
         }
@@ -202,5 +207,6 @@ class ChatActivity : AppCompatActivity() {
         }
 
         loadChat(data?.name.toString(), data?.uid.toString(), auth.uid.toString())
+        loadPartnerRead(data?.uid.toString(), auth.uid.toString())
     }
 }
