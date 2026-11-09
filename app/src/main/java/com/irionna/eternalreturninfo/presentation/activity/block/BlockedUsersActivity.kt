@@ -1,5 +1,6 @@
 package com.irionna.eternalreturninfo.presentation.activity.block
 
+import com.irionna.eternalreturninfo.util.AppToast
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,11 +29,11 @@ class BlockedUsersActivity : AppCompatActivity() {
 
     private val listAdapter = BlockedUserAdapter { uid ->
         BlockedUsers.unblock(uid) { ok ->
-            Toast.makeText(
+            AppToast.show(
                 this,
                 if (ok) R.string.unblock_done else R.string.unblock_failed,
-                Toast.LENGTH_SHORT
-            ).show()
+                if (ok) AppToast.Kind.SUCCESS else AppToast.Kind.ERROR
+            )
         }
     }
 

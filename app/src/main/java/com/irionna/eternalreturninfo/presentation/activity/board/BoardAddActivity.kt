@@ -1,5 +1,6 @@
 package com.irionna.eternalreturninfo.presentation.activity.board
 
+import com.irionna.eternalreturninfo.util.AppToast
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -182,7 +183,7 @@ open class BoardAddActivity : AppCompatActivity() {
         }.addOnFailureListener {
             saving = false
             refreshState()
-            Toast.makeText(applicationContext, R.string.write_failed, Toast.LENGTH_LONG).show()
+            AppToast.show(this, R.string.write_failed, AppToast.Kind.ERROR)
         }
     }
 }

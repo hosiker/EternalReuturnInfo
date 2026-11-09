@@ -92,7 +92,7 @@ object TermsConsent {
         try {
             activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         } catch (e: ActivityNotFoundException) {
-            Toast.makeText(activity, activity.getString(R.string.privacy_policy_open_failed, url), Toast.LENGTH_LONG).show()
+            AppToast.show(activity, activity.getString(R.string.privacy_policy_open_failed, url), AppToast.Kind.ERROR)
         }
     }
 }

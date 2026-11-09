@@ -26,10 +26,10 @@ object BlockDialog {
         ) {
             BlockedUsers.block(targetUid) { ok ->
                 if (ok) {
-                    Toast.makeText(context, context.getString(R.string.block_done, name), Toast.LENGTH_SHORT).show()
+                    AppToast.show(context, context.getString(R.string.block_done, name), AppToast.Kind.SUCCESS)
                     onBlocked()
                 } else {
-                    Toast.makeText(context, R.string.block_failed, Toast.LENGTH_SHORT).show()
+                    AppToast.show(context, R.string.block_failed, AppToast.Kind.ERROR)
                 }
             }
         }

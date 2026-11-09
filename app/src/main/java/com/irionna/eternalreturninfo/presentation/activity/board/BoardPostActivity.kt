@@ -1,5 +1,6 @@
 package com.irionna.eternalreturninfo.presentation.activity.board
 
+import com.irionna.eternalreturninfo.util.AppToast
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -110,7 +111,7 @@ class BoardPostActivity : AppCompatActivity() {
 
     private fun loadPost() {
         if (id.isEmpty()) {
-            Toast.makeText(applicationContext, R.string.post_open_failed, Toast.LENGTH_SHORT).show()
+            AppToast.show(applicationContext, R.string.post_open_failed, AppToast.Kind.ERROR)
             finish()
             return
         }
@@ -127,7 +128,7 @@ class BoardPostActivity : AppCompatActivity() {
                 val post = snapshot.getValue(BoardModel::class.java)
                 if (post == null) {
                     Log.w("BoardOpen", "글을 읽지 못함 id='$id'")
-                    Toast.makeText(applicationContext, R.string.post_open_failed, Toast.LENGTH_SHORT).show()
+                    AppToast.show(applicationContext, R.string.post_open_failed, AppToast.Kind.ERROR)
                     finish()
                     return
                 }
@@ -140,7 +141,7 @@ class BoardPostActivity : AppCompatActivity() {
 
             override fun onCancelled(error: DatabaseError) {
                 Log.w("BoardOpen", "글 읽기 취소: ${error.message}")
-                Toast.makeText(applicationContext, R.string.post_open_failed, Toast.LENGTH_SHORT).show()
+                AppToast.show(applicationContext, R.string.post_open_failed, AppToast.Kind.ERROR)
                 finish()
             }
         })
@@ -229,7 +230,7 @@ class BoardPostActivity : AppCompatActivity() {
             FBRef.postRef.child(id).child("comments").child(key).setValue(comment)
         }
         task.addOnFailureListener {
-            Toast.makeText(applicationContext, R.string.post_comment_failed, Toast.LENGTH_SHORT).show()
+            AppToast.show(this, R.string.post_comment_failed, AppToast.Kind.ERROR)
         }
         binding.boardPostEtComment.setText("")
         stopEditing()

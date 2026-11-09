@@ -56,11 +56,11 @@ object UserReportDialog {
 
         FirebaseDatabase.getInstance().reference.child("userReports").push().setValue(report)
             .addOnCompleteListener {
-                Toast.makeText(
+                AppToast.show(
                     context,
                     if (it.isSuccessful) R.string.report_user_done else R.string.report_user_failed,
-                    Toast.LENGTH_LONG
-                ).show()
+                    if (it.isSuccessful) AppToast.Kind.SUCCESS else AppToast.Kind.ERROR
+                )
             }
     }
 }

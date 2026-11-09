@@ -123,8 +123,6 @@ dependencies {
     // powerMenu
     implementation("com.github.skydoves:powermenu:2.2.4")
 
-    // MotionToast
-    implementation("com.github.Spikeysanju:MotionToast:1.4")
 
     // reCaptcha for firebase auth issue
     implementation("com.google.android.recaptcha:recaptcha:18.4.0")

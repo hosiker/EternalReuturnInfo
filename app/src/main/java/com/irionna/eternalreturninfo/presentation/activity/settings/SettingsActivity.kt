@@ -1,5 +1,6 @@
 package com.irionna.eternalreturninfo.presentation.activity.settings
 
+import com.irionna.eternalreturninfo.util.AppToast
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -60,7 +61,7 @@ class SettingsActivity : AppCompatActivity() {
         try {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         } catch (e: Exception) {
-            Toast.makeText(this, url, Toast.LENGTH_LONG).show()
+            AppToast.show(this, url, AppToast.Kind.INFO)
         }
     }
 
@@ -68,7 +69,7 @@ class SettingsActivity : AppCompatActivity() {
         try {
             startActivity(Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:${Constants.CONTACT_EMAIL}")))
         } catch (e: Exception) {
-            Toast.makeText(this, Constants.CONTACT_EMAIL, Toast.LENGTH_LONG).show()
+            AppToast.show(this, Constants.CONTACT_EMAIL, AppToast.Kind.INFO)
         }
     }
 
@@ -103,25 +104,27 @@ class SettingsActivity : AppCompatActivity() {
             val pw = first.text.toString()
             val check = second.text.toString()
             when {
-                pw.length < 6 -> toast(R.string.pw_too_short)
-                pw != check -> toast(R.string.pw_mismatch)
+                pw.length < 6 -> toast(R.string.pw_too_short, AppToast.Kind.WARNING, overDialog = true)
+                pw != check -> toast(R.string.pw_mismatch, AppToast.Kind.WARNING, overDialog = true)
                 else -> {
                     val user = auth.currentUser ?: return@custom
                     user.updatePassword(pw)
                         .addOnSuccessListener {
-                            toast(R.string.pw_changed)
                             dialog.dismiss()
+                            toast(R.string.pw_changed, AppToast.Kind.SUCCESS)
                         }
                         .addOnFailureListener { e ->
                             Log.w("설정", "비밀번호 변경 실패", e)
-                            toast(if (e is FirebaseAuthRecentLoginRequiredException) R.string.pw_need_relogin else R.string.pw_change_failed)
+                            toast(if (e is FirebaseAuthRecentLoginRequiredException) R.string.pw_need_relogin else R.string.pw_change_failed, AppToast.Kind.ERROR, overDialog = true)
                         }
                 }
             }
         }
     }
 
-    private fun toast(res: Int) = Toast.makeText(applicationContext, res, Toast.LENGTH_LONG).show()
+    // 입력창이 떠 있는 동안에는 창 위에 보이도록 기본 토스트를, 닫힌 뒤에는 앱 알림을 쓴다
+    private fun toast(res: Int, kind: AppToast.Kind = AppToast.Kind.ERROR, overDialog: Boolean = false) =
+        AppToast.show(this, res, kind, overDialog)
 
     private fun goToLogin() {
         startActivity(Intent(this, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
@@ -156,13 +159,13 @@ class SettingsActivity : AppCompatActivity() {
                 AutoLogin.clear(appContext)
                 host.goToLogin()
             } catch (e: AccountDeleter.NeedsRecentLoginException) {
-                Toast.makeText(appContext, "보안을 위해 다시 로그인한 뒤 탈퇴해 주세요.", Toast.LENGTH_LONG).show()
+                AppToast.show(host, "보안을 위해 다시 로그인한 뒤 탈퇴해 주세요.", AppToast.Kind.WARNING)
             } catch (e: AccountDeleter.StepFailedException) {
                 Log.w("계정삭제", "탈퇴 처리 실패: ${e.step}", e)
-                Toast.makeText(appContext, "탈퇴 처리에 실패했습니다. (${e.step}) 잠시 후 다시 시도해주세요.", Toast.LENGTH_LONG).show()
+                AppToast.show(host, "탈퇴 처리에 실패했습니다. (${e.step}) 잠시 후 다시 시도해주세요.", AppToast.Kind.ERROR)
             } catch (e: Exception) {
                 Log.w("계정삭제", "탈퇴 처리 실패", e)
-                Toast.makeText(appContext, "탈퇴 처리에 실패했습니다. 잠시 후 다시 시도해주세요.", Toast.LENGTH_LONG).show()
+                AppToast.show(host, "탈퇴 처리에 실패했습니다. 잠시 후 다시 시도해주세요.", AppToast.Kind.ERROR)
             }
         }
     }

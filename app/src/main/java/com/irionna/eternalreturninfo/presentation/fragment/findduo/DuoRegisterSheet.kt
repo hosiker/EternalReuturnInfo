@@ -1,5 +1,6 @@
 package com.irionna.eternalreturninfo.presentation.fragment.findduo
 
+import com.irionna.eternalreturninfo.util.AppToast
 import android.app.Activity
 import android.app.Dialog
 import android.graphics.Typeface
@@ -178,7 +179,7 @@ class DuoRegisterSheet(
             else -> null
         }
         if (msg != null) {
-            Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show()
+            AppToast.show(activity, msg, AppToast.Kind.WARNING, overDialog = true)
             return
         }
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
@@ -198,13 +199,13 @@ class DuoRegisterSheet(
         b.regSubmit.isEnabled = false
         FirebaseDatabase.getInstance().reference.child("user").child(uid).updateChildren(data)
             .addOnSuccessListener {
-                Toast.makeText(activity, R.string.duo_registered, Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
+                AppToast.show(activity, R.string.duo_registered, AppToast.Kind.SUCCESS)
                 onDone()
             }
             .addOnFailureListener {
                 b.regSubmit.isEnabled = true
-                Toast.makeText(activity, R.string.duo_register_failed, Toast.LENGTH_SHORT).show()
+                AppToast.show(activity, R.string.duo_register_failed, AppToast.Kind.ERROR, overDialog = true)
             }
     }
 }
