@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:paddingVertical="6dp">
+    android:paddingTop="6dp"
+    android:paddingBottom="6dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/picker_face"

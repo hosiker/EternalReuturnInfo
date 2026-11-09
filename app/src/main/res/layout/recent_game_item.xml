@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingVertical="9dp">
+    android:paddingTop="9dp"
+    android:paddingBottom="9dp">
 
     <TextView
         android:id="@+id/rg_rank"

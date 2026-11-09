@@ -47,15 +47,18 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/shape_surface_card"
         android:orientation="vertical"
-        android:paddingHorizontal="14dp"
-        android:paddingVertical="4dp">
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
 
         <TextView
             android:id="@+id/rgs_empty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingVertical="24dp"
+            android:paddingTop="24dp"
+            android:paddingBottom="24dp"
             android:text="@string/rg_loading"
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />

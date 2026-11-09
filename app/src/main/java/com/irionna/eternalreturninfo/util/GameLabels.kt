@@ -31,6 +31,11 @@ object GameLabels {
         } catch (e: Exception) {
             return ""
         }
+        return relativeTimeMillis(context, start, now)
+    }
+
+    /** 밀리초 시각을 "3시간 전" 같은 글자로 바꾼다. */
+    fun relativeTimeMillis(context: Context, start: Long, now: Long = System.currentTimeMillis()): String {
         val min = (now - start) / 60_000
         return when {
             min < 1 -> context.getString(R.string.rg_time_now)
