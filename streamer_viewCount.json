@@ -1,10 +1,22 @@
 {
- "generatedAt": 1794213066040,
+ "generatedAt": 1794263008879,
  "items": [
+  {
+   "id": "amcaOtq8mLg",
+   "title": "우승 완료, 쇼타임은 끝입니다.",
+   "thumbnail": "https://i.ytimg.com/vi/amcaOtq8mLg/mqdefault.jpg",
+   "isShort": false
+  },
   {
    "id": "lAMf4DsLUr0",
    "title": "혈먹고 도망가는 보행능력 #이터널리턴",
    "thumbnail": "https://i.ytimg.com/vi/lAMf4DsLUr0/mqdefault.jpg",
+   "isShort": true
+  },
+  {
+   "id": "chG1BeFx5KU",
+   "title": "[Eternal Return] L을 가져가 - 루치아",
+   "thumbnail": "https://i.ytimg.com/vi/chG1BeFx5KU/mqdefault.jpg",
    "isShort": true
   },
   {
@@ -20,10 +32,10 @@
    "isShort": false
   },
   {
-   "id": "chG1BeFx5KU",
-   "title": "[Eternal Return] L을 가져가 - 루치아",
-   "thumbnail": "https://i.ytimg.com/vi/chG1BeFx5KU/mqdefault.jpg",
-   "isShort": true
+   "id": "wJOlJg6_3iA",
+   "title": "드디어 이터널리턴을 하게 된 리제 ㅋㅋㅋㅋㅋ",
+   "thumbnail": "https://i.ytimg.com/vi/wJOlJg6_3iA/mqdefault.jpg",
+   "isShort": false
   },
   {
    "id": "LFt6JuuKGfQ",
@@ -32,15 +44,9 @@
    "isShort": true
   },
   {
-   "id": "wJOlJg6_3iA",
-   "title": "드디어 이터널리턴을 하게 된 리제 ㅋㅋㅋㅋㅋ",
-   "thumbnail": "https://i.ytimg.com/vi/wJOlJg6_3iA/mqdefault.jpg",
-   "isShort": false
-  },
-  {
-   "id": "mfCIYCIR9KA",
-   "title": "세레스의 치명적인 단점 #게임 #이터널리턴 #세레스",
-   "thumbnail": "https://i.ytimg.com/vi/mfCIYCIR9KA/mqdefault.jpg",
+   "id": "0amxStyjKC0",
+   "title": "이터널리턴 클립 모음집 133",
+   "thumbnail": "https://i.ytimg.com/vi/0amxStyjKC0/mqdefault.jpg",
    "isShort": false
   },
   {
@@ -48,12 +54,6 @@
    "title": "침착함은 역시 한동그라미 #이터널리턴 #shorts #셀린",
    "thumbnail": "https://i.ytimg.com/vi/Oy9-ijdwo6c/mqdefault.jpg",
    "isShort": true
-  },
-  {
-   "id": "0amxStyjKC0",
-   "title": "이터널리턴 클립 모음집 133",
-   "thumbnail": "https://i.ytimg.com/vi/0amxStyjKC0/mqdefault.jpg",
-   "isShort": false
   },
   {
    "id": "NsiQJ53FOcA",
@@ -104,6 +104,12 @@
    "isShort": true
   },
   {
+   "id": "F4J1hoM_uD8",
+   "title": "먼가 작고 귀여운 리몽 #이터널리턴",
+   "thumbnail": "https://i.ytimg.com/vi/F4J1hoM_uD8/mqdefault.jpg",
+   "isShort": true
+  },
+  {
    "id": "8aiS8PTbztE",
    "title": "천라지망을 펼쳐라 | 이터널리턴",
    "thumbnail": "https://i.ytimg.com/vi/8aiS8PTbztE/mqdefault.jpg",
@@ -113,12 +119,6 @@
    "id": "RbjOYmGG8ac",
    "title": "탈락위기의 팀을 구해내라 #이터널리턴 #shorts #쇼이치",
    "thumbnail": "https://i.ytimg.com/vi/RbjOYmGG8ac/mqdefault.jpg",
-   "isShort": true
-  },
-  {
-   "id": "F4J1hoM_uD8",
-   "title": "먼가 작고 귀여운 리몽 #이터널리턴",
-   "thumbnail": "https://i.ytimg.com/vi/F4J1hoM_uD8/mqdefault.jpg",
    "isShort": true
   }
  ]
