@@ -2,6 +2,7 @@ package com.irionna.eternalreturninfo.util
 
 import android.content.Context
 import android.widget.ImageView
+import com.irionna.eternalreturninfo.BuildConfig
 import com.irionna.eternalreturninfo.R
 
 /**
@@ -37,6 +38,16 @@ object ProfileImage {
     }
 
     fun load(imageView: ImageView, value: String?) {
-        imageView.setImageResource(resIdOf(imageView.context, value))
+        val ctx = imageView.context
+        // 실험체 이미지를 앱에 넣지 않은 빌드(BuildConfig.USE_CHARACTER_IMAGES=false)에서는 실험체 이름의 첫 글자 아바타를 보여준다
+        if (!BuildConfig.USE_CHARACTER_IMAGES) {
+            val index = drawableNameOf(value)?.removePrefix("character_")?.toIntOrNull()
+            val names = ctx.resources.getStringArray(R.array.characterName)
+            if (index != null && index in 1 until names.size) {
+                imageView.setImageDrawable(InitialAvatar.drawable(ctx, names[index]))
+                return
+            }
+        }
+        imageView.setImageResource(resIdOf(ctx, value))
     }
 }

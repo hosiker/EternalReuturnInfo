@@ -30,6 +30,14 @@ object CharacterPicker {
             return
         }
         val ctx = imageView.context
+        // 실험체 이미지를 앱에 넣지 않은 빌드에서는 이름의 첫 글자 아바타를 보여준다
+        if (!com.irionna.eternalreturninfo.BuildConfig.USE_CHARACTER_IMAGES) {
+            val names = ctx.resources.getStringArray(R.array.characterName)
+            if (index in 1 until names.size) {
+                imageView.setImageDrawable(InitialAvatar.drawable(ctx, names[index]))
+                return
+            }
+        }
         val id = ctx.resources.getIdentifier("face_$index", "drawable", ctx.packageName)
         imageView.setImageResource(if (id != 0) id else R.drawable.ic_baseimage)
     }
