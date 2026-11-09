@@ -273,4 +273,16 @@
     <string name="pw_changed">비밀번호를 변경했습니다.</string>
     <string name="pw_need_relogin">보안을 위해 다시 로그인한 뒤 변경해 주세요.</string>
     <string name="pw_change_failed">비밀번호를 변경하지 못했습니다. 잠시 후 다시 시도해 주세요.</string>
+    <string name="post_comment_hint">댓글을 입력하세요</string>
+    <string name="post_comment_empty">아직 댓글이 없어요. 첫 댓글을 남겨 보세요.</string>
+    <string name="post_comment_count">댓글 %d</string>
+    <string name="post_view_count">조회 %d</string>
+    <string name="post_author_badge">작성자</string>
+    <string name="post_editing_comment">댓글 수정 중</string>
+    <string name="post_menu_edit">수정</string>
+    <string name="post_menu_delete">삭제</string>
+    <string name="post_delete_confirm">이 글을 삭제할까요?</string>
+    <string name="post_comment_delete_confirm">이 댓글을 삭제할까요?</string>
+    <string name="post_send">댓글 등록</string>
+    <string name="post_comment_failed">댓글을 저장하지 못했어요. 잠시 후 다시 시도해 주세요.</string>
 </resources>
