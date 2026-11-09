@@ -1,80 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:background="@color/black"
+    <LinearLayout
+        android:id="@+id/findduo_header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="24dp"
+        android:gravity="bottom"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="24dp"
-            android:background="@drawable/ic_white_logo" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/duo_title"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
-    </androidx.appcompat.widget.Toolbar>
+        <TextView
+            android:id="@+id/findduo_total_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="1"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/findduo_total_number"
-        android:layout_width="wrap_content"
+    <HorizontalScrollView
+        android:id="@+id/findduo_chips_scroll"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="10dp"
-        android:text=""
-        android:textColor="@color/highlight_color"
-        android:textColorHint="@color/highlight_color"
-        android:textStyle="bold"
-        android:textSize="28dp"
-        app:layout_constraintBottom_toBottomOf="@+id/findduo_text1"
+        android:layout_marginTop="12dp"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:textAlignment="textEnd" />
+        app:layout_constraintTop_toBottomOf="@+id/findduo_header">
 
-    <TextView
-        android:id="@+id/findduo_text1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:text="명의 플레이어가 듀오를 찾고 있습니다."
-        android:textColor="@color/text_color"
-        android:textSize="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/findduo_total_number"
-        app:layout_constraintStart_toEndOf="@+id/findduo_total_number"
-        app:layout_constraintTop_toTopOf="@+id/findduo_total_number" />
-
+        <LinearLayout
+            android:id="@+id/findduo_chips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp" />
+    </HorizontalScrollView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/findduo_recyclerview"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="10dp"
+        android:clipToPadding="false"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="84dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/findduo_register_btn" />
+        app:layout_constraintTop_toBottomOf="@+id/findduo_chips_scroll" />
+
+    <TextView
+        android:id="@+id/findduo_empty"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:lineSpacingExtra="3dp"
+        android:padding="32dp"
+        android:text="@string/duo_empty"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/findduo_chips_scroll" />
 
     <Button
         android:id="@+id/findduo_register_btn"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/shape_highlight_btn2"
-        android:text="내 정보 생성하기"
+        android:layout_height="52dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/shape_btn_primary"
+        android:elevation="6dp"
+        android:stateListAnimator="@null"
+        android:text="@string/duo_register"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:textSize="15sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/findduo_total_number" />
-
-
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

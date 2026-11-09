@@ -24,6 +24,10 @@ data class ERModel (
     var winrate :String? = null,
     var avgrank :String? = null,
     // 회원탈퇴한 사용자의 표시용 노드(묘비)일 때 true
-    val withdrawn: Boolean? = null
+    val withdrawn: Boolean? = null,
+    // 듀오 모집글: 최근 5경기 순위("1,4,2,7,3"), 티어를 전적에서 자동으로 가져왔는지, 올린 시각(밀리초 문자열)
+    var recent: String? = null,
+    var tierAuto: Boolean? = null,
+    var timestamp: String? = null
 
 ) : Parcelable

@@ -54,7 +54,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingVertical="36dp"
+        android:paddingTop="36dp"
+        android:paddingBottom="36dp"
         android:text="@string/stats_loading"
         android:textColor="@color/text_secondary"
         android:textSize="14sp" />
@@ -70,7 +71,8 @@
             android:id="@+id/stats_rp_block"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="14dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="14dp"
             android:orientation="vertical">
 
             <TextView
@@ -110,7 +112,8 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:background="@color/background_color"
@@ -137,7 +140,8 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:background="@color/background_color"
@@ -173,7 +177,8 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:background="@color/background_color"
@@ -216,7 +221,8 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:background="@color/background_color"
@@ -243,7 +249,8 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:background="@color/background_color"
@@ -270,7 +277,8 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:background="@color/background_color"

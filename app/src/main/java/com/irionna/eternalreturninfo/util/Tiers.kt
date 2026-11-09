@@ -32,4 +32,24 @@ object Tiers {
         }
         return LOWER_TIERS.last { mmr >= it.first }.second
     }
+
+    /** 듀오 모집글에서 직접 고를 수 있는 티어 이름 (전적에서 못 가져왔을 때) */
+    val SELECTABLE: List<String> = listOf("언랭크") + LOWER_TIERS.map { it.second } + listOf("데미갓", "이터니티")
+
+    /** 예전 모집글에 저장된 영어 티어 이름을 지금 이름으로 바꾼다. 모르는 값은 그대로. */
+    fun displayName(raw: String?): String = when (raw?.trim()) {
+        null, "" -> ""
+        "Unrank" -> "언랭크"
+        "Iron" -> "아이언"
+        "Bronze" -> "브론즈"
+        "Silver" -> "실버"
+        "Gold" -> "골드"
+        "Platinum" -> "플래티넘"
+        "Diamond" -> "다이아몬드"
+        "Meteorite" -> "메테오라이트"
+        "Mithril" -> "미스릴"
+        "Titan" -> "데미갓"
+        "Immortal" -> "이터니티"
+        else -> raw.trim()
+    }
 }

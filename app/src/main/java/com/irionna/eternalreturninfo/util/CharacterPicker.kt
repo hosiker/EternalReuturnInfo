@@ -34,7 +34,7 @@ object CharacterPicker {
         imageView.setImageResource(if (id != 0) id else R.drawable.ic_baseimage)
     }
 
-    fun show(activity: Activity, names: Array<String>, selected: Int, onPicked: (Int) -> Unit) {
+    fun show(activity: Activity, names: Array<String>, selected: Int, noneLabel: String? = null, onPicked: (Int) -> Unit) {
         val b = CharacterPickerSheetBinding.inflate(LayoutInflater.from(activity))
         val dialog = Dialog(activity, R.style.ConsentSheetDialog)
         dialog.setContentView(b.root)
@@ -47,7 +47,7 @@ object CharacterPicker {
             setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         }
 
-        val adapter = Adapter(names, selected) { index ->
+        val adapter = Adapter(names, selected, noneLabel) { index ->
             dialog.dismiss()
             onPicked(index)
         }
@@ -64,6 +64,7 @@ object CharacterPicker {
     private class Adapter(
         private val names: Array<String>,
         private val selected: Int,
+        private val noneLabel: String?,
         private val onClick: (Int) -> Unit
     ) : RecyclerView.Adapter<Adapter.VH>() {
 
@@ -88,7 +89,7 @@ object CharacterPicker {
         override fun onBindViewHolder(holder: VH, position: Int) {
             val index = shown[position]
             val ctx = holder.b.root.context
-            holder.b.pickerName.text = if (index == 0) ctx.getString(R.string.character_picker_none) else names[index]
+            holder.b.pickerName.text = if (index == 0) (noneLabel ?: ctx.getString(R.string.character_picker_none)) else names[index]
             loadFace(holder.b.pickerFace, index)
             val isSelected = index == selected
             holder.b.pickerFace.borderWidth = if (isSelected) (3 * ctx.resources.displayMetrics.density).toInt() else 0
