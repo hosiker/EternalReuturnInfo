@@ -28,6 +28,7 @@ import com.irionna.eternalreturninfo.presentation.viewmodel.BoardListViewModel
 import com.irionna.eternalreturninfo.presentation.viewmodel.BoardListViewModelFactory
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ValueEventListener
 import com.irionna.eternalreturninfo.data.model.ReportModel
 import com.skydoves.powermenu.CircularEffect
@@ -88,6 +89,10 @@ class BoardPostActivity : AppCompatActivity() {
         setContentViewEdgeToEdge(binding.root)
 
         initDataload()
+        // 조회수는 글 화면이 열릴 때 한 번만 올린다 (목록, 검색, 내 글 어디서 열어도 같다). 화면 회전 같은 재생성은 세지 않는다.
+        if (savedInstanceState == null && id.isNotEmpty()) {
+            FBRef.postRef.child(id).child("views").setValue(ServerValue.increment(1))
+        }
         initView()
         initModel()
 

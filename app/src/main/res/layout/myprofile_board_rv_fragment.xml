@@ -5,13 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".presentation.fragment.board.BoardNoticeFragment">
+    tools:context=".presentation.fragment.myprofile.MyProfileBoardFragment">
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/board_notice_rv"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="12dp"
         android:layout_marginBottom="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

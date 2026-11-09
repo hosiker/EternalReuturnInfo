@@ -238,4 +238,12 @@
     <string name="duo_reg_need_most">모스트 실험체를 골라 주세요.</string>
     <string name="duo_reg_need_tier">티어를 확인하는 중이거나 선택되지 않았어요.</string>
     <string name="rank_desc">%1$d등</string>
+    <string name="board_pinned">📌 고정</string>
+    <string name="board_views">조회 %1$d</string>
+    <string name="board_comments_count">댓글 %1$d</string>
+    <string name="board_title">게시판</string>
+    <string name="board_write">✎ 글쓰기</string>
+    <string name="board_empty">아직 글이 없어요.\n첫 글을 써 보세요.</string>
+    <string name="board_withdrawn_user">탈퇴한 회원</string>
+    <string name="board_search_desc">게시판 검색</string>
 </resources>

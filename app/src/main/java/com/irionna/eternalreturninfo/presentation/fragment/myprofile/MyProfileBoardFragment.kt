@@ -93,8 +93,7 @@ class MyProfileBoardFragment : Fragment() {
                             val intent = Intent(requireContext(), BoardDeletedActivity::class.java)
                             startActivity(intent)
                         } else {
-                            val views = boardItem.views + 1
-                            FBRef.postRef.child(boardItem.id).child("views").setValue(views)
+                            // 조회수는 글 화면이 열릴 때 올린다
                             val intent = Intent(requireContext(), BoardPostActivity::class.java)
                             intent.putExtra("ID", boardItem.id)
                             loadBoardLauncher.launch(intent)
