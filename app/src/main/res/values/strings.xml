@@ -293,7 +293,7 @@
     <string name="write_title_hint">제목을 입력하세요</string>
     <string name="write_content_hint">내용을 입력하세요</string>
     <string name="write_tip">욕설·비방·개인정보는 올리지 마세요. 이용약관에 따라 신고되면 숨겨질 수 있어요.</string>
-    <string name="write_discard_confirm">작성 중인 내용이 사라져요. 나갈까요?</string>
+    <string name="write_discard_confirm">작성 중인 내용이 사라져요.</string>
     <string name="write_discard_ok">나가기</string>
     <string name="write_failed">저장하지 못했어요. 잠시 후 다시 시도해 주세요.</string>
     <string name="search_hint">글 제목·내용 검색</string>
@@ -303,4 +303,25 @@
     <string name="search_no_result">검색 결과가 없어요.\n다른 단어로 찾아 보세요.</string>
     <string name="search_failed">글을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.</string>
     <string name="search_guide">제목이나 내용에 들어 있는 단어로\n글을 찾을 수 있어요.</string>
+    <string name="dlg_chat_title">1:1 채팅</string>
+    <string name="dlg_chat_message">%1$s님과 1:1 채팅을 하시겠습니까?</string>
+    <string name="dlg_chat_ok">채팅하기</string>
+    <string name="dlg_report_post_title">이 글을 신고할까요?</string>
+    <string name="dlg_report_post_message">신고한 글은 내 화면에서 숨겨지고, 운영자가 확인해요.</string>
+    <string name="dlg_report_comment_title">이 댓글을 신고할까요?</string>
+    <string name="dlg_report_comment_message">신고한 댓글은 내 화면에서 숨겨지고, 운영자가 확인해요.</string>
+    <string name="dlg_report_ok">신고</string>
+    <string name="dlg_leave_title">나갈까요?</string>
+    <string name="dlg_leave_keep">계속 작성</string>
+    <string name="dlg_withdraw_title">회원 탈퇴</string>
+    <string name="dlg_withdraw_message">탈퇴하면 계정과 내 글·댓글·채팅 기록이 삭제되고 되돌릴 수 없어요. 계속할까요?</string>
+    <string name="dlg_withdraw_ok">탈퇴하기</string>
+    <string name="dlg_password_title">비밀번호 변경</string>
+    <string name="dlg_password_ok">변경</string>
+    <string name="dlg_password_hint1">새 비밀번호 (6자 이상)</string>
+    <string name="dlg_password_hint2">새 비밀번호 확인</string>
+    <string name="dlg_findpw_title">비밀번호 찾기</string>
+    <string name="dlg_findpw_message">가입한 이메일로 재설정 링크를 보내 드려요.</string>
+    <string name="dlg_findpw_ok">보내기</string>
+    <string name="dlg_findpw_hint">이메일</string>
 </resources>

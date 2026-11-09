@@ -7,7 +7,6 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -30,6 +29,7 @@ import com.irionna.eternalreturninfo.presentation.viewmodel.BoardListViewModelFa
 import com.irionna.eternalreturninfo.retrofit.BoardSingletone
 import com.irionna.eternalreturninfo.retrofit.FBRef
 import com.irionna.eternalreturninfo.util.ActionSheet
+import com.irionna.eternalreturninfo.util.AppDialog
 import com.irionna.eternalreturninfo.util.AuthorCache
 import com.irionna.eternalreturninfo.util.BlockDialog
 import com.irionna.eternalreturninfo.util.ProfileImage
@@ -250,14 +250,15 @@ class BoardPostActivity : AppCompatActivity() {
     }
 
     private fun confirmDeleteComment(comment: CommentModel) {
-        AlertDialog.Builder(this)
-            .setMessage(R.string.post_comment_delete_confirm)
-            .setPositiveButton(R.string.post_menu_delete) { _, _ ->
-                if (editing?.id == comment.id) stopEditing()
-                FBRef.postRef.child(id).child("comments").child(comment.id).removeValue()
-            }
-            .setNegativeButton(R.string.block_cancel, null)
-            .show()
+        AppDialog.confirm(
+            this,
+            title = getString(R.string.post_comment_delete_confirm),
+            confirmText = getString(R.string.post_menu_delete),
+            danger = true
+        ) {
+            if (editing?.id == comment.id) stopEditing()
+            FBRef.postRef.child(id).child("comments").child(comment.id).removeValue()
+        }
     }
 
     private fun reportComment(comment: CommentModel) {
@@ -300,14 +301,15 @@ class BoardPostActivity : AppCompatActivity() {
     }
 
     private fun confirmDeletePost(post: BoardModel) {
-        AlertDialog.Builder(this)
-            .setMessage(R.string.post_delete_confirm)
-            .setPositiveButton(R.string.post_menu_delete) { _, _ ->
-                FBRef.postRef.child(post.id).removeValue()
-                finish()
-            }
-            .setNegativeButton(R.string.block_cancel, null)
-            .show()
+        AppDialog.confirm(
+            this,
+            title = getString(R.string.post_delete_confirm),
+            confirmText = getString(R.string.post_menu_delete),
+            danger = true
+        ) {
+            FBRef.postRef.child(post.id).removeValue()
+            finish()
+        }
     }
 
     private fun showReportBoardDialog() {

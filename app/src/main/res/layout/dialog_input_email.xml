@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EditText xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dlg_email_et"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_dialog_input"
+    android:hint="@string/dlg_findpw_hint"
+    android:importantForAutofill="no"
+    android:inputType="textEmailAddress"
+    android:maxLines="1"
+    android:minHeight="48dp"
+    android:paddingStart="14dp"
+    android:paddingEnd="14dp"
+    android:textColor="@color/white"
+    android:textColorHint="#6B7180"
+    android:textSize="14sp" />

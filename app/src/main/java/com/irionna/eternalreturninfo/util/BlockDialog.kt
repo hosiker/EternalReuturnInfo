@@ -2,7 +2,6 @@ package com.irionna.eternalreturninfo.util
 
 import android.content.Context
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.irionna.eternalreturninfo.R
 import com.irionna.eternalreturninfo.data.repository.BlockedUsers
@@ -18,20 +17,21 @@ object BlockDialog {
         if (targetUid.isNullOrEmpty() || targetUid == FirebaseAuth.getInstance().uid) return
         val name = targetName?.takeIf { it.isNotBlank() } ?: context.getString(R.string.blocked_unknown_user)
 
-        AlertDialog.Builder(context)
-            .setTitle(context.getString(R.string.block_confirm_title, name))
-            .setMessage(R.string.block_confirm_message)
-            .setPositiveButton(R.string.block_confirm_ok) { _, _ ->
-                BlockedUsers.block(targetUid) { ok ->
-                    if (ok) {
-                        Toast.makeText(context, context.getString(R.string.block_done, name), Toast.LENGTH_SHORT).show()
-                        onBlocked()
-                    } else {
-                        Toast.makeText(context, R.string.block_failed, Toast.LENGTH_SHORT).show()
-                    }
+        AppDialog.confirm(
+            context,
+            title = context.getString(R.string.block_confirm_title, name),
+            message = context.getString(R.string.block_confirm_message),
+            confirmText = context.getString(R.string.block_confirm_ok),
+            danger = true
+        ) {
+            BlockedUsers.block(targetUid) { ok ->
+                if (ok) {
+                    Toast.makeText(context, context.getString(R.string.block_done, name), Toast.LENGTH_SHORT).show()
+                    onBlocked()
+                } else {
+                    Toast.makeText(context, R.string.block_failed, Toast.LENGTH_SHORT).show()
                 }
             }
-            .setNegativeButton(R.string.block_cancel, null)
-            .show()
+        }
     }
 }

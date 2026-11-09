@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
@@ -21,6 +20,7 @@ import com.irionna.eternalreturninfo.data.repository.BlockedUsers
 import com.irionna.eternalreturninfo.databinding.SettingsActivityBinding
 import com.irionna.eternalreturninfo.presentation.activity.block.BlockedUsersActivity
 import com.irionna.eternalreturninfo.presentation.activity.login.LoginActivity
+import com.irionna.eternalreturninfo.util.AppDialog
 import com.irionna.eternalreturninfo.util.AutoLogin
 import com.irionna.eternalreturninfo.util.CharacterPicker
 import com.irionna.eternalreturninfo.util.Constants
@@ -91,18 +91,22 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun showPasswordDialog() {
-        val view = LayoutInflater.from(this).inflate(R.layout.myprofile_pwchange_dialog, null)
-        val dialog = AlertDialog.Builder(this).setView(view).create()
-        val first = view.findViewById<EditText>(R.id.myprofile_pwChange_et)
-        val second = view.findViewById<EditText>(R.id.myprofile_pwChange2_et)
-        view.findViewById<android.widget.Button>(R.id.myprofile_pwChange_btn).setOnClickListener {
+        val view = LayoutInflater.from(this).inflate(R.layout.dialog_input_password, null)
+        val first = view.findViewById<EditText>(R.id.dlg_pw1_et)
+        val second = view.findViewById<EditText>(R.id.dlg_pw2_et)
+        AppDialog.custom(
+            this,
+            title = getString(R.string.dlg_password_title),
+            content = view,
+            confirmText = getString(R.string.dlg_password_ok)
+        ) { dialog ->
             val pw = first.text.toString()
             val check = second.text.toString()
             when {
                 pw.length < 6 -> toast(R.string.pw_too_short)
                 pw != check -> toast(R.string.pw_mismatch)
                 else -> {
-                    val user = auth.currentUser ?: return@setOnClickListener
+                    val user = auth.currentUser ?: return@custom
                     user.updatePassword(pw)
                         .addOnSuccessListener {
                             toast(R.string.pw_changed)
@@ -115,7 +119,6 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
         }
-        dialog.show()
     }
 
     private fun toast(res: Int) = Toast.makeText(applicationContext, res, Toast.LENGTH_LONG).show()
@@ -133,14 +136,13 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun confirmWithdraw() {
-        val view = LayoutInflater.from(this).inflate(R.layout.delete_dialog, null)
-        val dialog = AlertDialog.Builder(this).setView(view).create()
-        view.findViewById<android.widget.Button>(R.id.delete_yes_btn).setOnClickListener {
-            dialog.dismiss()
-            withdraw()
-        }
-        view.findViewById<android.widget.Button>(R.id.delete_no_btn).setOnClickListener { dialog.dismiss() }
-        dialog.show()
+        AppDialog.confirm(
+            this,
+            title = getString(R.string.dlg_withdraw_title),
+            message = getString(R.string.dlg_withdraw_message),
+            confirmText = getString(R.string.dlg_withdraw_ok),
+            danger = true
+        ) { withdraw() }
     }
 
     /** 실제 삭제는 AccountDeleter. 화면이 닫혀도 끝까지 진행되도록 별도 스코프에서 실행한다. */

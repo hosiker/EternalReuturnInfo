@@ -6,10 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import androidx.appcompat.app.AlertDialog
 import com.irionna.eternalreturninfo.R
-import com.irionna.eternalreturninfo.databinding.FindpwDialogBinding
 import com.irionna.eternalreturninfo.databinding.GoogleDialogBinding
+import com.irionna.eternalreturninfo.util.AppDialog
 import com.irionna.eternalreturninfo.util.AutoLogin
 import com.irionna.eternalreturninfo.databinding.LoginActivityBinding
 import com.irionna.eternalreturninfo.retrofit.BoardSingletone
@@ -66,21 +65,30 @@ class LoginActivity : AppCompatActivity() {
 
         //비밀번호찾기 다이얼로그 버튼
         binding.loginLostBtn.setOnClickListener {
-            val dialogView = layoutInflater.inflate(R.layout.findpw_dialog, null)
-            val alertDialog = AlertDialog.Builder(this)
-                .setView(dialogView)
-                .create()
-            val Email = dialogView.findViewById<EditText>(R.id.findpw_id_et).text
-            val button = dialogView.findViewById<Button>(R.id.findpw_findpw_btn)
-
-            // 비밀번호찾기 이메일 전송 버튼
-            button.setOnClickListener {
-                if (Email.isNotEmpty()) {
-                    FirebaseAuth.getInstance().sendPasswordResetEmail(Email.toString())
+            val dialogView = layoutInflater.inflate(R.layout.dialog_input_email, null)
+            val emailEt = dialogView as EditText
+            AppDialog.custom(
+                this,
+                title = getString(R.string.dlg_findpw_title),
+                message = getString(R.string.dlg_findpw_message),
+                content = dialogView,
+                confirmText = getString(R.string.dlg_findpw_ok)
+            ) { dialog ->
+                val email = emailEt.text.toString().trim()
+                if (email.isEmpty()) {
+                    MotionToast.darkColorToast(
+                        this, "CHECK", getString(R.string.login_lostpw_null),
+                        MotionToastStyle.WARNING,
+                        MotionToast.GRAVITY_BOTTOM,
+                        MotionToast.SHORT_DURATION,
+                        font = null
+                    )
+                } else {
+                    FirebaseAuth.getInstance().sendPasswordResetEmail(email)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 MotionToast.darkColorToast(
-                                    this, "", Email.toString() + getString(R.string.login_lostpw_success),
+                                    this, "", email + getString(R.string.login_lostpw_success),
                                     MotionToastStyle.SUCCESS,
                                     MotionToast.GRAVITY_BOTTOM,
                                     MotionToast.SHORT_DURATION,
@@ -96,18 +104,9 @@ class LoginActivity : AppCompatActivity() {
                                 )
                             }
                         }
-                    alertDialog.dismiss()
-                } else {
-                    MotionToast.darkColorToast(
-                        this, "CHECK", getString(R.string.login_lostpw_null),
-                        MotionToastStyle.WARNING,
-                        MotionToast.GRAVITY_BOTTOM,
-                        MotionToast.SHORT_DURATION,
-                        font = null
-                    )
+                    dialog.dismiss()
                 }
             }
-            alertDialog.show()
         }
 
         //회원가입 버튼
