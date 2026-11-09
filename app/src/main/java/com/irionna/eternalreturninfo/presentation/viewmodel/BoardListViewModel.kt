@@ -38,7 +38,6 @@ class BoardListViewModel() : ViewModel(){
                     val board = data.getValue(BoardModel::class.java)?.let { b -> if (data.key != null && b.id != data.key) b.copy(id = data.key!!) else b }
 
                     // 게시판 처음 들어왔을 때, 내가 신고한 게시판을 제외한, 게시판만 띄우기
-                    Log.d("choco", "${board.toString()}")
 
                     if (board != null && board!!.report.values.none { r -> r.uid == FBRef.auth.uid } && !BlockedUsers.isBlocked(board.author)) {
                         unsortedBoardList.add(board)

@@ -92,12 +92,27 @@ class BoardFragment : Fragment() {
         boardRv.adapter = listAdapter
         boardRv.itemAnimator = null
 
+        // [진단용·임시] 카드에 손이 닿는지 확인한다 (원인을 찾으면 지운다)
+        boardRv.addOnItemTouchListener(object : androidx.recyclerview.widget.RecyclerView.SimpleOnItemTouchListener() {
+            override fun onInterceptTouchEvent(rv: androidx.recyclerview.widget.RecyclerView, e: android.view.MotionEvent): Boolean {
+                if (e.actionMasked == android.view.MotionEvent.ACTION_DOWN) {
+                    val child = rv.findChildViewUnder(e.x, e.y)
+                    Log.i("BoardOpen", "터치 DOWN 카드=${child != null} clickable=${child?.isClickable} enabled=${rv.isEnabled}")
+                }
+                return false
+            }
+        })
+
         // 사용자를 차단하거나 해제하면 목록을 다시 불러와서 반영한다 (처음 보일 때도 한 번 불러온다)
         BlockedUsers.blocked.observe(viewLifecycleOwner) { refresh() }
         boardViewModel.boardList.observe(viewLifecycleOwner) { render(it) }
 
         listAdapter.setOnItemClickListener(object : BoardRecyclerViewAdapter.OnItemClickListener {
-            override fun onItemClick(boardItem: BoardModel) = openPost(boardItem)
+            override fun onItemClick(boardItem: BoardModel) {
+                // [진단용·임시] 눌림이 전달되는지 화면에서 바로 보이게 한다
+                android.widget.Toast.makeText(requireContext(), "카드 눌림", android.widget.Toast.LENGTH_SHORT).show()
+                openPost(boardItem)
+            }
         })
 
         boardFab.setOnClickListener {
