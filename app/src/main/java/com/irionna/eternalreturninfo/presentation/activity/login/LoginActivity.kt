@@ -9,6 +9,7 @@ import android.widget.EditText
 import com.irionna.eternalreturninfo.R
 import com.irionna.eternalreturninfo.databinding.GoogleDialogBinding
 import com.irionna.eternalreturninfo.util.AppDialog
+import com.irionna.eternalreturninfo.util.AppToast
 import com.irionna.eternalreturninfo.util.AutoLogin
 import com.irionna.eternalreturninfo.databinding.LoginActivityBinding
 import com.irionna.eternalreturninfo.retrofit.BoardSingletone
