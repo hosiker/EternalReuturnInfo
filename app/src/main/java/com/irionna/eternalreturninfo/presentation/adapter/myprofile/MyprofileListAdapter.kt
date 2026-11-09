@@ -42,10 +42,11 @@ class MyprofileListAdapter(val dataList:MutableList<CharacterStats>, val charact
         val appIndex = Characters.appIndexOf(item.characterCode)
         if (appIndex != null) CharacterPicker.loadFace(holder.image, appIndex) else holder.image.setImageDrawable(InitialAvatar.drawable(ctx, name))
 
-        holder.usages.text = dataList[position].usages.toString()+"게임"
+        holder.usages.text = ctx.getString(R.string.stats_games_unit, dataList[position].usages)
         holder.character.text = name
-        holder.top3.text = dataList[position].top3.toString()
-        holder.avRank.text = "#"+dataList[position].averageRank.toString()
+        val rate = dataList[position].top3Rate
+        holder.top3.text = "${Math.round(if (rate <= 1f) rate * 100f else rate)}%"
+        holder.avRank.text = "#" + String.format(java.util.Locale.US, "%.1f", dataList[position].averageRank)
         holder.maxKill.text = dataList[position].maxKillings.toString()+"킬"
 
     }
