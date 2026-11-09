@@ -1,5 +1,6 @@
 package com.irionna.eternalreturninfo.presentation.activity.chat
 
+import com.irionna.eternalreturninfo.util.AppToast
 import android.content.Context
 import com.irionna.eternalreturninfo.util.setContentViewEdgeToEdge
 import com.irionna.eternalreturninfo.util.BlockDialog
@@ -166,11 +167,11 @@ class ChatActivity : AppCompatActivity() {
                     UserReportDialog.show(this@ChatActivity, targetUid, "chat", targetUid + auth.uid)
                 } else if (blocked) {
                     BlockedUsers.unblock(targetUid) { ok ->
-                        Toast.makeText(
+                        AppToast.show(
                             this@ChatActivity,
                             if (ok) R.string.unblock_done else R.string.unblock_failed,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                            if (ok) AppToast.Kind.SUCCESS else AppToast.Kind.ERROR
+                        )
                     }
                 } else {
                     BlockDialog.show(this@ChatActivity, targetUid, data?.name)
@@ -184,7 +185,7 @@ class ChatActivity : AppCompatActivity() {
         BlockedUsers.blocked.observe(this@ChatActivity) { applyBlockState() }
         applyBlockState()
         sendFailed.observe(this@ChatActivity) {
-            Toast.makeText(this@ChatActivity, R.string.chat_send_failed, Toast.LENGTH_SHORT).show()
+            AppToast.show(this@ChatActivity, R.string.chat_send_failed, AppToast.Kind.ERROR)
         }
         list.observe(this@ChatActivity){
             chatAdapter.submitList(it)

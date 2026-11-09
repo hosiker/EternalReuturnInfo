@@ -1,5 +1,6 @@
 package com.irionna.eternalreturninfo.presentation.activity.login
 
+import com.irionna.eternalreturninfo.util.AppToast
 import android.os.Bundle
 import com.irionna.eternalreturninfo.util.TermsConsent
 import com.irionna.eternalreturninfo.util.setContentViewEdgeToEdge
@@ -30,8 +31,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import www.sanju.motiontoast.MotionToast
-import www.sanju.motiontoast.MotionToastStyle
 
 class SignUpActivity : AppCompatActivity() {
     private lateinit var binding: SignupInformationActivityBinding
@@ -59,7 +58,7 @@ class SignUpActivity : AppCompatActivity() {
             if (email.isNotEmpty()) {
                 EmailCheck(email)
             } else {
-                Toast.makeText(this, "이메일을 입력하세요", Toast.LENGTH_SHORT).show()
+                AppToast.show(this, "이메일을 입력하세요", AppToast.Kind.WARNING)
             }
         }
 
@@ -104,14 +103,7 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    private fun toast(title: String, message: String, style: MotionToastStyle) {
-        MotionToast.darkColorToast(
-            this, title, message, style,
-            MotionToast.GRAVITY_BOTTOM,
-            MotionToast.SHORT_DURATION,
-            font = null
-        )
-    }
+    private fun toast(message: String, kind: AppToast.Kind) = AppToast.show(this, message, kind)
 
     private fun createAccount(
         email: String,
@@ -121,39 +113,39 @@ class SignUpActivity : AppCompatActivity() {
         character: String,
     ) {
         if (email.isEmpty()) {
-            toast("CHECK", "이메일을 입력하세요.", MotionToastStyle.WARNING)
+            toast("이메일을 입력하세요.", AppToast.Kind.WARNING)
             return
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            toast("CHECK", "이메일 형식이 올바르지 않습니다.", MotionToastStyle.WARNING)
+            toast("이메일 형식이 올바르지 않습니다.", AppToast.Kind.WARNING)
             return
         }
         if (password.isEmpty() || passwordCheck.isEmpty()) {
-            toast("CHECK", "비밀번호를 입력하세요. (6자 이상)", MotionToastStyle.WARNING)
+            toast("비밀번호를 입력하세요. (6자 이상)", AppToast.Kind.WARNING)
             return
         }
         if (password != passwordCheck) {
-            toast("CHECK", "같은 비밀번호를 입력하세요.", MotionToastStyle.WARNING)
+            toast("같은 비밀번호를 입력하세요.", AppToast.Kind.WARNING)
             return
         }
         val typedNickname = binding.signupNickNameEt.text.toString()
         if (typedNickname.isBlank()) {
-            toast("CHECK", "닉네임을 입력하세요.", MotionToastStyle.WARNING)
+            toast("닉네임을 입력하세요.", AppToast.Kind.WARNING)
             return
         }
         val nicknameKey = NicknameKey.normalize(nickname)
         if (nicknameKey == null || nicknameKey != NicknameKey.normalize(typedNickname)) {
-            toast("CHECK", "닉네임 [중복확인]을 눌러주세요.", MotionToastStyle.WARNING)
+            toast("닉네임 [중복확인]을 눌러주세요.", AppToast.Kind.WARNING)
             return
         }
         if (nickNameCheck) {
-            toast("CHECK", "중복된 닉네임입니다.", MotionToastStyle.WARNING)
+            toast("중복된 닉네임입니다.", AppToast.Kind.WARNING)
             return
         }
 
         val c = binding.signupConsent
         if (!(c.consentTerms.isChecked && c.consentPrivacy.isChecked && c.consentAge.isChecked)) {
-            toast("CHECK", "필수 약관에 모두 동의해주세요.", MotionToastStyle.WARNING)
+            toast("필수 약관에 모두 동의해주세요.", AppToast.Kind.WARNING)
             return
         }
 
@@ -168,7 +160,7 @@ class SignUpActivity : AppCompatActivity() {
                         is FirebaseAuthInvalidCredentialsException -> "이메일 형식이 올바르지 않습니다."
                         else -> "계정 생성 실패"
                     }
-                    toast("", message, MotionToastStyle.ERROR)
+                    toast(message, AppToast.Kind.ERROR)
                     return@addOnCompleteListener
                 }
 
@@ -187,11 +179,11 @@ class SignUpActivity : AppCompatActivity() {
                         // 닉네임을 먼저 선점당했거나 저장에 실패한 경우: 만든 계정을 되돌린다.
                         auth.currentUser?.delete()
                         binding.signupSignupBtn.isEnabled = true
-                        toast("", "닉네임이 이미 사용 중이거나 저장에 실패했습니다. 다시 시도해주세요.", MotionToastStyle.ERROR)
+                        toast("닉네임이 이미 사용 중이거나 저장에 실패했습니다. 다시 시도해주세요.", AppToast.Kind.ERROR)
                         return@saveAccountData
                     }
                     BoardSingletone.Login()
-                    toast("", "계정 생성 완료", MotionToastStyle.SUCCESS)
+                    AppToast.later("계정 생성 완료", AppToast.Kind.SUCCESS)
                     // 가입 화면에서 약관과 개인정보 수집·이용에 동의했으므로 이 기기에 동의를 기록한다 (앱을 열 때 다시 묻지 않게)
                     TermsConsent.markAccepted(this, uid)
                     // 이 노드는 로그인한 모든 사용자가 읽을 수 있으므로 이메일 같은 개인정보는 저장하지 않는다.

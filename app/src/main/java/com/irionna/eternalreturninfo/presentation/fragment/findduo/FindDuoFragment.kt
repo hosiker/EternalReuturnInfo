@@ -1,5 +1,6 @@
 package com.irionna.eternalreturninfo.presentation.fragment.findduo
 
+import com.irionna.eternalreturninfo.util.AppToast
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -264,7 +265,7 @@ class FindDuoFragment : Fragment() {
             "timestamp" to null, "winrate" to null, "avgrank" to null, "recent" to null, "tierAuto" to null
         )
         mDbRef.child("user").child(uid).updateChildren(clear)
-            .addOnSuccessListener { context?.let { Toast.makeText(it, R.string.duo_removed, Toast.LENGTH_SHORT).show() } }
+            .addOnSuccessListener { context?.let { AppToast.show(it, R.string.duo_removed, AppToast.Kind.SUCCESS) } }
     }
 
     // ---- 내 모집글의 전적 요약 새로 고침 (앱 실행당 한 번) ----

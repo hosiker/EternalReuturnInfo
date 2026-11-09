@@ -20,10 +20,13 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
-import www.sanju.motiontoast.MotionToast
-import www.sanju.motiontoast.MotionToastStyle
 
 class LoginActivity : AppCompatActivity() {
+
+    override fun onResume() {
+        super.onResume()
+        window.decorView.post { AppToast.showPending(this) }
+    }
     private lateinit var binding: LoginActivityBinding
     private lateinit var googlebinding: GoogleDialogBinding
     private var auth: FirebaseAuth? = null
@@ -74,32 +77,14 @@ class LoginActivity : AppCompatActivity() {
             ) { dialog ->
                 val email = emailEt.text.toString().trim()
                 if (email.isEmpty()) {
-                    MotionToast.darkColorToast(
-                        this, "CHECK", getString(R.string.login_lostpw_null),
-                        MotionToastStyle.WARNING,
-                        MotionToast.GRAVITY_BOTTOM,
-                        MotionToast.SHORT_DURATION,
-                        font = null
-                    )
+                    AppToast.show(this, getString(R.string.login_lostpw_null), AppToast.Kind.WARNING)
                 } else {
                     FirebaseAuth.getInstance().sendPasswordResetEmail(email)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                MotionToast.darkColorToast(
-                                    this, "", email + getString(R.string.login_lostpw_success),
-                                    MotionToastStyle.SUCCESS,
-                                    MotionToast.GRAVITY_BOTTOM,
-                                    MotionToast.SHORT_DURATION,
-                                    font = null
-                                )
+                                AppToast.show(this, email + getString(R.string.login_lostpw_success), AppToast.Kind.SUCCESS)
                             } else {
-                                MotionToast.darkColorToast(
-                                    this, "CHECK", getString(R.string.login_lostpw_fail),
-                                    MotionToastStyle.WARNING,
-                                    MotionToast.GRAVITY_BOTTOM,
-                                    MotionToast.SHORT_DURATION,
-                                    font = null
-                                )
+                                AppToast.show(this, getString(R.string.login_lostpw_fail), AppToast.Kind.WARNING)
                             }
                         }
                     dialog.dismiss()
@@ -124,35 +109,17 @@ class LoginActivity : AppCompatActivity() {
                     BoardSingletone.Login()
                     // "자동 로그인"을 체크했으면 30일 동안 로그인 화면을 건너뛴다
                     AutoLogin.remember(this, binding.loginAutoCb.isChecked)
-                    MotionToast.darkColorToast(
-                        this, "", getString(R.string.login_success),
-                        MotionToastStyle.SUCCESS,
-                        MotionToast.GRAVITY_BOTTOM,
-                        MotionToast.SHORT_DURATION,
-                        font = null
-                    )
+                    AppToast.later(getString(R.string.login_success), AppToast.Kind.SUCCESS)
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                     finish()
                 } else {
-                    MotionToast.darkColorToast(
-                        this, "", getString(R.string.login_fail),
-                        MotionToastStyle.ERROR,
-                        MotionToast.GRAVITY_BOTTOM,
-                        MotionToast.SHORT_DURATION,
-                        font = null
-                    )
+                    AppToast.show(this, getString(R.string.login_fail), AppToast.Kind.ERROR)
 
                 }
             }
         } else {
-            MotionToast.createColorToast(
-                this, "", getString(R.string.login_fail),
-                MotionToastStyle.ERROR,
-                MotionToast.GRAVITY_BOTTOM,
-                MotionToast.SHORT_DURATION,
-                font = null
-            )
+            AppToast.show(this, getString(R.string.login_fail), AppToast.Kind.ERROR)
 
         }
     }
@@ -170,13 +137,7 @@ class LoginActivity : AppCompatActivity() {
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                     } else {
-                        MotionToast.createColorToast(
-                            this, "", task.exception?.message.toString(),
-                            MotionToastStyle.ERROR,
-                            MotionToast.GRAVITY_BOTTOM,
-                            MotionToast.SHORT_DURATION,
-                            font = null
-                        )
+                        AppToast.show(this, task.exception?.message.toString(), AppToast.Kind.ERROR)
 
                     }
                 }

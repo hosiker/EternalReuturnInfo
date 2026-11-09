@@ -33,6 +33,12 @@ class MainActivity : AppCompatActivity() {
         R.drawable.ic_tab_user
     )
 
+    override fun onResume() {
+        super.onResume()
+        // 로그인 직후처럼 화면을 넘기며 맡겨 둔 알림이 있으면 여기서 보여 준다
+        binding.root.post { com.irionna.eternalreturninfo.util.AppToast.showPending(this) }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = FirebaseAuth.getInstance()

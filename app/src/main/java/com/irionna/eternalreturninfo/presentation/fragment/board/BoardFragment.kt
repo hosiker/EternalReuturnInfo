@@ -1,5 +1,6 @@
 package com.irionna.eternalreturninfo.presentation.fragment.board
 
+import com.irionna.eternalreturninfo.util.AppToast
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
@@ -132,7 +133,7 @@ class BoardFragment : Fragment() {
 
     private fun openPost(boardItem: BoardModel) {
         if (boardItem.id.isEmpty()) {
-            android.widget.Toast.makeText(requireContext(), R.string.post_open_failed, android.widget.Toast.LENGTH_SHORT).show()
+            AppToast.show(requireContext(), R.string.post_open_failed, AppToast.Kind.ERROR)
             return
         }
         // 열기 전에 글이 아직 있는지 한 번 확인한다 (조회수는 글 화면이 열릴 때 올린다)
@@ -150,7 +151,7 @@ class BoardFragment : Fragment() {
 
             override fun onCancelled(databaseError: DatabaseError) {
                 Log.w("BoardOpen", "글 확인 실패: ${databaseError.message}")
-                if (isAdded) android.widget.Toast.makeText(requireContext(), R.string.post_open_failed, android.widget.Toast.LENGTH_SHORT).show()
+                if (isAdded) AppToast.show(requireContext(), R.string.post_open_failed, AppToast.Kind.ERROR)
             }
         })
     }

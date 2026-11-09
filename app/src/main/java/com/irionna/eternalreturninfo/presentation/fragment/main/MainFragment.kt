@@ -1,5 +1,6 @@
 package com.irionna.eternalreturninfo.presentation.fragment.main
 
+import com.irionna.eternalreturninfo.util.AppToast
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.Context
@@ -140,7 +141,7 @@ class MainFragment : Fragment() {
     private fun search(input: String) {
         val q = input.trim()
         if (q.isEmpty()) {
-            Toast.makeText(requireContext(), R.string.main_search_empty, Toast.LENGTH_SHORT).show()
+            AppToast.show(requireContext(), R.string.main_search_empty, AppToast.Kind.WARNING)
             return
         }
         binding.mainSearchEt.setText(q)
@@ -292,7 +293,7 @@ class MainFragment : Fragment() {
                     try {
                         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(videoUrl)))
                     } catch (e2: ActivityNotFoundException) {
-                        Toast.makeText(requireContext(), getString(R.string.privacy_policy_open_failed, videoUrl), Toast.LENGTH_LONG).show()
+                        AppToast.show(requireContext(), getString(R.string.privacy_policy_open_failed, videoUrl), AppToast.Kind.ERROR)
                     }
                 }
             }
