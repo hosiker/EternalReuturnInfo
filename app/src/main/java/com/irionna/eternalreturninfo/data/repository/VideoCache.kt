@@ -12,6 +12,9 @@ import com.irionna.eternalreturninfo.data.model.VideoModel
  */
 object VideoCache {
     const val TTL_MS = 6 * 60 * 60 * 1000L
+
+    /** 스트리머 목록은 서버(JSON)에서 받으므로 호출 한도 걱정이 없어 1시간만 저장한다. */
+    const val FEED_TTL_MS = 60 * 60 * 1000L
     private const val PREFS = "video_cache"
     private fun keyJson(kind: String) = "list_${kind}_v2"
     private fun keyTime(kind: String) = "saved_at_${kind}_v2"
@@ -20,7 +23,7 @@ object VideoCache {
     const val KIND_STREAMER = "streamer"
 
     class Saved(val list: List<VideoModel>, val savedAt: Long) {
-        fun isFresh(now: Long = System.currentTimeMillis()) = now - savedAt in 0 until TTL_MS
+        fun isFresh(ttlMs: Long = TTL_MS, now: Long = System.currentTimeMillis()) = now - savedAt in 0 until ttlMs
     }
 
     fun load(context: Context, kind: String): Saved? = try {

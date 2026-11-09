@@ -153,17 +153,52 @@ class MainListViewModel() : ViewModel(){
         val kind = "streamer_$sort"
         viewModelScope.launch {
             val saved = VideoCache.load(appContext, kind)
-            if (saved != null && saved.isFresh()) {
+            if (saved != null && saved.isFresh(VideoCache.FEED_TTL_MS)) {
                 _streamerList.postValue(sort to saved.list)
                 return@launch
             }
-            val fresh = fetchStreamerVideos(sort)
+            // 1순위: 서버가 6시간마다 만들어 두는 목록(JSON, 호출 한도 없음). 받지 못하면 직접 검색한다(호출 한도 100 소모).
+            val fresh = fetchStreamerFeed(sort) ?: fetchStreamerVideos(sort)
             if (!fresh.isNullOrEmpty()) {
                 VideoCache.save(appContext, kind, fresh)
                 _streamerList.postValue(sort to fresh)
             } else {
                 _streamerList.postValue(sort to (saved?.list ?: emptyList()))
             }
+        }
+    }
+
+    /** 서버가 올려 둔 스트리머 목록(JSON)을 읽는다. 아직 없거나 받지 못하면 null. */
+    private suspend fun fetchStreamerFeed(sort: String): List<VideoModel>? = withContext(Dispatchers.IO) {
+        try {
+            val conn = java.net.URL("${Constants.VIDEO_FEED_BASE_URL}/streamer_$sort.json").openConnection() as java.net.HttpURLConnection
+            conn.connectTimeout = 8000
+            conn.readTimeout = 8000
+            try {
+                if (conn.responseCode != 200) {
+                    Log.w("YouTube", "영상 목록 파일 없음 HTTP ${conn.responseCode}")
+                    return@withContext null
+                }
+                val text = conn.inputStream.bufferedReader().use { it.readText() }
+                val items = com.google.gson.Gson().fromJson(text, com.irionna.eternalreturninfo.retrofit.VideoFeed::class.java)?.items.orEmpty()
+                val list = items.mapNotNull { item ->
+                    val id = item.id ?: return@mapNotNull null
+                    VideoModel(
+                        id = id,
+                        title = item.title,
+                        thumbnail = item.thumbnail,
+                        url = "https://www.youtube.com/watch?v=$id",
+                        isShort = item.isShort == true
+                    )
+                }.take(MAX_STREAMER_VIDEOS)
+                Log.d("YouTube", "스트리머($sort) 목록 파일에서 ${list.size}개")
+                list.ifEmpty { null }
+            } finally {
+                conn.disconnect()
+            }
+        } catch (e: Exception) {
+            Log.w("YouTube", "영상 목록 파일 오류: ${e.javaClass.simpleName}")
+            null
         }
     }
 

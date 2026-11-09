@@ -29,6 +29,9 @@ class Constants {
         const val ACCOUNT_DELETION_URL = "https://hosiker.github.io/EternalReuturnInfo/account-deletion"
         const val CONTACT_EMAIL = "erinfomanager@gmail.com"
 
+        // 스트리머 영상 목록(JSON). GitHub Actions 가 6시간마다 data 브랜치에 올린다 (tools/fetch_videos.py)
+        const val VIDEO_FEED_BASE_URL = "https://raw.githubusercontent.com/hosiker/EternalReuturnInfo/data"
+
         const val MAIN_BASE_URL = "https://open-api.bser.io"
         val MAIN_APIKEY: String get() = BuildConfig.MAIN_APIKEY
 
