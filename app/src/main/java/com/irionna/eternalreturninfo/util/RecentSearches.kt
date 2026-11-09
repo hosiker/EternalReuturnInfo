@@ -12,23 +12,28 @@ object RecentSearches {
     private const val KEY = "list"
     private const val SEP = "\n" // 닉네임에는 줄바꿈이 들어갈 수 없다
 
-    fun get(context: Context): List<String> {
-        val raw = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(KEY, "").orEmpty()
+    /** 게시판 글 검색의 최근 검색어는 닉네임 목록과 섞이지 않도록 [scope] 를 따로 쓴다. */
+    const val SCOPE_BOARD = "board_list"
+
+    fun get(context: Context, scope: String = KEY): List<String> {
+        val raw = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(scope, "").orEmpty()
         return raw.split(SEP).map { it.trim() }.filter { it.isNotEmpty() }.take(MAX)
     }
 
-    fun add(context: Context, nickname: String) {
+    fun add(context: Context, nickname: String, scope: String = KEY) {
         val name = nickname.trim()
         if (name.isEmpty()) return
-        val list = listOf(name) + get(context).filterNot { it.equals(name, ignoreCase = true) }
-        save(context, list.take(MAX))
+        val list = listOf(name) + get(context, scope).filterNot { it.equals(name, ignoreCase = true) }
+        save(context, list.take(MAX), scope)
     }
 
-    fun remove(context: Context, nickname: String) {
-        save(context, get(context).filterNot { it.equals(nickname.trim(), ignoreCase = true) })
+    fun remove(context: Context, nickname: String, scope: String = KEY) {
+        save(context, get(context, scope).filterNot { it.equals(nickname.trim(), ignoreCase = true) }, scope)
     }
 
-    private fun save(context: Context, list: List<String>) {
-        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString(KEY, list.joinToString(SEP)).apply()
+    fun clear(context: Context, scope: String = KEY) = save(context, emptyList(), scope)
+
+    private fun save(context: Context, list: List<String>, scope: String = KEY) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString(scope, list.joinToString(SEP)).apply()
     }
 }

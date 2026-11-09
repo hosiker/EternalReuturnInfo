@@ -31,6 +31,15 @@ class BoardRecyclerViewAdapter() : ListAdapter<BoardModel, BoardRecyclerViewAdap
 
     private var onItemClickListener: OnItemClickListener? = null
 
+    // 검색 결과에서 강조할 단어 (비어 있으면 강조 없음)
+    private var highlight: String = ""
+
+    fun setHighlight(query: String) {
+        if (highlight == query) return
+        highlight = query
+        notifyDataSetChanged()
+    }
+
     fun setOnItemClickListener(listener: OnItemClickListener) {
         this.onItemClickListener = listener
     }
@@ -70,8 +79,8 @@ class BoardRecyclerViewAdapter() : ListAdapter<BoardModel, BoardRecyclerViewAdap
             boardPostLayout.setBackgroundResource(if (notice) R.drawable.shape_card_notice else R.drawable.shape_surface_card)
 
             boardPostTime.text = if (item.date > 0) GameLabels.relativeTimeMillis(ctx, item.date) else ""
-            boardPostTvTitle.text = item.title
-            boardPostTvContent.text = item.content
+            boardPostTvTitle.text = highlighted(item.title, ctx)
+            boardPostTvContent.text = highlighted(item.content, ctx)
             boardPostViews.text = ctx.getString(R.string.board_views, item.views)
             boardPostBtnComment.text = ctx.getString(R.string.board_comments_count, item.comments.size)
 
@@ -79,5 +88,26 @@ class BoardRecyclerViewAdapter() : ListAdapter<BoardModel, BoardRecyclerViewAdap
                 onItemClickListener?.onItemClick(item)
             }
         }
+    }
+
+    private fun highlighted(text: String, ctx: android.content.Context): CharSequence {
+        if (highlight.isEmpty()) return text
+        val span = android.text.SpannableString(text)
+        var from = 0
+        while (true) {
+            val at = text.indexOf(highlight, from, ignoreCase = true)
+            if (at < 0) break
+            val end = at + highlight.length
+            span.setSpan(
+                android.text.style.BackgroundColorSpan(ContextCompat.getColor(ctx, R.color.tab_pill)),
+                at, end, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            span.setSpan(
+                android.text.style.ForegroundColorSpan(ContextCompat.getColor(ctx, R.color.brand_mint)),
+                at, end, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            from = end
+        }
+        return span
     }
 }
