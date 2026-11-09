@@ -3,6 +3,7 @@ package com.irionna.eternalreturninfo.presentation.activity.board
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -72,6 +73,7 @@ class BoardPostActivity : AppCompatActivity() {
         setContentViewEdgeToEdge(binding.root)
 
         id = intent.getStringExtra("ID") ?: ""
+        Log.i("BoardOpen", "상세 화면 열림 id='$id'")
         // 조회수는 글 화면이 열릴 때 한 번만 올린다 (목록, 검색, 내 글 어디서 열어도 같다). 화면 회전 같은 재생성은 세지 않는다.
         if (savedInstanceState == null && id.isNotEmpty()) {
             FBRef.postRef.child(id).child("views").setValue(ServerValue.increment(1))
@@ -108,6 +110,7 @@ class BoardPostActivity : AppCompatActivity() {
 
     private fun loadPost() {
         if (id.isEmpty()) {
+            Toast.makeText(applicationContext, R.string.post_open_failed, Toast.LENGTH_SHORT).show()
             finish()
             return
         }
@@ -117,10 +120,17 @@ class BoardPostActivity : AppCompatActivity() {
                 if (isFinishing || isDestroyed) return
                 if (!snapshot.exists()) {
                     // 삭제된 글: 열려 있던 화면을 닫는다
+                    Log.i("BoardOpen", "글이 없어서 닫음 id='$id'")
                     finish()
                     return
                 }
-                val post = snapshot.getValue(BoardModel::class.java) ?: return
+                val post = snapshot.getValue(BoardModel::class.java)
+                if (post == null) {
+                    Log.w("BoardOpen", "글을 읽지 못함 id='$id'")
+                    Toast.makeText(applicationContext, R.string.post_open_failed, Toast.LENGTH_SHORT).show()
+                    finish()
+                    return
+                }
                 board = post
                 showPost(post)
                 allComments = post.comments.values.sortedBy { it.date }
@@ -129,7 +139,9 @@ class BoardPostActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                setLoading(false)
+                Log.w("BoardOpen", "글 읽기 취소: ${error.message}")
+                Toast.makeText(applicationContext, R.string.post_open_failed, Toast.LENGTH_SHORT).show()
+                finish()
             }
         })
     }
