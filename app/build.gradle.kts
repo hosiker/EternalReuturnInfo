@@ -16,6 +16,12 @@ android {
     val localProperties = Properties()
     localProperties.load(FileInputStream(rootProject.file("local.properties")))
 
+    // 실험체 이미지(얼굴·전신 그림, 팬키트 자료) 포함 여부. 기본은 "제외"(이니셜 아바타로 표시)이고,
+    // 님블뉴런의 사용 허락을 받은 뒤 local.properties 에 useCharacterImages=true 를 넣으면 포함한다.
+    // 제외하면 이미지 파일이 앱(APK)에도 들어가지 않는다. 이미지는 app/src/characterImages/res 에 있다.
+    val useCharacterImages = localProperties.getProperty("useCharacterImages") == "true"
+    logger.lifecycle("실험체 이미지: " + if (useCharacterImages) "포함" else "제외 (이니셜 아바타)")
+
     defaultConfig {
         applicationId = "com.irionna.eternalreturninfo"
         minSdk = 24
@@ -27,6 +33,13 @@ android {
         buildConfigField("String", "google_Token",localProperties.getProperty("googleToken"))
         buildConfigField("String", "MAIN_APIKEY", localProperties.getProperty("mainAPIKEY"))
         buildConfigField("String", "YOUTUBE_APIKEY", localProperties.getProperty("youtube_api_key"))
+        buildConfigField("boolean", "USE_CHARACTER_IMAGES", useCharacterImages.toString())
+    }
+
+    sourceSets {
+        if (useCharacterImages) {
+            getByName("main").res.srcDir("src/characterImages/res")
+        }
     }
 
     buildTypes {

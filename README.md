@@ -109,3 +109,9 @@
 ### Communication ###
 <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white"> <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white">
 
+## 실험체 이미지 스위치
+
+게임 팬키트 이미지(실험체 얼굴·전신 그림)는 님블뉴런의 사용 허락을 받기 전까지 **앱에 넣지 않는 것이 기본**입니다.
+- 기본(제외): 이미지 파일이 APK에 들어가지 않고, 프로필·목록의 실험체 아바타는 이름 첫 글자(이니셜)로 표시됩니다.
+- 포함: `local.properties` 에 `useCharacterImages=true` 를 추가하고 다시 빌드합니다. 이미지는 `app/src/characterImages/res` 에 있습니다.
+- 배포용 빌드를 만들 때는 이 줄이 없거나 `false` 인지 확인하세요. 빌드 로그 첫머리에 "실험체 이미지: 포함/제외"가 찍힙니다.
