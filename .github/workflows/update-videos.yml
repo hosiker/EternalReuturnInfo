@@ -1,0 +1,51 @@
+name: 게임 방송 영상 목록 갱신
+
+# 6시간마다 YouTube 에서 스트리머 영상 목록을 받아 data 브랜치의 JSON 으로 올린다. 앱은 이 JSON 을 읽는다.
+# 필요한 설정: 저장소 Settings > Secrets and variables > Actions 에 YOUTUBE_API_KEY (YouTube Data API v3 키) 를 등록한다.
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-videos
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: YouTube 에서 목록 받기
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: python tools/fetch_videos.py "$RUNNER_TEMP/out"
+
+      - name: data 브랜치에 올리기
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git ls-remote --exit-code --heads origin data >/dev/null 2>&1; then
+            git fetch origin data
+            git checkout -f -B data origin/data
+          else
+            git checkout --orphan data
+            git rm -rf . >/dev/null 2>&1 || true
+          fi
+          cp "$RUNNER_TEMP"/out/*.json .
+          git add streamer_date.json streamer_viewCount.json
+          if git diff --cached --quiet; then
+            echo "바뀐 내용 없음"
+            exit 0
+          fi
+          git commit -m "영상 목록 갱신 $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push origin data

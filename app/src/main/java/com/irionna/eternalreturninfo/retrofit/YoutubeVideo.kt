@@ -327,3 +327,25 @@ data class UserGame(
     @SerializedName("duration")
     val duration: Int? = null
 )
+
+
+/** 스트리머 영상 목록 파일(tools/fetch_videos.py 가 만든 JSON). 필드가 빠져도 앱이 죽지 않도록 모두 nullable. */
+@Keep
+data class VideoFeed(
+    @SerializedName("generatedAt")
+    val generatedAt: Long? = null,
+    @SerializedName("items")
+    val items: List<VideoFeedItem>? = null
+)
+
+@Keep
+data class VideoFeedItem(
+    @SerializedName("id")
+    val id: String? = null,
+    @SerializedName("title")
+    val title: String? = null,
+    @SerializedName("thumbnail")
+    val thumbnail: String? = null,
+    @SerializedName("isShort")
+    val isShort: Boolean? = null
+)
