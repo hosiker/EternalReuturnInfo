@@ -327,4 +327,8 @@
     <string name="post_open_failed">글을 열지 못했어요. 잠시 후 다시 시도해 주세요.</string>
     <string name="stats_avg_rank_short">평균 순위</string>
     <string name="stats_max_kill_short">최대 킬</string>
+    <string name="main_type_all">전체</string>
+    <string name="main_type_video">영상</string>
+    <string name="main_type_short">쇼츠</string>
+    <string name="main_video_badge_short">SHORTS</string>
 </resources>

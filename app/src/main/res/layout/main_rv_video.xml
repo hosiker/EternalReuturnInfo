@@ -33,6 +33,24 @@
                 tools:srcCompat="@tools:sample/avatars" />
 
             <TextView
+                android:id="@+id/main_rv_short_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/shape_dialog_btn_green"
+                android:paddingStart="8dp"
+                android:paddingTop="3dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="3dp"
+                android:text="@string/main_video_badge_short"
+                android:textColor="#04140D"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@+id/main_rv_youtube_thumnail"
+                app:layout_constraintTop_toTopOf="@+id/main_rv_youtube_thumnail" />
+
+            <TextView
                 android:id="@+id/main_rv_youtube_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

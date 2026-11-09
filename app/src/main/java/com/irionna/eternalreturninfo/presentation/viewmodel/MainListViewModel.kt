@@ -15,6 +15,7 @@ import com.irionna.eternalreturninfo.data.repository.VideoCache
 import com.irionna.eternalreturninfo.retrofit.RetrofitInstance
 import com.irionna.eternalreturninfo.util.Constants
 import com.irionna.eternalreturninfo.util.VideoFilter
+import com.irionna.eternalreturninfo.util.VideoKind
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -197,7 +198,8 @@ class MainListViewModel() : ViewModel(){
                     id = id,
                     title = sn.title,
                     thumbnail = sn.thumbnails?.medium?.url,
-                    url = "https://www.youtube.com/watch?v=$id"
+                    url = "https://www.youtube.com/watch?v=$id",
+                    isShort = VideoKind.isShort(d.contentDetails?.duration, sn.title, sn.tags)
                 )
             }.take(MAX_STREAMER_VIDEOS)
             Log.d("YouTube", "스트리머($sort) 검색 ${ids.size}개 중 ${result.size}개 통과")
@@ -222,17 +224,28 @@ class MainListViewModel() : ViewModel(){
             }
             val items = response.body()?.items.orEmpty()
             Log.d("YouTube", "공식 채널 목록 성공: 영상 ${items.size}개")
+            // 쇼츠 구분용 길이: 영상 정보를 한 번 더 받는다 (호출당 한도 1). 실패하면 모두 일반 영상으로 본다.
+            val details = try {
+                val ids = items.mapNotNull { it.snippet?.resourceId?.videoId }
+                if (ids.isEmpty()) emptyMap() else RetrofitInstance.api.getVideoDetails(ids = ids.joinToString(","))
+                    .body()?.items.orEmpty().filter { it.id != null }.associateBy { it.id!! }
+            } catch (e: Exception) {
+                Log.w("YouTube", "공식 영상 길이 조회 실패: ${e.javaClass.simpleName}")
+                emptyMap()
+            }
             items.mapNotNull { item ->
                 val sn = item.snippet ?: return@mapNotNull null
                 val videoId = sn.resourceId?.videoId ?: return@mapNotNull null
                 val title = sn.title
                 // 삭제됐거나 비공개로 바뀐 영상은 제목이 이렇게 온다
                 if (title == "Private video" || title == "Deleted video") return@mapNotNull null
+                val d = details[videoId]
                 VideoModel(
                     id = videoId,
                     title = title,
                     thumbnail = sn.thumbnails?.medium?.url,
-                    url = "https://www.youtube.com/watch?v=$videoId"
+                    url = "https://www.youtube.com/watch?v=$videoId",
+                    isShort = VideoKind.isShort(d?.contentDetails?.duration, title, d?.snippet?.tags)
                 )
             }
         } catch (e: Exception) {
