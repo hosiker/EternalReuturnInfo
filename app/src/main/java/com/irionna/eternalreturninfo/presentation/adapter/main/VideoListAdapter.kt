@@ -58,6 +58,7 @@ class VideoListAdapter :
 
                 mainRvYoutubeThumnail.load(item.thumbnail)
                 mainRvYoutubeTitle.text = item.title.toString()
+                mainRvShortBadge.visibility = if (item.isShort) android.view.View.VISIBLE else android.view.View.GONE
                 mainRvYoutubeThumnail.contentDescription =
                     root.context.getString(com.irionna.eternalreturninfo.R.string.main_video_thumb_desc, item.title.orEmpty())
 

@@ -256,7 +256,16 @@ data class VideoDetail(
     @SerializedName("id")
     val id: String? = null,
     @SerializedName("snippet")
-    val snippet: VideoDetailSnippet? = null
+    val snippet: VideoDetailSnippet? = null,
+    @SerializedName("contentDetails")
+    val contentDetails: VideoDetailContent? = null
+)
+
+/** 영상 길이 (ISO 8601, 예: PT1M5S). 쇼츠 구분에 쓴다. */
+@Keep
+data class VideoDetailContent(
+    @SerializedName("duration")
+    val duration: String? = null
 )
 
 @Keep

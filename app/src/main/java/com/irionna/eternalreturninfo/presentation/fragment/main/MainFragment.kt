@@ -41,6 +41,9 @@ class MainFragment : Fragment() {
     companion object {
         private const val SORT_DATE = "date"
         private const val SORT_VIEWS = "viewCount"
+        private const val TYPE_ALL = 0
+        private const val TYPE_VIDEO = 1
+        private const val TYPE_SHORT = 2
         fun newInstance() = MainFragment()
     }
 
@@ -313,9 +316,20 @@ class MainFragment : Fragment() {
     private var showStreamer = false
     private var streamerSort = SORT_DATE
 
+    // 영상 종류: 전체 / 영상 / 쇼츠 (쇼츠 여부는 영상 길이로 판단한다)
+    private var typeFilter = TYPE_ALL
+
     private fun showVideos() {
-        val list = if (showStreamer) streamerVideos[streamerSort].orEmpty() else officialVideos
+        val source = if (showStreamer) streamerVideos[streamerSort].orEmpty() else officialVideos
+        val list = when (typeFilter) {
+            TYPE_VIDEO -> source.filterNot { it.isShort }
+            TYPE_SHORT -> source.filter { it.isShort }
+            else -> source
+        }
         videoListAdapter.submitList(list.toList())
+        styleVideoTab(binding.mainTypeAll, typeFilter == TYPE_ALL)
+        styleVideoTab(binding.mainTypeVideo, typeFilter == TYPE_VIDEO)
+        styleVideoTab(binding.mainTypeShort, typeFilter == TYPE_SHORT)
         binding.mainVideoEmpty.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
         styleVideoTab(binding.mainSegOfficial, !showStreamer)
         styleVideoTab(binding.mainSegStreamer, showStreamer)
@@ -358,6 +372,9 @@ class MainFragment : Fragment() {
             mainViewModel.loadStreamerVideos(requireContext(), streamerSort) // 처음 열 때만 실제로 불러온다
             showVideos()
         }
+        binding.mainTypeAll.setOnClickListener { typeFilter = TYPE_ALL; showVideos() }
+        binding.mainTypeVideo.setOnClickListener { typeFilter = TYPE_VIDEO; showVideos() }
+        binding.mainTypeShort.setOnClickListener { typeFilter = TYPE_SHORT; showVideos() }
         binding.mainSortLatest.setOnClickListener { selectSort(SORT_DATE) }
         binding.mainSortViews.setOnClickListener { selectSort(SORT_VIEWS) }
         showVideos()

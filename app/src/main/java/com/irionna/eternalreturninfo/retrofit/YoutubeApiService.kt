@@ -39,7 +39,7 @@ interface YoutubeApiService {
     suspend fun getVideoDetails(
         @Query("key") apiKey: String = AUTH_KEY,
         @Query("id") ids: String,
-        @Query("part") part: String = "snippet",
+        @Query("part") part: String = "snippet,contentDetails",
     ): Response<VideoDetailsResponse>
 
     /** 채널 업로드 목록의 최신 영상. 검색(호출당 100)과 달리 호출당 한도 1만 쓴다. */

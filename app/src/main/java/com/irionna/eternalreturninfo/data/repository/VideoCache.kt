@@ -13,8 +13,8 @@ import com.irionna.eternalreturninfo.data.model.VideoModel
 object VideoCache {
     const val TTL_MS = 6 * 60 * 60 * 1000L
     private const val PREFS = "video_cache"
-    private fun keyJson(kind: String) = "list_${kind}_v1"
-    private fun keyTime(kind: String) = "saved_at_${kind}_v1"
+    private fun keyJson(kind: String) = "list_${kind}_v2"
+    private fun keyTime(kind: String) = "saved_at_${kind}_v2"
 
     const val KIND_OFFICIAL = "official"
     const val KIND_STREAMER = "streamer"
