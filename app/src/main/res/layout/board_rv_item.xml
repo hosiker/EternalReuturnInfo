@@ -1,149 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- 게시글 카드: 카테고리·고정·시각, 제목, 두 줄 미리보기, 작성자·조회·댓글 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/board_post_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/black">
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/shape_surface_card"
+    android:orientation="vertical"
+    android:padding="14dp">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/board_post_layout"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@color/dark_navy"
-        app:cardCornerRadius="15dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/dark_navy">
+        <TextView
+            android:id="@+id/board_post_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:textSize="11sp"
+            android:textStyle="bold" />
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/board_post_iv_profile"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="24dp"
-                android:src="@drawable/ic_baseimage"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/board_post_pin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/board_pinned"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp"
+            android:visibility="gone" />
 
-            <View
-                android:id="@+id/view4"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_centerInParent="true"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="24dp"
-                android:background="#605E5E"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/board_post_iv_profile" />
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-            <TextView
-                android:id="@+id/board_post_tv_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="32dp"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:text=""
-                android:textColor="@color/white"
-                android:textSize="19sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view4" />
+        <TextView
+            android:id="@+id/board_post_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp" />
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/board_post_tv_content"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="32dp"
-                android:ellipsize="end"
-                android:inputType="textMultiLine"
-                android:maxLines="2"
-                android:text=""
-                android:textColor="#E6E6E6"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/board_post_tv_title" />
+    <TextView
+        android:id="@+id/board_post_tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:ellipsize="end"
+        android:lineSpacingExtra="2dp"
+        android:maxLines="2"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/board_post_tv_user"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="32dp"
-                android:text=""
-                android:inputType="text"
-                android:textColor="@color/white"
-                android:textSize="17sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/board_post_iv_profile"
-                app:layout_constraintEnd_toStartOf="@+id/board_post_category"
-                app:layout_constraintStart_toEndOf="@+id/board_post_iv_profile"
-                app:layout_constraintTop_toTopOf="@+id/board_post_iv_profile" />
+    <TextView
+        android:id="@+id/board_post_tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:ellipsize="end"
+        android:lineSpacingExtra="2dp"
+        android:maxLines="2"
+        android:textColor="@color/text_secondary"
+        android:textSize="13sp" />
 
-            <TextView
-                android:id="@+id/board_post_btn_comment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="32dp"
-                android:layout_marginBottom="24dp"
-                android:gravity="center"
-                android:text=""
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/board_post_tv_content" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/board_post_category"
-                android:layout_width="50dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="24dp"
-                android:background="@drawable/shape_board_category"
-                android:gravity="center"
-                android:text=""
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/board_post_tv_user"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/board_post_tv_user" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/board_post_iv_profile"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:scaleType="centerCrop"
+            app:civ_circle_background_color="@color/surface_stroke" />
 
-            <ImageView
-                android:id="@+id/board_post_iv_comment"
-                android:layout_width="14dp"
-                android:layout_height="14dp"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/ic_board_comment"
-                app:layout_constraintBottom_toBottomOf="@+id/board_post_btn_comment"
-                app:layout_constraintEnd_toStartOf="@+id/board_post_btn_comment"
-                app:layout_constraintTop_toTopOf="@+id/board_post_btn_comment" />
+        <TextView
+            android:id="@+id/board_post_tv_user"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="#C9CCD6"
+            android:textSize="12sp" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/board_post_views"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
 
-
-    </androidx.cardview.widget.CardView>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/board_post_btn_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+    </LinearLayout>
+</LinearLayout>

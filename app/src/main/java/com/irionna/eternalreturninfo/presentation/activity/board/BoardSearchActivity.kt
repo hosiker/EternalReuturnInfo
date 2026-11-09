@@ -95,10 +95,7 @@ class BoardSearchActivity : AppCompatActivity() {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         if (dataSnapshot.exists()) {
 
-                            val board = dataSnapshot.getValue(BoardModel::class.java)
-
-                            val views = board?.views?.plus(1)
-                            FBRef.postRef.child(boardItem.id).child("views").setValue(views)
+                            // 조회수는 글 화면이 열릴 때 올린다
                             val intent = Intent(this@BoardSearchActivity, BoardPostActivity::class.java)
                             intent.putExtra("ID", boardItem.id)
                             startActivity(intent)

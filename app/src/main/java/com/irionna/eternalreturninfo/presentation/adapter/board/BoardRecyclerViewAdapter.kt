@@ -1,42 +1,27 @@
 package com.irionna.eternalreturninfo.presentation.adapter.board
 
-import com.irionna.eternalreturninfo.util.ProfileImage
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.irionna.eternalreturninfo.R
-import com.irionna.eternalreturninfo.databinding.BoardRvItemBinding
 import com.irionna.eternalreturninfo.data.model.BoardModel
-import com.irionna.eternalreturninfo.data.model.ERModel
-import com.irionna.eternalreturninfo.retrofit.FBRef
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
+import com.irionna.eternalreturninfo.databinding.BoardRvItemBinding
+import com.irionna.eternalreturninfo.util.AuthorCache
+import com.irionna.eternalreturninfo.util.GameLabels
+import com.irionna.eternalreturninfo.util.ProfileImage
 
+/**
+ * 게시글 카드 목록 (게시판, 검색, 내 글이 함께 쓴다).
+ * 작성자 이름·프로필은 [AuthorCache] 로 받는다. 스크롤 중에 카드가 다른 글로 재사용되면 늦게 온 응답은 무시한다.
+ */
 class BoardRecyclerViewAdapter() : ListAdapter<BoardModel, BoardRecyclerViewAdapter.ViewHolder>(
-
     object : DiffUtil.ItemCallback<BoardModel>() {
-        override fun areItemsTheSame(
-            oldItem: BoardModel,
-            newItem: BoardModel
-        ): Boolean {
-            return oldItem.id == newItem.id
-        }
-
-        override fun areContentsTheSame(
-            oldItem: BoardModel,
-            newItem: BoardModel
-        ): Boolean {
-            return oldItem == newItem
-        }
+        override fun areItemsTheSame(oldItem: BoardModel, newItem: BoardModel) = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: BoardModel, newItem: BoardModel) = oldItem == newItem
     }
 ) {
 
@@ -51,94 +36,48 @@ class BoardRecyclerViewAdapter() : ListAdapter<BoardModel, BoardRecyclerViewAdap
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            BoardRvItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        )
+        return ViewHolder(BoardRvItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = getItem(position)
-        holder.bind(item)
+        holder.bind(getItem(position))
     }
 
-    inner class ViewHolder(
-        private val binding: BoardRvItemBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: BoardRvItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: BoardModel) = with(binding) {
+            val ctx = root.context
 
-            FBRef.userRef.child(item?.author.toString()).addValueEventListener(object :
-                ValueEventListener {
-                @SuppressLint("SuspiciousIndentation")
-                override fun onDataChange(snapshot: DataSnapshot) {
-
-                    if(snapshot.exists()){
-//                        val author = snapshot.getValue<ERModel>()
-                        val author = snapshot.getValue(ERModel::class.java)
-
-                        ProfileImage.load(boardPostIvProfile, author?.profilePicture)
-                        boardPostTvUser.text = author?.name
-
-                    }else{
-
-                        ProfileImage.load(boardPostIvProfile, ProfileImage.DEFAULT_KEY)
-                        boardPostTvUser.text = "탈퇴한 회원"
-
-                    }
-
+            // 작성자: 저장된 값이 있으면 바로, 없으면 한 번 받아서 채운다
+            boardPostTvUser.text = ""
+            ProfileImage.load(boardPostIvProfile, ProfileImage.DEFAULT_KEY)
+            boardPostIvProfile.tag = item.id
+            AuthorCache.get(item.author) { author ->
+                if (boardPostIvProfile.tag != item.id) return@get // 그 사이 카드가 다른 글로 바뀌었다
+                if (author.exists) {
+                    ProfileImage.load(boardPostIvProfile, author.profilePicture)
+                    boardPostTvUser.text = author.name
+                } else {
+                    boardPostTvUser.text = ctx.getString(R.string.board_withdrawn_user)
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-                }
-
-            })
-
-            if(item.category == "공지"){
-                boardPostCategory.setBackgroundResource(R.drawable.shape_board_category_notice)
-                boardPostCategory.text = "공지"
-            }else{
-                boardPostCategory.setBackgroundResource(R.drawable.shape_board_category)
-                boardPostCategory.text = item.category
             }
 
+            val notice = item.category == "공지"
+            boardPostCategory.text = item.category
+            boardPostCategory.setBackgroundResource(if (notice) R.drawable.shape_post_tag_notice else R.drawable.shape_post_tag)
+            boardPostCategory.setTextColor(ContextCompat.getColor(ctx, if (notice) R.color.black else R.color.brand_mint))
+            boardPostPin.visibility = if (notice) View.VISIBLE else View.GONE
+            boardPostLayout.setBackgroundResource(if (notice) R.drawable.shape_card_notice else R.drawable.shape_surface_card)
+
+            boardPostTime.text = if (item.date > 0) GameLabels.relativeTimeMillis(ctx, item.date) else ""
             boardPostTvTitle.text = item.title
-
             boardPostTvContent.text = item.content
-
-            if(item.comments.size == 0){
-                boardPostBtnComment.visibility = View.INVISIBLE
-                boardPostIvComment.visibility = View.INVISIBLE
-            }else{
-                boardPostIvComment.visibility = View.VISIBLE
-                boardPostBtnComment.visibility = View.VISIBLE
-                boardPostBtnComment.text = item.comments.size.toString()
-            }
+            boardPostViews.text = ctx.getString(R.string.board_views, item.views)
+            boardPostBtnComment.text = ctx.getString(R.string.board_comments_count, item.comments.size)
 
             boardPostLayout.setOnClickListener {
                 onItemClickListener?.onItemClick(item)
             }
-
         }
     }
-
-    fun formatTimeOrDate(postTime: Long): String {
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR_OF_DAY, 0)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
-
-        val date1 = calendar.time
-
-        val simpleDateFormat: SimpleDateFormat
-        if (Date(postTime) > date1) {
-            simpleDateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-        } else {
-            simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        }
-
-        return simpleDateFormat.format(Date(postTime))
-    }
-
 }
-
-
