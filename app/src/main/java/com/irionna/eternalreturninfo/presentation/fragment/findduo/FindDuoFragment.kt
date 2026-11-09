@@ -10,7 +10,7 @@ import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import com.irionna.eternalreturninfo.util.AppDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -248,11 +248,12 @@ class FindDuoFragment : Fragment() {
     }
 
     private fun confirmRemoveMine() {
-        AlertDialog.Builder(requireContext())
-            .setTitle(R.string.duo_remove_title)
-            .setPositiveButton(R.string.duo_remove_ok) { _, _ -> removeMine() }
-            .setNegativeButton(R.string.block_cancel, null)
-            .show()
+        AppDialog.confirm(
+            requireContext(),
+            title = getString(R.string.duo_remove_title),
+            confirmText = getString(R.string.duo_remove_ok),
+            danger = true
+        ) { removeMine() }
     }
 
     /** 내 사용자 정보에서 모집 칸만 비운다 (닉네임, 프로필 등은 그대로). */

@@ -2,7 +2,6 @@ package com.irionna.eternalreturninfo.util
 
 import android.content.Context
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.irionna.eternalreturninfo.R
@@ -27,16 +26,15 @@ object UserReportDialog {
         val myUid = FirebaseAuth.getInstance().uid
         if (targetUid.isNullOrEmpty() || myUid == null || targetUid == myUid) return
 
-        var selected = 0
-        val labels = REASONS.map { context.getString(it.second) }.toTypedArray()
-        AlertDialog.Builder(context)
-            .setTitle(R.string.report_user_title)
-            .setSingleChoiceItems(labels, 0) { _, which -> selected = which }
-            .setPositiveButton(R.string.report_user_ok) { _, _ ->
-                submit(context, myUid, targetUid, REASONS[selected].first, source, contextId)
-            }
-            .setNegativeButton(R.string.block_cancel, null)
-            .show()
+        AppDialog.choose(
+            context,
+            title = context.getString(R.string.report_user_title),
+            labels = REASONS.map { context.getString(it.second) },
+            confirmText = context.getString(R.string.report_user_ok),
+            danger = true
+        ) { selected ->
+            submit(context, myUid, targetUid, REASONS[selected].first, source, contextId)
+        }
     }
 
     private fun submit(

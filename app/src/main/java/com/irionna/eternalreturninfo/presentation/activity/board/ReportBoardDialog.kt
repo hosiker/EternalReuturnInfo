@@ -1,32 +1,18 @@
 package com.irionna.eternalreturninfo.presentation.activity.board
 
-import android.app.Dialog
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.os.Bundle
-import android.view.Window
-import com.irionna.eternalreturninfo.databinding.ReportDialogBinding
+import com.irionna.eternalreturninfo.R
+import com.irionna.eternalreturninfo.util.AppDialog
 
-class ReportBoardDialog(context: Context, private val dialogListener: DialogListener) : Dialog(context) {
-
-    private lateinit var binding: ReportDialogBinding
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
-        binding = ReportDialogBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        binding.reportDialogBtnYes.setOnClickListener {
-            dialogListener.onOKButtonClicked()
-            dismiss()
-        }
-
-        binding.reportDialogBtnNo.setOnClickListener {
-            dismiss()
-        }
+/** 글 신고 확인창. */
+class ReportBoardDialog(private val context: Context, private val dialogListener: DialogListener) {
+    fun show() {
+        AppDialog.confirm(
+            context,
+            title = context.getString(R.string.dlg_report_post_title),
+            message = context.getString(R.string.dlg_report_post_message),
+            confirmText = context.getString(R.string.dlg_report_ok),
+            danger = true
+        ) { dialogListener.onOKButtonClicked() }
     }
 }

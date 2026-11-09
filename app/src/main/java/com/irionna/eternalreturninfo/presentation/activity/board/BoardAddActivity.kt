@@ -9,7 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AlertDialog
+import com.irionna.eternalreturninfo.util.AppDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.irionna.eternalreturninfo.R
@@ -142,11 +142,14 @@ open class BoardAddActivity : AppCompatActivity() {
             finish()
             return
         }
-        AlertDialog.Builder(this)
-            .setMessage(R.string.write_discard_confirm)
-            .setPositiveButton(R.string.write_discard_ok) { _, _ -> finish() }
-            .setNegativeButton(R.string.block_cancel, null)
-            .show()
+        AppDialog.confirm(
+            this,
+            title = getString(R.string.dlg_leave_title),
+            message = getString(R.string.write_discard_confirm),
+            confirmText = getString(R.string.write_discard_ok),
+            cancelText = getString(R.string.dlg_leave_keep),
+            danger = true
+        ) { finish() }
     }
 
     private fun save() {
