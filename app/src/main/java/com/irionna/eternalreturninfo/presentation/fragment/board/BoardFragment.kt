@@ -92,12 +92,18 @@ class BoardFragment : Fragment() {
         boardRv.adapter = listAdapter
         boardRv.itemAnimator = null
 
-        // [진단용·임시] 카드에 손이 닿는지 확인한다 (원인을 찾으면 지운다)
+        // [진단용·임시] 손가락 움직임이 어디서 끊기는지 확인한다 (원인을 찾으면 지운다)
         boardRv.addOnItemTouchListener(object : androidx.recyclerview.widget.RecyclerView.SimpleOnItemTouchListener() {
+            private var moves = 0
             override fun onInterceptTouchEvent(rv: androidx.recyclerview.widget.RecyclerView, e: android.view.MotionEvent): Boolean {
-                if (e.actionMasked == android.view.MotionEvent.ACTION_DOWN) {
-                    val child = rv.findChildViewUnder(e.x, e.y)
-                    Log.i("BoardOpen", "터치 DOWN 카드=${child != null} clickable=${child?.isClickable} enabled=${rv.isEnabled}")
+                when (e.actionMasked) {
+                    android.view.MotionEvent.ACTION_DOWN -> {
+                        moves = 0
+                        Log.i("BoardOpen", "DOWN 카드=${rv.findChildViewUnder(e.x, e.y) != null} scrollState=${rv.scrollState}")
+                    }
+                    android.view.MotionEvent.ACTION_MOVE -> if (moves++ == 0) Log.i("BoardOpen", "MOVE (첫 번째)")
+                    android.view.MotionEvent.ACTION_UP -> Log.i("BoardOpen", "UP moves=$moves")
+                    android.view.MotionEvent.ACTION_CANCEL -> Log.i("BoardOpen", "CANCEL moves=$moves")
                 }
                 return false
             }
@@ -121,6 +127,8 @@ class BoardFragment : Fragment() {
         boardIbProfile.setOnClickListener {
             startActivity(Intent(requireContext(), BoardSearchActivity::class.java))
         }
+        // [진단용·임시] 당겨서 새로고침이 터치를 가로채는지 확인하려고 잠시 끈다
+        boardSwipeRefreshLayout.isEnabled = false
         boardSwipeRefreshLayout.setOnRefreshListener {
             refresh()
             boardSwipeRefreshLayout.isRefreshing = false
