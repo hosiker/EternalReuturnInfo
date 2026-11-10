@@ -1,6 +1,30 @@
 {
- "generatedAt": 1794263008879,
+ "generatedAt": 1794295284702,
  "items": [
+  {
+   "id": "s7pRgcl91x0",
+   "title": "클러치",
+   "thumbnail": "https://i.ytimg.com/vi/s7pRgcl91x0/mqdefault.jpg",
+   "isShort": true
+  },
+  {
+   "id": "qwuCGCORLe4",
+   "title": "이터널 리턴 하이라이트 #249 #eternalreturn #이터널리턴 #vtuber #버튜버",
+   "thumbnail": "https://i.ytimg.com/vi/qwuCGCORLe4/mqdefault.jpg",
+   "isShort": true
+  },
+  {
+   "id": "NZfac_iBRtI",
+   "title": "체급 깡패 흡혈마 아이작 이거 못막습니다",
+   "thumbnail": "https://i.ytimg.com/vi/NZfac_iBRtI/mqdefault.jpg",
+   "isShort": false
+  },
+  {
+   "id": "zfNxlgrQU_k",
+   "title": "셀린 딜은 막을수 없으셈 #이터널리턴 #eternalreturn",
+   "thumbnail": "https://i.ytimg.com/vi/zfNxlgrQU_k/mqdefault.jpg",
+   "isShort": true
+  },
   {
    "id": "_ianjzCNun8",
    "title": "컨셉샷, 커미션 구도, MMD 뮤비 제작하기",
@@ -96,30 +120,6 @@
    "title": "이터널리턴 크리에이터 동아리를 만들었습니다! [무명섬]",
    "thumbnail": "https://i.ytimg.com/vi/mFRvO0QbyNc/mqdefault.jpg",
    "isShort": false
-  },
-  {
-   "id": "FqEqtM4erKA",
-   "title": "접었던분들 다시 돌아오세요",
-   "thumbnail": "https://i.ytimg.com/vi/FqEqtM4erKA/mqdefault.jpg",
-   "isShort": false
-  },
-  {
-   "id": "c9bLHSSNsN4",
-   "title": "챔피언십, 결승전 7라운드 | 이터널 리턴 | 2026 대한민국 이스포츠 리그(KEL)",
-   "thumbnail": "https://i.ytimg.com/vi/c9bLHSSNsN4/mqdefault.jpg",
-   "isShort": false
-  },
-  {
-   "id": "aXEcz_bVj2k",
-   "title": "빛수 탱 뎁마",
-   "thumbnail": "https://i.ytimg.com/vi/aXEcz_bVj2k/mqdefault.jpg",
-   "isShort": true
-  },
-  {
-   "id": "7AZOEr_vvxQ",
-   "title": "이터널 리턴 하이라이트 #248 #eternalreturn #이터널리턴 #vtuber #버튜버",
-   "thumbnail": "https://i.ytimg.com/vi/7AZOEr_vvxQ/mqdefault.jpg",
-   "isShort": true
   }
  ]
 }
