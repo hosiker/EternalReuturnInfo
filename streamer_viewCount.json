@@ -1,17 +1,11 @@
 {
- "generatedAt": 1794467668247,
+ "generatedAt": 1794513355415,
  "items": [
   {
    "id": "amcaOtq8mLg",
    "title": "우승 완료, 쇼타임은 끝입니다.",
    "thumbnail": "https://i.ytimg.com/vi/amcaOtq8mLg/mqdefault.jpg",
    "isShort": false
-  },
-  {
-   "id": "lAMf4DsLUr0",
-   "title": "혈먹고 도망가는 보행능력 #이터널리턴",
-   "thumbnail": "https://i.ytimg.com/vi/lAMf4DsLUr0/mqdefault.jpg",
-   "isShort": true
   },
   {
    "id": "chG1BeFx5KU",
@@ -119,6 +113,12 @@
    "id": "ypJxicQxZac",
    "title": "장인초대석) 바냐 랭킹 1위가 알려주는 랭크 꿀팁 강의 / [이터널 리턴]",
    "thumbnail": "https://i.ytimg.com/vi/ypJxicQxZac/mqdefault.jpg",
+   "isShort": false
+  },
+  {
+   "id": "UmU5GzXwT30",
+   "title": "스킨팀 갈아마신 시즌 13 간담회 간단 요약!!  (이터널리턴)",
+   "thumbnail": "https://i.ytimg.com/vi/UmU5GzXwT30/mqdefault.jpg",
    "isShort": false
   }
  ]
