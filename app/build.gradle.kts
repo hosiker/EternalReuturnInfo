@@ -26,8 +26,8 @@ android {
         applicationId = "com.irionna.eternalreturninfo"
         minSdk = 24
         targetSdk = 36
-        versionCode = 25
-        versionName = "1.25"
+        versionCode = 26
+        versionName = "2.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "google_Token",localProperties.getProperty("googleToken"))
@@ -42,8 +42,31 @@ android {
         }
     }
 
+    // 배포용 서명(Play 업로드 키). 키 파일과 비밀번호는 저장소에 올리지 않고 local.properties 에만 둔다:
+    //   uploadStoreFile=C\\:\\dev\\keys\\er-info-upload.jks
+    //   uploadStorePassword=...   uploadKeyAlias=...   uploadKeyPassword=...
+    // 네 값이 모두 있을 때만 release 에 적용한다. 만드는 방법은 store-assets/release-checklist.md 참고.
+    val uploadStoreFile = localProperties.getProperty("uploadStoreFile")
+    val uploadStorePassword = localProperties.getProperty("uploadStorePassword")
+    val uploadKeyAlias = localProperties.getProperty("uploadKeyAlias")
+    val uploadKeyPassword = localProperties.getProperty("uploadKeyPassword")
+    val hasUploadKey = listOf(uploadStoreFile, uploadStorePassword, uploadKeyAlias, uploadKeyPassword).all { !it.isNullOrBlank() }
+    if (hasUploadKey) {
+        signingConfigs {
+            create("upload") {
+                storeFile = file(uploadStoreFile!!)
+                storePassword = uploadStorePassword
+                keyAlias = uploadKeyAlias
+                keyPassword = uploadKeyPassword
+            }
+        }
+    }
+
     buildTypes {
         release {
+            if (hasUploadKey) {
+                signingConfig = signingConfigs.getByName("upload")
+            }
             // 로컬 점검용: local.properties 에 signReleaseWithDebug=true 가 있으면 디버그 키로 서명해서
             // 난독화(R8)가 적용된 릴리스 빌드를 에뮬레이터에 설치해 볼 수 있다. 배포용 서명이 아니다.
             if (localProperties.getProperty("signReleaseWithDebug") == "true") {
