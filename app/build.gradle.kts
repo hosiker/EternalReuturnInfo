@@ -23,7 +23,9 @@ android {
     logger.lifecycle("실험체 이미지: " + if (useCharacterImages) "포함" else "제외 (이니셜 아바타)")
 
     defaultConfig {
-        applicationId = "com.irionna.eternalreturninfo"
+        // Play 스토어에 등록된 패키지명. 소스 패키지(namespace, com.irionna)와 다르지만 의도된 값이라 바꾸지 않는다.
+        // 이 값을 바꾸면 Play 업데이트가 거부되고 google-services.json 도 다시 받아야 한다.
+        applicationId = "com.erionna.eternalreturninfo"
         minSdk = 24
         targetSdk = 36
         versionCode = 26
