@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:48907367773:android:b263b8ac15ea73ddbda4b4",
         "android_client_info": {
-          "package_name": "com.irionna.eternalreturninfo"
+          "package_name": "com.erionna.eternalreturninfo"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "48907367773-8t4s9gt6usc425e2vef0v785fvg0iq8n.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.irionna.eternalreturninfo",
+            "package_name": "com.erionna.eternalreturninfo",
             "certificate_hash": "0dbbe17cdad2cfb53eb6d1d2bb4d6f2485faea43"
           }
         },
