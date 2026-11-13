@@ -135,9 +135,6 @@ dependencies {
     // SplashScreen
     implementation("androidx.core:core-splashscreen:1.2.0")
 
-    // Google 로그인 (Google Play services)
-    implementation("com.google.android.gms:play-services-auth:20.7.0")
-
     // Coil
     implementation("io.coil-kt:coil:2.7.0")
 

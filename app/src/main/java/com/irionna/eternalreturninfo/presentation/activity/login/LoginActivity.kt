@@ -7,19 +7,13 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import com.irionna.eternalreturninfo.R
-import com.irionna.eternalreturninfo.databinding.GoogleDialogBinding
 import com.irionna.eternalreturninfo.util.AppDialog
 import com.irionna.eternalreturninfo.util.AppToast
 import com.irionna.eternalreturninfo.util.AutoLogin
 import com.irionna.eternalreturninfo.databinding.LoginActivityBinding
 import com.irionna.eternalreturninfo.retrofit.BoardSingletone
 import com.irionna.eternalreturninfo.presentation.activity.main.MainActivity
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 
 class LoginActivity : AppCompatActivity() {
@@ -29,10 +23,8 @@ class LoginActivity : AppCompatActivity() {
         window.decorView.post { AppToast.showPending(this) }
     }
     private lateinit var binding: LoginActivityBinding
-    private lateinit var googlebinding: GoogleDialogBinding
     private var auth: FirebaseAuth? = null
     var firestore: FirebaseFirestore? = null
-    var mGoogleSignInClient: GoogleSignInClient? = null
     var db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,16 +33,8 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
         binding = LoginActivityBinding.inflate(layoutInflater)
-        googlebinding = GoogleDialogBinding.inflate(layoutInflater)
         setContentViewEdgeToEdge(binding.root)
 
-
-        //구글로그인 기본 설정
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("48907367773-37le51fs370ruk8eirjkmi11k6qmg30k.apps.googleusercontent.com")
-            .requestEmail()
-            .build()
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
 
         //로그인 버튼
         binding.loginLoginBtn.setOnClickListener {
@@ -122,26 +106,6 @@ class LoginActivity : AppCompatActivity() {
         } else {
             AppToast.show(this, getString(R.string.login_fail), AppToast.Kind.ERROR)
 
-        }
-    }
-
-    // 구글 로그인
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 100) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            val google = task.getResult(ApiException::class.java)
-            val credential = GoogleAuthProvider.getCredential(google.idToken, null)
-            FirebaseAuth.getInstance().signInWithCredential(credential)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val intent = Intent(this, MainActivity::class.java)
-                        startActivity(intent)
-                    } else {
-                        AppToast.show(this, task.exception?.message.toString(), AppToast.Kind.ERROR)
-
-                    }
-                }
         }
     }
 
