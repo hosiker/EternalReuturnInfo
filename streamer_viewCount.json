@@ -1,5 +1,5 @@
 {
- "generatedAt": 1794599059695,
+ "generatedAt": 1794637606327,
  "items": [
   {
    "id": "amcaOtq8mLg",
@@ -26,6 +26,12 @@
    "isShort": true
   },
   {
+   "id": "0amxStyjKC0",
+   "title": "이터널리턴 클립 모음집 133",
+   "thumbnail": "https://i.ytimg.com/vi/0amxStyjKC0/mqdefault.jpg",
+   "isShort": false
+  },
+  {
    "id": "LFt6JuuKGfQ",
    "title": "이터널 리턴 역사상 가장 불쾌한 캐릭터 #shorts",
    "thumbnail": "https://i.ytimg.com/vi/LFt6JuuKGfQ/mqdefault.jpg",
@@ -35,12 +41,6 @@
    "id": "ZmmOrZAc3xw",
    "title": "개발자 기싸움의 새로운 경지 #게임 #이터널리턴 #간담회 #13시즌",
    "thumbnail": "https://i.ytimg.com/vi/ZmmOrZAc3xw/mqdefault.jpg",
-   "isShort": false
-  },
-  {
-   "id": "0amxStyjKC0",
-   "title": "이터널리턴 클립 모음집 133",
-   "thumbnail": "https://i.ytimg.com/vi/0amxStyjKC0/mqdefault.jpg",
    "isShort": false
   },
   {
@@ -54,18 +54,6 @@
    "title": "이바 궁 캔슬 디테일 #이터널리턴 #eternalreturn",
    "thumbnail": "https://i.ytimg.com/vi/POxY0Yh7xLc/mqdefault.jpg",
    "isShort": true
-  },
-  {
-   "id": "m7G50hnK54E",
-   "title": "이터널리턴 서킷4 웃긴장면모음 #이터널리턴 #shorts #대회",
-   "thumbnail": "https://i.ytimg.com/vi/m7G50hnK54E/mqdefault.jpg",
-   "isShort": true
-  },
-  {
-   "id": "ioNFBow4gx4",
-   "title": "장인초대석) 데비 마를렌 랭킹 1위가 알려주는 랭크 꿀팁 강의 / [이터널 리턴]",
-   "thumbnail": "https://i.ytimg.com/vi/ioNFBow4gx4/mqdefault.jpg",
-   "isShort": false
   },
   {
    "id": "slJEkDQQ9u4",
@@ -119,6 +107,18 @@
    "id": "nBJqYuWx31s",
    "title": "빛을 위해 헌신하는.. #이터널리턴 #시즌13 #glory",
    "thumbnail": "https://i.ytimg.com/vi/nBJqYuWx31s/mqdefault.jpg",
+   "isShort": true
+  },
+  {
+   "id": "c7n2yGmkzlk",
+   "title": "시즌 13: 글로리를 소개합니다. | 이터널 리턴",
+   "thumbnail": "https://i.ytimg.com/vi/c7n2yGmkzlk/mqdefault.jpg",
+   "isShort": false
+  },
+  {
+   "id": "pSF0cIAoTPY",
+   "title": "벽을 6번이나 넘는 실험체가 있다고? [이터널 리턴]",
+   "thumbnail": "https://i.ytimg.com/vi/pSF0cIAoTPY/mqdefault.jpg",
    "isShort": true
   }
  ]
