@@ -1,5 +1,5 @@
 {
- "generatedAt": 1794768784553,
+ "generatedAt": 1794810772179,
  "items": [
   {
    "id": "amcaOtq8mLg",
@@ -50,21 +50,27 @@
    "isShort": false
   },
   {
+   "id": "qfXs36fnFuU",
+   "title": "이단 추적 개시! #이터널리턴 #시즌13 #글로리",
+   "thumbnail": "https://i.ytimg.com/vi/qfXs36fnFuU/mqdefault.jpg",
+   "isShort": true
+  },
+  {
    "id": "F9SbKX9Uonk",
    "title": "가보자고! 카우보이! #이터널리턴 #시즌12 #신규스킨",
    "thumbnail": "https://i.ytimg.com/vi/F9SbKX9Uonk/mqdefault.jpg",
    "isShort": true
   },
   {
-   "id": "JFgvDF3cYEk",
-   "title": "생각보다 이터널리턴이 재밌는 리제",
-   "thumbnail": "https://i.ytimg.com/vi/JFgvDF3cYEk/mqdefault.jpg",
-   "isShort": false
-  },
-  {
    "id": "QhjRr-D6h-A",
    "title": "절대 그들을 자극하면 안 돼",
    "thumbnail": "https://i.ytimg.com/vi/QhjRr-D6h-A/mqdefault.jpg",
+   "isShort": false
+  },
+  {
+   "id": "JFgvDF3cYEk",
+   "title": "생각보다 이터널리턴이 재밌는 리제",
+   "thumbnail": "https://i.ytimg.com/vi/JFgvDF3cYEk/mqdefault.jpg",
    "isShort": false
   },
   {
@@ -80,15 +86,21 @@
    "isShort": false
   },
   {
+   "id": "CLEi3RP3kbE",
+   "title": "눈치 싸움",
+   "thumbnail": "https://i.ytimg.com/vi/CLEi3RP3kbE/mqdefault.jpg",
+   "isShort": true
+  },
+  {
    "id": "pSF0cIAoTPY",
    "title": "벽을 6번이나 넘는 실험체가 있다고? [이터널 리턴]",
    "thumbnail": "https://i.ytimg.com/vi/pSF0cIAoTPY/mqdefault.jpg",
    "isShort": true
   },
   {
-   "id": "CLEi3RP3kbE",
-   "title": "눈치 싸움",
-   "thumbnail": "https://i.ytimg.com/vi/CLEi3RP3kbE/mqdefault.jpg",
+   "id": "_7B3_SJ746E",
+   "title": "현우 뎀프시롤",
+   "thumbnail": "https://i.ytimg.com/vi/_7B3_SJ746E/mqdefault.jpg",
    "isShort": true
   },
   {
@@ -108,18 +120,6 @@
    "title": "장인초대석) 바냐 랭킹 1위가 알려주는 랭크 꿀팁 강의 / [이터널 리턴]",
    "thumbnail": "https://i.ytimg.com/vi/ypJxicQxZac/mqdefault.jpg",
    "isShort": false
-  },
-  {
-   "id": "UmU5GzXwT30",
-   "title": "스킨팀 갈아마신 시즌 13 간담회 간단 요약!!  (이터널리턴)",
-   "thumbnail": "https://i.ytimg.com/vi/UmU5GzXwT30/mqdefault.jpg",
-   "isShort": false
-  },
-  {
-   "id": "oEcIHkNQsGs",
-   "title": "나 샬럿 아니다",
-   "thumbnail": "https://i.ytimg.com/vi/oEcIHkNQsGs/mqdefault.jpg",
-   "isShort": true
   }
  ]
 }
