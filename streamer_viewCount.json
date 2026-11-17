@@ -1,5 +1,5 @@
 {
- "generatedAt": 1794902237751,
+ "generatedAt": 1794949035835,
  "items": [
   {
    "id": "amcaOtq8mLg",
@@ -12,12 +12,6 @@
    "title": "[Eternal Return] L을 가져가 - 루치아",
    "thumbnail": "https://i.ytimg.com/vi/chG1BeFx5KU/mqdefault.jpg",
    "isShort": true
-  },
-  {
-   "id": "wB0k5RV__HM",
-   "title": "개발팀과의 만남 For Season 13",
-   "thumbnail": "https://i.ytimg.com/vi/wB0k5RV__HM/mqdefault.jpg",
-   "isShort": false
   },
   {
    "id": "0amxStyjKC0",
@@ -62,16 +56,16 @@
    "isShort": true
   },
   {
-   "id": "QhjRr-D6h-A",
-   "title": "절대 그들을 자극하면 안 돼",
-   "thumbnail": "https://i.ytimg.com/vi/QhjRr-D6h-A/mqdefault.jpg",
-   "isShort": false
-  },
-  {
    "id": "CLEi3RP3kbE",
    "title": "눈치 싸움",
    "thumbnail": "https://i.ytimg.com/vi/CLEi3RP3kbE/mqdefault.jpg",
    "isShort": true
+  },
+  {
+   "id": "QhjRr-D6h-A",
+   "title": "절대 그들을 자극하면 안 돼",
+   "thumbnail": "https://i.ytimg.com/vi/QhjRr-D6h-A/mqdefault.jpg",
+   "isShort": false
   },
   {
    "id": "JFgvDF3cYEk",
@@ -120,6 +114,12 @@
    "title": "스킨팀 갈아마신 시즌 13 간담회 간단 요약!!  (이터널리턴)",
    "thumbnail": "https://i.ytimg.com/vi/UmU5GzXwT30/mqdefault.jpg",
    "isShort": false
+  },
+  {
+   "id": "sGbGL-4vy-c",
+   "title": "만약 박현준 이병이 피시방에서 이리를 한다면? #이터널리턴",
+   "thumbnail": "https://i.ytimg.com/vi/sGbGL-4vy-c/mqdefault.jpg",
+   "isShort": true
   }
  ]
 }
