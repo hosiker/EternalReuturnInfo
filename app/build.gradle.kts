@@ -28,7 +28,7 @@ android {
         applicationId = "com.erionna.eternalreturninfo"
         minSdk = 24
         targetSdk = 36
-        versionCode = 26
+        versionCode = 27
         versionName = "2.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
