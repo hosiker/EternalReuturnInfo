@@ -53,6 +53,14 @@ class RecentGamesSection(
         showMessage(activity.getString(R.string.rg_loading))
     }
 
+    /** 게임 유저를 찾지 못해 경기 기록을 불러올 수 없을 때: "불러오는 중"을 안내 문구로 바꾼다. */
+    fun showUnavailable() {
+        token++
+        loaded.clear()
+        next = null
+        showMessage(activity.getString(R.string.rg_no_user))
+    }
+
     /** 새 유저의 기록을 처음부터 불러온다. */
     fun load(userId: String) {
         this.userId = userId
