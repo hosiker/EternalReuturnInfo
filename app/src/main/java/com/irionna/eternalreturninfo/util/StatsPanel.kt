@@ -41,6 +41,9 @@ class StatsPanel(
 
     /** 닉네임으로 게임 유저를 찾았을 때 알린다 (최근 경기 목록 같은 다른 부품이 같은 유저로 이어서 불러오게). */
     var onUserResolved: ((String) -> Unit)? = null
+
+    /** 닉네임으로 게임 유저를 찾지 못했을 때 알린다 (최근 경기 목록이 "불러오는 중"으로 남지 않게). */
+    var onUserUnresolved: (() -> Unit)? = null
     private var loadToken = 0
 
     init {
@@ -62,6 +65,7 @@ class StatsPanel(
             if (token != loadToken) return@launch // 그 사이 다른 닉네임을 검색했다
             if (num == null) {
                 showMessage(activity.getString(R.string.stats_unavailable))
+                onUserUnresolved?.invoke()
                 return@launch
             }
             userId = num

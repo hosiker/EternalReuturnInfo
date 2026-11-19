@@ -125,6 +125,7 @@ class MainFragment : Fragment() {
         val recent = RecentGamesSection(binding.mainRecentGames, requireActivity(), viewLifecycleOwner.lifecycleScope, detailed = false, limit = 3)
         recentSection = recent
         panel.onUserResolved = { recent.load(it) }
+        panel.onUserUnresolved = { recent.showUnavailable() }
 
         binding.mainSearchBtn.setOnClickListener { search(binding.mainSearchEt.text.toString()) }
         binding.mainSearchEt.setOnEditorActionListener { _, actionId, _ ->

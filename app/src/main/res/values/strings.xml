@@ -182,6 +182,7 @@
     <string name="rg_loading">경기 기록을 불러오는 중…</string>
     <string name="rg_empty">최근 경기 기록이 없어요.</string>
     <string name="rg_failed">경기 기록을 불러오지 못했어요.</string>
+    <string name="rg_no_user">게임 닉네임을 찾지 못해 경기 기록을 볼 수 없어요.</string>
     <string name="rg_more">더 보기</string>
     <string name="rg_win_desc">우승</string>
     <string name="rg_filter_all">전체</string>

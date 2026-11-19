@@ -64,6 +64,7 @@ class MyprofileRecordFragment : Fragment() {
         // 같은 유저의 최근 경기를 자세히 보여준다 (필터, 더 보기)
         val recent = RecentGamesSection(binding.myprofileRecent, requireActivity(), viewLifecycleOwner.lifecycleScope, detailed = true)
         panel.onUserResolved = { recent.load(it) }
+        panel.onUserUnresolved = { recent.showUnavailable() }
         panel.load {
             StatsPanel.waitForNickname { BoardSingletone.LoginUser().name }
         }
