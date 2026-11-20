@@ -1,5 +1,5 @@
 {
- "generatedAt": 1795120775286,
+ "generatedAt": 1795159155825,
  "items": [
   {
    "id": "amcaOtq8mLg",
@@ -26,12 +26,6 @@
    "isShort": true
   },
   {
-   "id": "POxY0Yh7xLc",
-   "title": "이바 궁 캔슬 디테일 #이터널리턴 #eternalreturn",
-   "thumbnail": "https://i.ytimg.com/vi/POxY0Yh7xLc/mqdefault.jpg",
-   "isShort": true
-  },
-  {
    "id": "wJOlJg6_3iA",
    "title": "드디어 이터널리턴을 하게 된 리제 ㅋㅋㅋㅋㅋ",
    "thumbnail": "https://i.ytimg.com/vi/wJOlJg6_3iA/mqdefault.jpg",
@@ -44,6 +38,12 @@
    "isShort": true
   },
   {
+   "id": "CLEi3RP3kbE",
+   "title": "눈치 싸움",
+   "thumbnail": "https://i.ytimg.com/vi/CLEi3RP3kbE/mqdefault.jpg",
+   "isShort": true
+  },
+  {
    "id": "wpe0PpxzQes",
    "title": "레니식 교감",
    "thumbnail": "https://i.ytimg.com/vi/wpe0PpxzQes/mqdefault.jpg",
@@ -53,12 +53,6 @@
    "id": "F9SbKX9Uonk",
    "title": "가보자고! 카우보이! #이터널리턴 #시즌12 #신규스킨",
    "thumbnail": "https://i.ytimg.com/vi/F9SbKX9Uonk/mqdefault.jpg",
-   "isShort": true
-  },
-  {
-   "id": "CLEi3RP3kbE",
-   "title": "눈치 싸움",
-   "thumbnail": "https://i.ytimg.com/vi/CLEi3RP3kbE/mqdefault.jpg",
    "isShort": true
   },
   {
@@ -98,15 +92,15 @@
    "isShort": true
   },
   {
-   "id": "b8shDE1WTC8",
-   "title": "다황",
-   "thumbnail": "https://i.ytimg.com/vi/b8shDE1WTC8/mqdefault.jpg",
-   "isShort": true
-  },
-  {
    "id": "yPcO6Jl7N_Q",
    "title": "이터널리턴] 타이밍 레전드",
    "thumbnail": "https://i.ytimg.com/vi/yPcO6Jl7N_Q/mqdefault.jpg",
+   "isShort": true
+  },
+  {
+   "id": "b8shDE1WTC8",
+   "title": "다황",
+   "thumbnail": "https://i.ytimg.com/vi/b8shDE1WTC8/mqdefault.jpg",
    "isShort": true
   },
   {
@@ -120,6 +114,12 @@
    "title": "만약 박현준 이병이 피시방에서 이리를 한다면? #이터널리턴",
    "thumbnail": "https://i.ytimg.com/vi/sGbGL-4vy-c/mqdefault.jpg",
    "isShort": true
+  },
+  {
+   "id": "UmU5GzXwT30",
+   "title": "스킨팀 갈아마신 시즌 13 간담회 간단 요약!!  (이터널리턴)",
+   "thumbnail": "https://i.ytimg.com/vi/UmU5GzXwT30/mqdefault.jpg",
+   "isShort": false
   }
  ]
 }
