@@ -1,5 +1,5 @@
 {
- "generatedAt": 1795245114314,
+ "generatedAt": 1795288663590,
  "items": [
   {
    "id": "amcaOtq8mLg",
@@ -26,15 +26,21 @@
    "isShort": false
   },
   {
-   "id": "qfXs36fnFuU",
-   "title": "이단 추적 개시! #이터널리턴 #시즌13 #글로리",
-   "thumbnail": "https://i.ytimg.com/vi/qfXs36fnFuU/mqdefault.jpg",
-   "isShort": true
+   "id": "q9uzhmHQZU4",
+   "title": "신규 캐릭터 메이사 미리보기",
+   "thumbnail": "https://i.ytimg.com/vi/q9uzhmHQZU4/mqdefault.jpg",
+   "isShort": false
   },
   {
    "id": "CLEi3RP3kbE",
    "title": "눈치 싸움",
    "thumbnail": "https://i.ytimg.com/vi/CLEi3RP3kbE/mqdefault.jpg",
+   "isShort": true
+  },
+  {
+   "id": "qfXs36fnFuU",
+   "title": "이단 추적 개시! #이터널리턴 #시즌13 #글로리",
+   "thumbnail": "https://i.ytimg.com/vi/qfXs36fnFuU/mqdefault.jpg",
    "isShort": true
   },
   {
@@ -104,21 +110,15 @@
    "isShort": false
   },
   {
-   "id": "sGbGL-4vy-c",
-   "title": "만약 박현준 이병이 피시방에서 이리를 한다면? #이터널리턴",
-   "thumbnail": "https://i.ytimg.com/vi/sGbGL-4vy-c/mqdefault.jpg",
-   "isShort": true
-  },
-  {
-   "id": "UmU5GzXwT30",
-   "title": "스킨팀 갈아마신 시즌 13 간담회 간단 요약!!  (이터널리턴)",
-   "thumbnail": "https://i.ytimg.com/vi/UmU5GzXwT30/mqdefault.jpg",
-   "isShort": false
-  },
-  {
    "id": "qM4O2dE0mCk",
    "title": "상급근딜 자존심 대결",
    "thumbnail": "https://i.ytimg.com/vi/qM4O2dE0mCk/mqdefault.jpg",
+   "isShort": true
+  },
+  {
+   "id": "sGbGL-4vy-c",
+   "title": "만약 박현준 이병이 피시방에서 이리를 한다면? #이터널리턴",
+   "thumbnail": "https://i.ytimg.com/vi/sGbGL-4vy-c/mqdefault.jpg",
    "isShort": true
   }
  ]
