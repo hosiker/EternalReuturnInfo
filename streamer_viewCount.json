@@ -1,5 +1,5 @@
 {
- "generatedAt": 1795514183302,
+ "generatedAt": 1795559316154,
  "items": [
   {
    "id": "amcaOtq8mLg",
@@ -68,6 +68,12 @@
    "isShort": true
   },
   {
+   "id": "-MW--vo3ico",
+   "title": "미움 받을 용기",
+   "thumbnail": "https://i.ytimg.com/vi/-MW--vo3ico/mqdefault.jpg",
+   "isShort": true
+  },
+  {
    "id": "QhjRr-D6h-A",
    "title": "절대 그들을 자극하면 안 돼",
    "thumbnail": "https://i.ytimg.com/vi/QhjRr-D6h-A/mqdefault.jpg",
@@ -92,6 +98,12 @@
    "isShort": true
   },
   {
+   "id": "RKzwvdQY8uA",
+   "title": "이터널리턴 클립 모음집 135",
+   "thumbnail": "https://i.ytimg.com/vi/RKzwvdQY8uA/mqdefault.jpg",
+   "isShort": true
+  },
+  {
    "id": "c7n2yGmkzlk",
    "title": "시즌 13: 글로리를 소개합니다. | 이터널 리턴",
    "thumbnail": "https://i.ytimg.com/vi/c7n2yGmkzlk/mqdefault.jpg",
@@ -108,18 +120,6 @@
    "title": "벽을 6번이나 넘는 실험체가 있다고? [이터널 리턴]",
    "thumbnail": "https://i.ytimg.com/vi/pSF0cIAoTPY/mqdefault.jpg",
    "isShort": true
-  },
-  {
-   "id": "RKzwvdQY8uA",
-   "title": "이터널리턴 클립 모음집 135",
-   "thumbnail": "https://i.ytimg.com/vi/RKzwvdQY8uA/mqdefault.jpg",
-   "isShort": true
-  },
-  {
-   "id": "fShBOgPXGgs",
-   "title": "실험체를 잘 골라야 티어가 높아집니다ㅣ이터널리턴",
-   "thumbnail": "https://i.ytimg.com/vi/fShBOgPXGgs/mqdefault.jpg",
-   "isShort": false
   }
  ]
 }
