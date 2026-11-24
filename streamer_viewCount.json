@@ -1,16 +1,10 @@
 {
- "generatedAt": 1795478115241,
+ "generatedAt": 1795514183302,
  "items": [
   {
    "id": "amcaOtq8mLg",
    "title": "우승 완료, 쇼타임은 끝입니다.",
    "thumbnail": "https://i.ytimg.com/vi/amcaOtq8mLg/mqdefault.jpg",
-   "isShort": false
-  },
-  {
-   "id": "0amxStyjKC0",
-   "title": "이터널리턴 클립 모음집 133",
-   "thumbnail": "https://i.ytimg.com/vi/0amxStyjKC0/mqdefault.jpg",
    "isShort": false
   },
   {
@@ -62,16 +56,16 @@
    "isShort": true
   },
   {
-   "id": "oEcIHkNQsGs",
-   "title": "나 샬럿 아니다",
-   "thumbnail": "https://i.ytimg.com/vi/oEcIHkNQsGs/mqdefault.jpg",
-   "isShort": true
-  },
-  {
    "id": "LLMzlVtc1kg",
    "title": "치와와든 도베르만이든 그냥 귀여운 여우신님ㅋㅋㅋㅋ",
    "thumbnail": "https://i.ytimg.com/vi/LLMzlVtc1kg/mqdefault.jpg",
    "isShort": false
+  },
+  {
+   "id": "oEcIHkNQsGs",
+   "title": "나 샬럿 아니다",
+   "thumbnail": "https://i.ytimg.com/vi/oEcIHkNQsGs/mqdefault.jpg",
+   "isShort": true
   },
   {
    "id": "QhjRr-D6h-A",
@@ -89,6 +83,12 @@
    "id": "yPcO6Jl7N_Q",
    "title": "이터널리턴] 타이밍 레전드",
    "thumbnail": "https://i.ytimg.com/vi/yPcO6Jl7N_Q/mqdefault.jpg",
+   "isShort": true
+  },
+  {
+   "id": "qM4O2dE0mCk",
+   "title": "상급근딜 자존심 대결",
+   "thumbnail": "https://i.ytimg.com/vi/qM4O2dE0mCk/mqdefault.jpg",
    "isShort": true
   },
   {
@@ -116,10 +116,10 @@
    "isShort": true
   },
   {
-   "id": "qM4O2dE0mCk",
-   "title": "상급근딜 자존심 대결",
-   "thumbnail": "https://i.ytimg.com/vi/qM4O2dE0mCk/mqdefault.jpg",
-   "isShort": true
+   "id": "fShBOgPXGgs",
+   "title": "실험체를 잘 골라야 티어가 높아집니다ㅣ이터널리턴",
+   "thumbnail": "https://i.ytimg.com/vi/fShBOgPXGgs/mqdefault.jpg",
+   "isShort": false
   }
  ]
 }
