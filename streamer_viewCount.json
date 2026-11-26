@@ -1,5 +1,5 @@
 {
- "generatedAt": 1795681341378,
+ "generatedAt": 1795728886367,
  "items": [
   {
    "id": "amcaOtq8mLg",
@@ -32,12 +32,6 @@
    "isShort": false
   },
   {
-   "id": "CLEi3RP3kbE",
-   "title": "눈치 싸움",
-   "thumbnail": "https://i.ytimg.com/vi/CLEi3RP3kbE/mqdefault.jpg",
-   "isShort": true
-  },
-  {
    "id": "LLMzlVtc1kg",
    "title": "치와와든 도베르만이든 그냥 귀여운 여우신님ㅋㅋㅋㅋ",
    "thumbnail": "https://i.ytimg.com/vi/LLMzlVtc1kg/mqdefault.jpg",
@@ -53,12 +47,6 @@
    "id": "TkFTgvC-iNc",
    "title": "이터널리턴] 님블이 원하는 평 원딜",
    "thumbnail": "https://i.ytimg.com/vi/TkFTgvC-iNc/mqdefault.jpg",
-   "isShort": true
-  },
-  {
-   "id": "qfXs36fnFuU",
-   "title": "이단 추적 개시! #이터널리턴 #시즌13 #글로리",
-   "thumbnail": "https://i.ytimg.com/vi/qfXs36fnFuU/mqdefault.jpg",
    "isShort": true
   },
   {
@@ -86,12 +74,6 @@
    "isShort": true
   },
   {
-   "id": "c7n2yGmkzlk",
-   "title": "시즌 13: 글로리를 소개합니다. | 이터널 리턴",
-   "thumbnail": "https://i.ytimg.com/vi/c7n2yGmkzlk/mqdefault.jpg",
-   "isShort": false
-  },
-  {
    "id": "RKzwvdQY8uA",
    "title": "이터널리턴 클립 모음집 135",
    "thumbnail": "https://i.ytimg.com/vi/RKzwvdQY8uA/mqdefault.jpg",
@@ -102,6 +84,18 @@
    "title": "벽을 6번이나 넘는 실험체가 있다고? [이터널 리턴]",
    "thumbnail": "https://i.ytimg.com/vi/pSF0cIAoTPY/mqdefault.jpg",
    "isShort": true
+  },
+  {
+   "id": "c7n2yGmkzlk",
+   "title": "시즌 13: 글로리를 소개합니다. | 이터널 리턴",
+   "thumbnail": "https://i.ytimg.com/vi/c7n2yGmkzlk/mqdefault.jpg",
+   "isShort": false
+  },
+  {
+   "id": "NDK9KLf-4WY",
+   "title": "이터널리턴 클립 모음집 140",
+   "thumbnail": "https://i.ytimg.com/vi/NDK9KLf-4WY/mqdefault.jpg",
+   "isShort": false
   },
   {
    "id": "Q6UsDKyZU5k",
@@ -116,10 +110,16 @@
    "isShort": false
   },
   {
-   "id": "NDK9KLf-4WY",
-   "title": "이터널리턴 클립 모음집 140",
-   "thumbnail": "https://i.ytimg.com/vi/NDK9KLf-4WY/mqdefault.jpg",
+   "id": "v58LOIqdeKM",
+   "title": "의상 누가 생각한 거냐?? 사운드랑 이펙트 개쩌는 블레어 신스킨 리뷰 해보자!! / [이터널 리턴]",
+   "thumbnail": "https://i.ytimg.com/vi/v58LOIqdeKM/mqdefault.jpg",
    "isShort": false
+  },
+  {
+   "id": "M76H5hRhdDU",
+   "title": "메이사 스킬 미리보기(?) [이터널 리턴] #shrots",
+   "thumbnail": "https://i.ytimg.com/vi/M76H5hRhdDU/mqdefault.jpg",
+   "isShort": true
   }
  ]
 }
