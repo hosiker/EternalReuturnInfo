@@ -16,10 +16,11 @@ android {
     val localProperties = Properties()
     localProperties.load(FileInputStream(rootProject.file("local.properties")))
 
-    // 실험체 이미지(얼굴·전신 그림, 팬키트 자료) 포함 여부. 기본은 "제외"(이니셜 아바타로 표시)이고,
-    // 님블뉴런의 사용 허락을 받은 뒤 local.properties 에 useCharacterImages=true 를 넣으면 포함한다.
-    // 제외하면 이미지 파일이 앱(APK)에도 들어가지 않는다. 이미지는 app/src/characterImages/res 에 있다.
-    val useCharacterImages = localProperties.getProperty("useCharacterImages") == "true"
+    // 실험체 얼굴 이미지(팬키트 자료) 포함 여부. 님블뉴런의 허락(2026-11-26)에 따라 기본은 "포함"이다.
+    // 허락 조건: 실험체 구분을 위한 정보 표시 목적에 한정, 자르기와 크기 조절만 허용(색상 변경·합성 금지), 출처와 저작권 표기 필수.
+    // local.properties 에 useCharacterImages=false 를 넣으면 제외하고 이름 첫 글자 아바타로 표시한다.
+    // 이미지는 app/src/characterImages/res 에 있고, 쓰지 않는 전신 그림은 app/src/characterImagesFull/res 에 따로 보관한다(앱에 넣지 않음).
+    val useCharacterImages = localProperties.getProperty("useCharacterImages") != "false"
     logger.lifecycle("실험체 이미지: " + if (useCharacterImages) "포함" else "제외 (이니셜 아바타)")
 
     defaultConfig {
@@ -28,7 +29,7 @@ android {
         applicationId = "com.erionna.eternalreturninfo"
         minSdk = 24
         targetSdk = 36
-        versionCode = 27
+        versionCode = 28
         versionName = "2.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

@@ -269,6 +269,7 @@
     <string name="settings_version">앱 버전</string>
     <string name="settings_withdraw">회원 탈퇴</string>
     <string name="settings_unofficial">ER info는 이터널 리턴의 비공식 팬 앱이며, 게임사(Nimble Neuron)와 관련이 없습니다.</string>
+    <string name="settings_image_credit">실험체 이미지 출처: ㈜님블뉴런 이터널 리턴 팬키트.\n이터널 리턴과 관련된 모든 명칭과 이미지의 저작권은 ㈜님블뉴런에 있습니다.</string>
     <string name="pw_too_short">비밀번호는 6자 이상이어야 합니다.</string>
     <string name="pw_mismatch">동일한 비밀번호를 입력하세요.</string>
     <string name="pw_changed">비밀번호를 변경했습니다.</string>

@@ -30,16 +30,20 @@ object CharacterPicker {
             return
         }
         val ctx = imageView.context
-        // 실험체 이미지를 앱에 넣지 않은 빌드에서는 이름의 첫 글자 아바타를 보여준다
-        if (!com.irionna.eternalreturninfo.BuildConfig.USE_CHARACTER_IMAGES) {
-            val names = ctx.resources.getStringArray(R.array.characterName)
-            if (index in 1 until names.size) {
-                imageView.setImageDrawable(InitialAvatar.drawable(ctx, names[index]))
+        // 얼굴 이미지가 있으면 그것을, 없으면(이미지를 앱에 넣지 않은 빌드, 이미지가 없는 신규 실험체) 이름 첫 글자 아바타를 보여준다
+        if (com.irionna.eternalreturninfo.BuildConfig.USE_CHARACTER_IMAGES) {
+            val id = ctx.resources.getIdentifier("face_$index", "drawable", ctx.packageName)
+            if (id != 0) {
+                imageView.setImageResource(id)
                 return
             }
         }
-        val id = ctx.resources.getIdentifier("face_$index", "drawable", ctx.packageName)
-        imageView.setImageResource(if (id != 0) id else R.drawable.ic_baseimage)
+        val names = ctx.resources.getStringArray(R.array.characterName)
+        if (index in 1 until names.size) {
+            imageView.setImageDrawable(InitialAvatar.drawable(ctx, names[index]))
+            return
+        }
+        imageView.setImageResource(R.drawable.ic_baseimage)
     }
 
     fun show(activity: Activity, names: Array<String>, selected: Int, noneLabel: String? = null, onPicked: (Int) -> Unit) {
