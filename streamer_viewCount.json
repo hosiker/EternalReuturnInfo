@@ -1,5 +1,5 @@
 {
- "generatedAt": 1795728886367,
+ "generatedAt": 1795768664281,
  "items": [
   {
    "id": "amcaOtq8mLg",
@@ -32,16 +32,16 @@
    "isShort": false
   },
   {
+   "id": "CLEi3RP3kbE",
+   "title": "눈치 싸움",
+   "thumbnail": "https://i.ytimg.com/vi/CLEi3RP3kbE/mqdefault.jpg",
+   "isShort": true
+  },
+  {
    "id": "LLMzlVtc1kg",
    "title": "치와와든 도베르만이든 그냥 귀여운 여우신님ㅋㅋㅋㅋ",
    "thumbnail": "https://i.ytimg.com/vi/LLMzlVtc1kg/mqdefault.jpg",
    "isShort": false
-  },
-  {
-   "id": "wpe0PpxzQes",
-   "title": "레니식 교감",
-   "thumbnail": "https://i.ytimg.com/vi/wpe0PpxzQes/mqdefault.jpg",
-   "isShort": true
   },
   {
    "id": "TkFTgvC-iNc",
@@ -50,9 +50,15 @@
    "isShort": true
   },
   {
-   "id": "oEcIHkNQsGs",
-   "title": "나 샬럿 아니다",
-   "thumbnail": "https://i.ytimg.com/vi/oEcIHkNQsGs/mqdefault.jpg",
+   "id": "wpe0PpxzQes",
+   "title": "레니식 교감",
+   "thumbnail": "https://i.ytimg.com/vi/wpe0PpxzQes/mqdefault.jpg",
+   "isShort": true
+  },
+  {
+   "id": "qfXs36fnFuU",
+   "title": "이단 추적 개시! #이터널리턴 #시즌13 #글로리",
+   "thumbnail": "https://i.ytimg.com/vi/qfXs36fnFuU/mqdefault.jpg",
    "isShort": true
   },
   {
@@ -80,6 +86,12 @@
    "isShort": true
   },
   {
+   "id": "NDK9KLf-4WY",
+   "title": "이터널리턴 클립 모음집 140",
+   "thumbnail": "https://i.ytimg.com/vi/NDK9KLf-4WY/mqdefault.jpg",
+   "isShort": false
+  },
+  {
    "id": "pSF0cIAoTPY",
    "title": "벽을 6번이나 넘는 실험체가 있다고? [이터널 리턴]",
    "thumbnail": "https://i.ytimg.com/vi/pSF0cIAoTPY/mqdefault.jpg",
@@ -92,10 +104,10 @@
    "isShort": false
   },
   {
-   "id": "NDK9KLf-4WY",
-   "title": "이터널리턴 클립 모음집 140",
-   "thumbnail": "https://i.ytimg.com/vi/NDK9KLf-4WY/mqdefault.jpg",
-   "isShort": false
+   "id": "M76H5hRhdDU",
+   "title": "메이사 스킬 미리보기(?) [이터널 리턴] #shrots",
+   "thumbnail": "https://i.ytimg.com/vi/M76H5hRhdDU/mqdefault.jpg",
+   "isShort": true
   },
   {
    "id": "Q6UsDKyZU5k",
@@ -108,18 +120,6 @@
    "title": "실험체를 잘 골라야 티어가 높아집니다ㅣ이터널리턴",
    "thumbnail": "https://i.ytimg.com/vi/fShBOgPXGgs/mqdefault.jpg",
    "isShort": false
-  },
-  {
-   "id": "v58LOIqdeKM",
-   "title": "의상 누가 생각한 거냐?? 사운드랑 이펙트 개쩌는 블레어 신스킨 리뷰 해보자!! / [이터널 리턴]",
-   "thumbnail": "https://i.ytimg.com/vi/v58LOIqdeKM/mqdefault.jpg",
-   "isShort": false
-  },
-  {
-   "id": "M76H5hRhdDU",
-   "title": "메이사 스킬 미리보기(?) [이터널 리턴] #shrots",
-   "thumbnail": "https://i.ytimg.com/vi/M76H5hRhdDU/mqdefault.jpg",
-   "isShort": true
   }
  ]
 }
