@@ -39,14 +39,14 @@ object ProfileImage {
 
     fun load(imageView: ImageView, value: String?) {
         val ctx = imageView.context
-        // 실험체 이미지를 앱에 넣지 않은 빌드(BuildConfig.USE_CHARACTER_IMAGES=false)에서는 실험체 이름의 첫 글자 아바타를 보여준다
-        if (!BuildConfig.USE_CHARACTER_IMAGES) {
-            val index = drawableNameOf(value)?.removePrefix("character_")?.toIntOrNull()
-            val names = ctx.resources.getStringArray(R.array.characterName)
-            if (index != null && index in 1 until names.size) {
-                imageView.setImageDrawable(InitialAvatar.drawable(ctx, names[index]))
-                return
-            }
+        // 얼굴 이미지가 있으면 그것을, 없으면(이미지를 앱에 넣지 않은 빌드, 이미지가 없는 신규 실험체) 이름 첫 글자 아바타를 보여준다
+        val index = drawableNameOf(value)?.removePrefix("character_")?.toIntOrNull()
+        val names = ctx.resources.getStringArray(R.array.characterName)
+        if (index != null && index in 1 until names.size) {
+            val faceId = if (BuildConfig.USE_CHARACTER_IMAGES) ctx.resources.getIdentifier("face_$index", "drawable", ctx.packageName) else 0
+            if (faceId != 0) imageView.setImageResource(faceId)
+            else imageView.setImageDrawable(InitialAvatar.drawable(ctx, names[index]))
+            return
         }
         imageView.setImageResource(resIdOf(ctx, value))
     }

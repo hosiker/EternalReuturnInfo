@@ -22,8 +22,8 @@ Play는 앱 서명 키를 Google이 보관하고, 개발자는 **업로드 키**
 4. 「코드」 `app/build.gradle.kts`가 위 네 값이 모두 있을 때 release 빌드를 이 키로 서명합니다. (없으면 서명 없는 빌드가 나옵니다)
 
 ## B. 빌드
-- 「코드」 `versionCode`는 26, `versionName`은 2.0.0으로 올렸습니다. 업로드할 때마다 `versionCode`를 1 이상 올려야 합니다.
-- 「직접」 **이미지 스위치가 꺼져 있는지 확인**: `local.properties`에 `useCharacterImages=true`가 있으면 지우세요. 빌드 로그 첫머리에 "실험체 이미지: 제외 (이니셜 아바타)"가 나와야 합니다.
+- 「코드」 `versionCode`는 28, `versionName`은 2.0.0으로 올렸습니다. 업로드할 때마다 `versionCode`를 1 이상 올려야 합니다.
+- 「직접」 **이미지 스위치 확인**: 님블뉴런 허락(2026-11-26)을 받아 기본이 "포함"입니다. `local.properties`에 `useCharacterImages=false`가 없는지 확인하세요. 빌드 로그 첫머리에 "실험체 이미지: 포함"이 나와야 하고, 설정 화면 하단에 이미지 출처 표기가 보여야 합니다.
 - 「직접」 `signReleaseWithDebug=true`는 점검용이므로 **지우세요**. (둘 다 있으면 점검용 서명이 이깁니다)
 - 「직접」 앱 번들(AAB) 만들기:
   ```
